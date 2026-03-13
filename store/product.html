@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Vinato Product — Premium luxury fashion." />
+  <title>Oversized Cashmere Sweater — VINATO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <!-- Lenis CSS -->
+  <style>
+    html.lenis { height: auto; }
+    .lenis.lenis-smooth { scroll-behavior: auto; }
+    .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+    .lenis.lenis-stopped { overflow: hidden; }
+  </style>
+</head>
+<body data-barba="wrapper">
+
+  <!-- Custom Cursor -->
+  <div class="custom-cursor" id="customCursor"></div>
+
+  <!-- Full Screen Menu -->
+  <div class="fs-menu">
+    <div class="fs-menu-bg"></div>
+    <div class="fs-menu-content">
+      <button class="close-menu" id="closeFsMenu">×</button>
+      <nav class="fs-nav">
+        <a href="index.html" class="menu-link">Home</a>
+        <a href="shop.html?gender=men" class="menu-link">Shop Men</a>
+        <a href="shop.html?gender=women" class="menu-link">Shop Women</a>
+        <a href="shop.html?gender=unisex" class="menu-link">Shop Unisex</a>
+        <a href="lookbook.html" class="menu-link">Lookbook</a>
+        <a href="#" class="menu-link">Contact</a>
+      </nav>
+      <div class="fs-footer">
+        <a href="#">IG</a>
+        <a href="#">PN</a>
+        <a href="#">TT</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <nav class="navbar solid" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-links nav-left">
+        <div class="nav-dropdown">
+          <a href="shop.html?gender=men" class="nav-link">Men</a>
+          <div class="dropdown-content">
+            <a href="shop.html?gender=men&cat=jackets">Jackets</a>
+            <a href="shop.html?gender=men&cat=sweaters">Sweaters / Hoodies</a>
+            <a href="shop.html?gender=men&cat=shirts">Shirts</a>
+            <a href="shop.html?gender=men&cat=pants">Pants</a>
+            <a href="shop.html?gender=men&cat=underwear">Underwear</a>
+            <a href="shop.html?gender=men&cat=shoes">Shoes / Boots</a>
+          </div>
+        </div>
+        <div class="nav-dropdown">
+          <a href="shop.html?gender=women" class="nav-link">Women</a>
+          <div class="dropdown-content">
+            <a href="shop.html?gender=women&cat=jackets">Jackets</a>
+            <a href="shop.html?gender=women&cat=sweaters">Sweaters / Hoodies</a>
+            <a href="shop.html?gender=women&cat=shirts">Shirts</a>
+            <a href="shop.html?gender=women&cat=pants">Pants</a>
+            <a href="shop.html?gender=women&cat=underwear">Underwear</a>
+            <a href="shop.html?gender=women&cat=shoes">Shoes / Boots</a>
+          </div>
+        </div>
+        <div class="nav-dropdown">
+          <a href="shop.html?gender=unisex" class="nav-link">Unisex</a>
+          <div class="dropdown-content">
+            <a href="shop.html?gender=unisex&cat=jackets">Jackets</a>
+            <a href="shop.html?gender=unisex&cat=sweaters">Sweaters / Hoodies</a>
+            <a href="shop.html?gender=unisex&cat=pants">Pants</a>
+            <a href="shop.html?gender=unisex&cat=accessories">Accessories</a>
+          </div>
+        </div>
+      </div>
+      <a href="index.html" class="nav-logo">VINATO</a>
+      <div class="nav-links nav-right">
+        <a href="lookbook.html" class="nav-link">Lookbook</a>
+        <a href="#footer" class="nav-link">Contact</a>
+      </div>
+      <!-- Mobile menu toggle -->
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- BARBA CONTAINER -->
+  <main data-barba="container" data-barba-namespace="product" class="product-page">
+    
+    <!-- PRODUCT LAYOUT -->
+    <div class="product-layout">
+      
+      <!-- Left: Image Gallery -->
+      <div class="product-gallery" id="productGallery">
+        <!-- Rendered dynamically -->
+        <img src="images/optimized/prod_knitwear.webp" alt="Cardigan Detail" class="pg-img active" />
+        <img src="images/optimized/hero_bg.webp" alt="Detail 2" class="pg-img active" />
+      </div>
+
+      <!-- Right: Sticky Details -->
+      <div class="product-sidebar">
+        <div class="product-sidebar-inner">
+          <div class="pm-breadcrumbs">
+            <a href="index.html">Home</a> / 
+            <a href="shop.html?gender=men">Men</a> / 
+            <a href="shop.html?gender=men&cat=sweaters">Sweaters & Hoodies</a>
+          </div>
+          
+          <h1 class="pm-title">Oversized Cashmere Sweater</h1>
+          <p class="pm-sub">100% Mongolian Cashmere</p>
+          
+          <div class="pm-price-wrap">
+            <s class="pm-compare-price" style="display:none;"></s>
+            <span class="pm-price">$590.00</span>
+          </div>
+
+          <!-- Color Selector -->
+          <div class="pm-section">
+            <div class="pm-section-header">
+              <span>Color: <strong id="currentColorName">Black</strong></span>
+            </div>
+            <div class="color-swatch-list" id="colorSwatchList">
+              <button class="color-swatch active" style="background-color: #000000;" aria-label="Black" data-color-name="Black" data-images='["images/optimized/prod_knitwear.webp", "images/optimized/new_collection.webp"]'></button>
+              <button class="color-swatch" style="background-color: #f5f5f0;" aria-label="Beige" data-color-name="Beige" data-images='["images/optimized/prod_trousers.webp", "images/optimized/hero_bg.webp", "images/optimized/best_sellers.webp"]'></button>
+              <button class="color-swatch" style="background-color: #ffffff; border: 1px solid #ddd;" aria-label="White" data-color-name="White" data-images='["images/hero_unisex.png", "images/optimized/prod_coat_men.webp"]'></button>
+            </div>
+          </div>
+
+          <!-- Size Selector -->
+          <div class="pm-section">
+            <div class="pm-section-header">
+              <span>Size</span>
+              <button type="button" class="btn-text-gold" id="openSizeGuide">Size Guide</button>
+            </div>
+            <div class="size-selector">
+              <label class="size-opt"><input type="radio" name="size" value="S"><span>S</span></label>
+              <label class="size-opt"><input type="radio" name="size" value="M" checked><span>M</span></label>
+              <label class="size-opt"><input type="radio" name="size" value="L"><span>L</span></label>
+              <label class="size-opt"><input type="radio" name="size" value="XL"><span>XL</span></label>
+            </div>
+          </div>
+
+          <button class="btn btn-primary pm-add-btn magnetic">Add to Bag</button>
+          <p class="pm-shipping-note">Free standard shipping. Returns within 14 days.</p>
+
+          <!-- Details Accordion -->
+          <div class="pm-accordion">
+            <div class="accordion-item">
+              <button class="accordion-header">Description <span class="icon">+</span></button>
+              <div class="accordion-content">
+                <p>Woven from the finest pure Mongolian cashmere, this oversized silhouette drapes effortlessly. Dropped shoulders, ribbed trims, and a subtle raw-edge finish. Designed to transcend seasons.</p>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-header">Details & Care <span class="icon">+</span></button>
+              <div class="accordion-content">
+                <ul style="list-style:disc; margin-left: 1.5rem; font-size:0.85rem; color:var(--gray); line-height:1.8;">
+                  <li>100% Cashmere</li>
+                  <li>Made in Italy</li>
+                  <li>Dry clean only</li>
+                  <li>Model is 185cm and wears size M</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> <!-- /product-layout -->
+
+    <!-- RECENTLY VIEWED SECTION -->
+    <section class="recently-viewed">
+      <div class="rv-header">
+        <h2 class="rv-title">Recently Viewed</h2>
+      </div>
+      <div class="rv-scroll-container">
+        <!-- Scrollable list of recent items -->
+        <a href="product.html" class="rv-card">
+          <img src="images/optimized/prod_trousers.webp" alt="Tailored Wool Trousers" loading="lazy">
+          <div class="rv-info">
+            <h4>Tailored Wool Trousers</h4>
+            <span>$430</span>
+          </div>
+        </a>
+        <a href="product.html" class="rv-card">
+          <img src="images/optimized/prod_coat_men.webp" alt="Overcoat" loading="lazy">
+          <div class="rv-info">
+            <h4>Structured Overcoat</h4>
+            <span>$1,290</span>
+          </div>
+        </a>
+        <a href="product.html" class="rv-card">
+          <img src="images/optimized/new_collection.webp" alt="Blazer" loading="lazy">
+          <div class="rv-info">
+            <h4>Asymmetric Blazer</h4>
+            <span>$890</span>
+          </div>
+        </a>
+        <a href="product.html" class="rv-card">
+          <img src="images/optimized/prod_dress_silk.webp" alt="Silk Dress" loading="lazy">
+          <div class="rv-info">
+            <h4>Duchess Silk Gown</h4>
+            <span>$2,150</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-bottom">
+      <div class="footer-copy-wrap">
+        <p class="footer-copy">© 2026 Vinato. All rights reserved.</p>
+        <p class="footer-credit" style="color:#c6a87c; font-size:0.8rem; margin-top:8px;">Designed & Developed by Eng. Shehab AL-Naddaf</p>
+      </div>
+      <div class="social-links">
+        <a href="#" class="social-link">IG</a>
+        <a href="#" class="social-link">PN</a>
+        <a href="#" class="social-link">TT</a>
+      </div>
+    </div>
+  </footer>
+
+  </main> <!-- /Barba Container -->
+
+  <!-- SIZE GUIDE MODAL -->
+  <div class="modal-overlay hidden" id="sizeGuideModal">
+    <div class="modal size-modal">
+      <div class="modal-header">
+        <h3>Size Guide - Oversized Sweaters</h3>
+        <button class="btn-icon" id="closeSizeGuide">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="size-table-wrap">
+          <table class="size-table">
+            <thead>
+              <tr>
+                <th>Size</th>
+                <th>Chest (cm)</th>
+                <th>Length (cm)</th>
+                <th>Sleeve (cm)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>S</td><td>104</td><td>68</td><td>63</td></tr>
+              <tr><td>M</td><td>108</td><td>70</td><td>64</td></tr>
+              <tr><td>L</td><td>112</td><td>72</td><td>65</td></tr>
+              <tr><td>XL</td><td>116</td><td>74</td><td>66</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="size-note">* Measurements are approximate. This item has an oversized fit. Please contact <a href="mailto:support@vinato.com" style="color:var(--gold);">support</a> for personal styling.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/@barba/core"></script>
+  <script src="js/animations.js"></script>
+</body>
+</html>

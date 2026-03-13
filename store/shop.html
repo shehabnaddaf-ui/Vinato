@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Shop Vinato — Premium luxury fashion collections for men and women." />
+  <title>SHOP — VINATO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="shop-page" data-barba="wrapper">
+
+  <!-- ═══════════════════════ NAVIGATION ═══════════════════════ -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-links nav-left">
+        <a href="index.html#new-collection" class="nav-link">Home</a>
+        <a href="#shop-top" class="nav-link active">Shop</a>
+      </div>
+      <a href="index.html" class="nav-logo">VINATO</a>
+      <div class="nav-links nav-right">
+        <a href="index.html#instagram" class="nav-link">Stories</a>
+        <a href="index.html#footer" class="nav-link">Contact</a>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════ BARBA CONTAINER ═══════════════════════ -->
+  <main data-barba="container" data-barba-namespace="shop">
+
+  <!-- ═══════════════════════ SHOP HEADER ═══════════════════════ -->
+  <header class="shop-header" id="shop-top">
+    <div class="shop-header-content reveal-up">
+      <h1 class="shop-title">Collections</h1>
+      <div class="shop-filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="new">New Arrival</button>
+        <button class="filter-btn" data-filter="men">Men</button>
+        <button class="filter-btn" data-filter="women">Women</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════ PRODUCT GRID ═══════════════════════ -->
+  <main class="shop-main">
+    <div class="product-grid" id="productGrid">
+      
+      <!-- Product 1: Men Knitwear (SALE) -->
+      <div class="product-card reveal-up" data-gender="men" data-cat="sweaters" data-trending="true" data-new="true">
+        <div class="product-img-wrap">
+          <img src="images/optimized/prod_knitwear.webp" alt="Oversized Cashmere Sweater" class="product-img" loading="lazy">
+          <div class="product-overlay">
+            <div class="product-details">
+              <span>Luxe Knit</span>
+              <span>100% Cashmere</span>
+              <button class="quick-view-btn">Add to Bag</button>
+            </div>
+          </div>
+          <span class="badge">SALE</span>
+        </div>
+        <div class="product-info">
+          <h2 class="product-name">Oversized Cashmere Sweater</h2>
+          <div class="product-price-row">
+            <span>
+              <span class="product-compare-price">$750</span>
+              <span class="product-price">$590</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 2: Women Trousers -->
+      <div class="product-card reveal-up" data-gender="women" data-cat="pants" data-new="true">
+        <div class="product-img-wrap">
+          <img src="images/optimized/prod_trousers.webp" alt="Tailored Wool Trousers" class="product-img" loading="lazy">
+          <div class="product-overlay">
+            <div class="product-details">
+              <span>Tailored</span>
+              <span>Premium Wool Blend</span>
+              <button class="quick-view-btn">Add to Bag</button>
+            </div>
+          </div>
+          <span class="badge">New</span>
+        </div>
+        <div class="product-info">
+          <h2 class="product-name">Tailored Wool Trousers</h2>
+          <span class="product-price">$450</span>
+        </div>
+      </div>
+
+      <!-- Product 3: Men Coat -->
+      <div class="product-card reveal-up" data-gender="men" data-cat="sweaters" data-trending="true">
+        <div class="product-img-wrap">
+          <img src="images/optimized/prod_coat_men.webp" alt="Structured Overcoat" class="product-img" loading="lazy">
+          <div class="product-overlay">
+            <div class="product-details">
+              <span>Outerwear</span>
+              <span>Structured Fit</span>
+              <button class="quick-view-btn">Add to Bag</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-info">
+          <h2 class="product-name">Structured Overcoat</h2>
+          <span class="product-price">$1,490</span>
+        </div>
+      </div>
+
+      <!-- Product 4: Women Dress -->
+      <div class="product-card reveal-up" data-gender="women" data-cat="shirts" data-trending="true">
+        <div class="product-img-wrap">
+          <img src="images/optimized/prod_dress_silk.webp" alt="Silk Slip Dress" class="product-img" loading="lazy">
+          <div class="product-overlay">
+            <div class="product-details">
+              <span>Evening</span>
+              <span>Pure Mulberry Silk</span>
+              <button class="quick-view-btn">Add to Bag</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-info">
+          <h2 class="product-name">Silk Slip Dress</h2>
+          <span class="product-price">$890</span>
+        </div>
+      </div>
+
+      <!-- Product 5: Repeat New -->
+      <div class="product-card reveal-up" data-gender="women" data-cat="shirts" data-new="true">
+        <div class="product-img-wrap">
+          <img src="images/optimized/new_collection.webp" alt="Silk Evening Gown" class="product-img" loading="lazy">
+          <div class="product-overlay">
+            <div class="product-details">
+              <span>Evening Gown</span>
+              <span>SS 2026 Collection</span>
+              <button class="quick-view-btn">Add to Bag</button>
+            </div>
+          </div>
+          <span class="badge">Exclusive</span>
+        </div>
+        <div class="product-info">
+          <h2 class="product-name">Silk Evening Gown</h2>
+          <span class="product-price">$2,150</span>
+        </div>
+      </div>
+
+      <!-- Product 6: Accessories -->
+      <div class="product-card reveal-up" data-gender="men" data-cat="accessories">
+        <div class="product-img-wrap">
+          <img src="images/optimized/best_sellers.webp" alt="Minimal Leather Tote" class="product-img" loading="lazy">
+          <div class="product-overlay">
+            <div class="product-details">
+              <span>Accessories</span>
+              <span>Italian Leather</span>
+              <button class="quick-view-btn">Add to Bag</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-info">
+          <h2 class="product-name">Minimal Leather Tote</h2>
+          <span class="product-price">$650</span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+  <footer class="footer">
+    <div class="footer-bottom">
+      <div class="footer-copy-wrap">
+        <p class="footer-copy">© 2026 Vinato. All rights reserved.</p>
+        <p class="footer-credit" style="color:#c6a87c; font-size:0.8rem; margin-top:8px;">Designed & Developed by Eng. Shehab AL-Naddaf</p>
+      </div>
+      <div class="social-links">
+        <a href="#" class="social-link">IG</a>
+        <a href="#" class="social-link">PN</a>
+        <a href="#" class="social-link">TT</a>
+      </div>
+    </div>
+  </footer>
+
+  </main> <!-- /Barba Container -->
+
+  <!-- QUICK VIEW MODAL -->
+  <div class="modal-overlay hidden" id="quickViewModal">
+    <div class="modal qv-modal">
+      <div class="modal-header">
+        <h3 id="qvTitle">Product Name</h3>
+        <button class="btn-icon" id="closeQuickView">×</button>
+      </div>
+      <div class="modal-body qv-body">
+        <div class="qv-image">
+          <img src="" alt="Product Image" id="qvImg">
+        </div>
+        <div class="qv-details">
+          <p class="qv-price" id="qvPrice">$0.00</p>
+          <div class="qv-actions">
+            <a href="product.html" class="btn btn-outline-dark">View Full Details</a>
+            <button class="btn btn-primary" style="margin-top: 12px; width: 100%;">Add to Bag</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/@barba/core"></script>
+  <script src="js/animations.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const cards = document.querySelectorAll('.product-card');
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      
+      // 1. Read URL Parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const genderParam = urlParams.get('gender'); // men / women
+      const catParam = urlParams.get('cat');       // sweaters / shirts etc
+      const sortParam = urlParams.get('sort');     // trending / new
+
+      // 2. Apply Filter Logic on Load
+      function applyFilters() {
+        // Change title if deep linked
+        const title = document.querySelector('.shop-title');
+        if(genderParam && catParam) {
+          title.textContent = `${genderParam} / ${catParam}`.toUpperCase();
+        } else if(genderParam) {
+          title.textContent = `${genderParam} Collection`.toUpperCase();
+        } else if(sortParam === 'trending') {
+          title.textContent = 'Trending Now'.toUpperCase();
+        } else if(sortParam === 'new') {
+          title.textContent = 'New Arrivals'.toUpperCase();
+        }
+        
+        // Hide/Show matching cards immediately
+        cards.forEach(card => {
+          const cGender = card.getAttribute('data-gender');
+          const cCat = card.getAttribute('data-cat');
+          const cTrending = card.getAttribute('data-trending') === 'true';
+          const cNew = card.getAttribute('data-new') === 'true';
+
+          let match = true;
+          
+          if(genderParam && genderParam !== cGender) match = false;
+          if(catParam && catParam !== cCat) match = false;
+          if(sortParam === 'trending' && !cTrending) match = false;
+          if(sortParam === 'new' && !cNew) match = false;
+
+          // Apply match
+          if (match) {
+            card.style.display = 'block';
+            card.classList.remove('filtered-out');
+            setTimeout(() => { 
+                card.style.opacity = '1'; 
+                card.style.transform = 'translateY(0)'; 
+            }, 50);
+          } else {
+            card.style.display = 'none';
+            card.classList.add('filtered-out');
+          }
+        });
+
+        // Refresh GSAP ScrollTrigger after altering DOM flow so animations don't break
+        if(typeof ScrollTrigger !== 'undefined') {
+            setTimeout(() => {
+                ScrollTrigger.refresh();
+            }, 100);
+        }
+
+        // Set Active Button states based on URL
+        if (genderParam) {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          const btn = document.querySelector(`.filter-btn[data-filter="${genderParam}"]`);
+          if(btn) btn.classList.add('active');
+        } else if (sortParam) {
+           filterBtns.forEach(b => b.classList.remove('active'));
+        }
+      }
+
+      applyFilters();
+
+      // 4. Basic Button Click Filtering (Top level)
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const filter = btn.getAttribute('data-filter');
+          
+          // Clear URL state for pure JS grid filtering to look smooth
+          window.history.replaceState({}, '', 'shop.html');
+          document.querySelector('.shop-title').textContent = filter === 'all' ? 'COLLECTIONS' : filter.toUpperCase();
+
+          cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+              if (filter === 'all' || card.getAttribute('data-gender') === filter || (filter==='new' && card.getAttribute('data-new'))) {
+                card.style.display = 'block';
+                setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 50);
+              } else {
+                card.style.display = 'none';
+              }
+            }, 300);
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>

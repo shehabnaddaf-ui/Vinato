@@ -1,0 +1,445 @@
+// ═══════════════════════════════════════════════
+//   LENIS & GSAP SETUP
+// ═══════════════════════════════════════════════
+gsap.registerPlugin(ScrollTrigger);
+
+let lenis;
+
+function initLenis() {
+  lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    direction: 'vertical',
+    gestureDirection: 'vertical',
+    smooth: true,
+    mouseMultiplier: 1,
+    smoothTouch: false,
+    touchMultiplier: 2,
+    infinite: false,
+  });
+
+  lenis.on('scroll', ScrollTrigger.update);
+
+  gsap.ticker.add((time)=>{
+    lenis.raf(time * 1000);
+  });
+
+  gsap.ticker.lagSmoothing(0);
+}
+
+// ═══════════════════════════════════════════════
+//   CINEMATIC INTRO (Runs Once)
+// ═══════════════════════════════════════════════
+function playIntro() {
+  const introLoader = document.getElementById('introLoader');
+  const spinner = document.querySelector('.intro-spinner');
+  const logo = document.querySelector('.intro-logo');
+  
+  if(!introLoader) return;
+
+  if (sessionStorage.getItem('vinatoIntroPlayed')) {
+    introLoader.style.display = 'none';
+    return;
+  }
+
+  // Disable scroll during intro
+  if(lenis) lenis.stop();
+
+  const tl = gsap.timeline({
+    onComplete: () => {
+      sessionStorage.setItem('vinatoIntroPlayed', 'true');
+      introLoader.style.pointerEvents = 'none';
+      if(lenis) lenis.start();
+    }
+  });
+
+  // Spinner fades out after 1.5s
+  tl.to(spinner, { opacity: 0, duration: 0.5, delay: 1 })
+    // Logo "draws" in/fades in
+    .to(logo, { opacity: 1, scale: 1, duration: 1, ease: 'power3.out' })
+    // Hold for a moment to feel luxury
+    .to(logo, { opacity: 1, duration: 1 })
+    // Shrink logo to top and fade out overlay
+    .to(introLoader, { 
+      yPercent: -100, 
+      duration: 1.2, 
+      ease: 'expo.inOut' 
+    });
+}
+
+// ═══════════════════════════════════════════════
+//   CUSTOM CURSOR & MAGNETIC BUTTONS (Desktop Only)
+// ═══════════════════════════════════════════════
+function initCursor() {
+  const cursor = document.getElementById('customCursor');
+  if (!cursor) return;
+
+  // Check if touch device
+  if (window.matchMedia("(pointer: coarse)").matches) {
+    cursor.style.display = 'none';
+    return;
+  }
+
+  // Use gsap.quickTo for highly performant follow
+  const xTo = gsap.quickTo(cursor, "left", { duration: 0.2, ease: "power3" });
+  const yTo = gsap.quickTo(cursor, "top", { duration: 0.2, ease: "power3" });
+
+  window.addEventListener('mousemove', (e) => {
+    xTo(e.clientX);
+    yTo(e.clientY);
+  });
+
+  // Hover states on links/buttons
+  const interactables = document.querySelectorAll('a, button, .product-card, .hl-item');
+  interactables.forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+  });
+
+  // Magnetic Buttons
+  const magneticEls = document.querySelectorAll('.btn, .nav-icon');
+  magneticEls.forEach(el => {
+    el.addEventListener('mousemove', (e) => {
+      const rect = el.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      gsap.to(el, { x: x * 0.2, y: y * 0.2, duration: 0.3, ease: 'power2.out' });
+    });
+    el.addEventListener('mouseleave', () => {
+      gsap.to(el, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.3)' });
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════
+//   FULL SCREEN MENU
+// ═══════════════════════════════════════════════
+function initMenu() {
+  const menuToggle = document.querySelector('.menu-toggle');
+  const navToggle = document.querySelector('#navToggle'); 
+  const closeMenu = document.getElementById('closeFsMenu');
+  const fsMenu = document.getElementById('fsMenu');
+  const fsMenuBg = document.querySelector('.fs-menu-bg');
+  const fsContent = document.querySelector('.fs-menu-content');
+  const links = document.querySelectorAll('.menu-link');
+
+  if(!fsMenu) return;
+
+  let menuOpen = false;
+  const tl = gsap.timeline({ paused: true });
+
+  tl.to(fsMenu, { pointerEvents: 'auto', duration: 0 })
+    .to(fsMenuBg, { yPercent: 100, duration: 0.8, ease: 'expo.inOut' })
+    .to(fsContent, { opacity: 1, visibility: 'visible', duration: 0.3 }, "-=0.2")
+    .fromTo(links, 
+      { y: 40, opacity: 0 }, 
+      { y: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: 'power3.out' }, 
+      "-=0.4"
+    );
+
+  const toggleAction = () => {
+    if (menuOpen) {
+      tl.reverse();
+      if(lenis) lenis.start();
+    } else {
+      tl.play();
+      if(lenis) lenis.stop();
+    }
+    menuOpen = !menuOpen;
+  };
+
+  if(menuToggle) menuToggle.addEventListener('click', toggleAction);
+  if(navToggle) navToggle.addEventListener('click', toggleAction);
+  if(closeMenu) closeMenu.addEventListener('click', toggleAction);
+  
+  links.forEach(l => l.addEventListener('click', () => {
+    if(menuOpen) toggleAction();
+  }));
+}
+
+// ═══════════════════════════════════════════════
+//   SCROLL ANIMATIONS & HORIZONTAL LOOKBOOK
+// ═══════════════════════════════════════════════
+function initScrollTriggers() {
+  // Reveal Up
+  gsap.utils.toArray('.reveal-up').forEach(el => {
+    gsap.fromTo(el, { y: 50, opacity: 0 }, {
+      scrollTrigger: { trigger: el, start: "top 85%" },
+      y: 0, opacity: 1, duration: 1, ease: "power3.out"
+    });
+  });
+
+  // Reveal Left/Right
+  gsap.utils.toArray('.reveal-left').forEach(el => {
+    gsap.fromTo(el, { x: -50, opacity: 0 }, { scrollTrigger: { trigger: el, start: "top 85%" }, x: 0, opacity: 1, duration: 1, ease: "power3.out" });
+  });
+  gsap.utils.toArray('.reveal-right').forEach(el => {
+    gsap.fromTo(el, { x: 50, opacity: 0 }, { scrollTrigger: { trigger: el, start: "top 85%" }, x: 0, opacity: 1, duration: 1, ease: "power3.out" });
+  });
+
+  // Parallax BGs
+  gsap.utils.toArray('.parallax-bg').forEach(bg => {
+    gsap.to(bg, {
+      yPercent: 20,
+      ease: "none",
+      scrollTrigger: {
+        trigger: bg.parentElement,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: true
+      }
+    });
+  });
+
+
+
+  // Navbar scrolled state
+  const navbar = document.querySelector('.navbar');
+  if(navbar) {
+    ScrollTrigger.create({
+      trigger: "body",
+      start: "top -50",
+      onUpdate: (self) => {
+        if(self.direction === 1) {
+          navbar.classList.add('scrolled');
+          gsap.to(navbar, {yPercent: -100, duration: 0.3});
+        } else {
+          gsap.to(navbar, {yPercent: 0, duration: 0.3});
+        }
+      },
+      onLeaveBack: () => navbar.classList.remove('scrolled')
+    });
+  }
+}
+
+// ═══════════════════════════════════════════════
+//   DYNAMIC SORTING & STRIPES (Frontend Prototype)
+// ═══════════════════════════════════════════════
+function initSortingAndBadges() {
+  const sortables = document.querySelectorAll('[data-sort]');
+  sortables.forEach(el => {
+    // Utilize CSS Flex/Grid native order property
+    el.style.order = el.getAttribute('data-sort');
+  });
+}
+
+// ═══════════════════════════════════════════════
+//   PRODUCT PAGE INTERACTIONS (product.html)
+// ═══════════════════════════════════════════════
+function initProductInteractions() {
+  // 1. Color Swatches
+  const swatches = document.querySelectorAll('.color-swatch');
+  const colorNameLabel = document.getElementById('currentColorName');
+  const gallery = document.getElementById('productGallery');
+
+  if (swatches.length && colorNameLabel && gallery) {
+    swatches.forEach(swatch => {
+      swatch.addEventListener('click', (e) => {
+        // Update active class
+        swatches.forEach(s => s.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+
+        // Update name
+        const newColor = e.currentTarget.getAttribute('data-color-name');
+        if(colorNameLabel) colorNameLabel.textContent = newColor;
+
+        // Swap images
+        const imagesStr = e.currentTarget.getAttribute('data-images');
+        if (imagesStr) {
+          try {
+            const imagesArr = JSON.parse(imagesStr);
+            
+            // Fade out current gallery
+            gsap.to(gallery.children, {
+              opacity: 0,
+              duration: 0.3,
+              onComplete: () => {
+                gallery.innerHTML = ''; // clear
+                imagesArr.forEach((src, idx) => {
+                  const img = document.createElement('img');
+                  img.src = src;
+                  img.alt = `${newColor} Detail ${idx + 1}`;
+                  img.className = 'pg-img active';
+                  gallery.appendChild(img);
+                });
+                // Fade in new
+                gsap.fromTo(gallery.children, 
+                  { opacity: 0 }, 
+                  { opacity: 1, duration: 0.4, stagger: 0.1 }
+                );
+              }
+            });
+          } catch(err) {
+            console.error('Invalid image data', err);
+          }
+        }
+      });
+    });
+  }
+
+  // 2. Size Guide Modal
+  const openBtn = document.getElementById('openSizeGuide');
+  const closeBtn = document.getElementById('closeSizeGuide');
+  const modalOuter = document.getElementById('sizeGuideModal');
+
+  if (openBtn && closeBtn && modalOuter) {
+    // Clone logic prevents multiple event bindings on Barba navigations if element preserves
+    const newOpenBtn = openBtn.cloneNode(true);
+    openBtn.parentNode.replaceChild(newOpenBtn, openBtn);
+
+    newOpenBtn.addEventListener('click', () => {
+      modalOuter.classList.remove('hidden');
+      if(lenis) lenis.stop(); // freeze scrolling
+      // Animate in
+      gsap.fromTo(modalOuter.querySelector('.modal'), 
+        { y: 50, opacity: 0 }, 
+        { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out' }
+      );
+    });
+
+    closeBtn.addEventListener('click', () => {
+      gsap.to(modalOuter.querySelector('.modal'), {
+        y: 20, opacity: 0, duration: 0.3,
+        onComplete: () => {
+          modalOuter.classList.add('hidden');
+          if(lenis) lenis.start();
+        }
+      });
+    });
+
+    modalOuter.addEventListener('click', (e) => {
+      if(e.target === modalOuter) closeBtn.click();
+    });
+  }
+
+  // 3. Accordions
+  const accordions = document.querySelectorAll('.accordion-header');
+  accordions.forEach(acc => {
+    // Avoid double bindings
+    const newAcc = acc.cloneNode(true);
+    acc.parentNode.replaceChild(newAcc, acc);
+    
+    newAcc.addEventListener('click', () => {
+      const item = newAcc.parentElement;
+      item.classList.toggle('active');
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════
+//   QUICK VIEW MODAL (shop & index)
+// ═══════════════════════════════════════════════
+function initQuickView() {
+  const quickBtns = document.querySelectorAll('.quick-view-btn');
+  const qvModal = document.getElementById('quickViewModal');
+  const qvClose = document.getElementById('closeQuickView');
+  const qvTitle = document.getElementById('qvTitle');
+  const qvImg = document.getElementById('qvImg');
+  const qvPrice = document.getElementById('qvPrice');
+
+  if (!quickBtns.length || !qvModal) return;
+
+  if (qvClose) {
+    const newClose = qvClose.cloneNode(true);
+    qvClose.parentNode.replaceChild(newClose, qvClose);
+    
+    newClose.addEventListener('click', () => {
+      gsap.to(qvModal.querySelector('.modal'), {
+        y: 20, opacity: 0, duration: 0.3,
+        onComplete: () => {
+          qvModal.classList.add('hidden');
+          if(lenis) lenis.start();
+        }
+      });
+    });
+
+    qvModal.addEventListener('click', (e) => {
+      if(e.target === qvModal) newClose.click();
+    });
+  }
+
+  quickBtns.forEach(btn => {
+    const newBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(newBtn, btn);
+
+    newBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const card = newBtn.closest('.product-card') || newBtn.closest('.bs-card');
+      if (card) {
+        const titleEl = card.querySelector('.product-name') || card.querySelector('.bs-name') || card.querySelector('h3');
+        const priceEl = card.querySelector('.product-price') || card.querySelector('.bs-price');
+        const imgEl = card.querySelector('img');
+
+        if (titleEl) qvTitle.textContent = titleEl.textContent;
+        if (priceEl) qvPrice.textContent = priceEl.textContent;
+        if (imgEl) qvImg.src = imgEl.src;
+      }
+
+      qvModal.classList.remove('hidden');
+      if(lenis) lenis.stop();
+      gsap.fromTo(qvModal.querySelector('.modal'), 
+        { y: 50, opacity: 0 }, 
+        { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out' }
+      );
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════
+//   BARBA.JS PAGE TRANSITIONS
+// ═══════════════════════════════════════════════
+function initBarba() {
+  if (typeof barba === 'undefined') return;
+
+  barba.init({
+    sync: true,
+    transitions: [{
+      name: 'fade-transition',
+      leave(data) {
+        return gsap.to(data.current.container, {
+          opacity: 0,
+          duration: 0.5,
+          ease: "power2.inOut"
+        });
+      },
+      enter(data) {
+        window.scrollTo(0, 0); // Reset scroll to top
+        if(lenis) lenis.scrollTo(0, {immediate: true});
+        ScrollTrigger.refresh();
+        
+        return gsap.from(data.next.container, {
+          opacity: 0,
+          duration: 0.5,
+          ease: "power2.inOut"
+        });
+      }
+    }]
+  });
+
+  // Re-init scripts after Barba transition
+  barba.hooks.after(() => {
+    initSortingAndBadges();
+    initProductInteractions();
+    initQuickView();
+    initScrollTriggers();
+    initCursor();
+    initMenu();
+  });
+}
+
+// ═══════════════════════════════════════════════
+//   INITIALIZATION
+// ═══════════════════════════════════════════════
+document.addEventListener("DOMContentLoaded", () => {
+  initSortingAndBadges();
+  initProductInteractions();
+  initQuickView();
+  initLenis();
+  playIntro();
+  initCursor();
+  initMenu();
+  initScrollTriggers();
+  initBarba();
+});

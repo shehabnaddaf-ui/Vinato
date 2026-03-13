@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vinato Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">VINATO ADMIN</div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item" data-view="dashboard-view">Dashboard</a>
+      <a href="#" class="nav-item active" data-view="products-view">Products</a>
+      <a href="#" class="nav-item" data-view="media-view">Media Library</a>
+      <a href="#" class="nav-item" data-view="collections-view">Collections</a>
+      <a href="#" class="nav-item" data-view="site-images-view">Website Images</a>
+      <a href="#" class="nav-item" data-view="orders-view">Orders</a>
+      <a href="#" class="nav-item" data-view="settings-view">Settings</a>
+    </nav>
+  </aside>
+
+  <!-- Main Workspace (Editor + Live Preview) -->
+  <main class="workspace">
+    
+    <!-- Left Panel: Editor Area -->
+    <section class="editor-panel">
+      
+      <!-- Dashboard View -->
+      <div id="dashboard-view" class="view-panel">
+        <header class="section-header">
+          <h2>Dashboard Overview</h2>
+        </header>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Total Products</span>
+            <span class="stat-value">12</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Total Orders</span>
+            <span class="stat-value">48</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Media Assets</span>
+            <span class="stat-value">24</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Media Library View (Hidden by default, shown by nav) -->
+      <div id="media-view" class="view-panel">
+        <header class="section-header">
+          <h2>Media Library</h2>
+          <p>Drag and drop images here to upload to your library.</p>
+        </header>
+
+        <div class="drop-zone" id="mediaDropZone">
+          <div class="drop-msg">
+            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <p><strong>Drag & Drop images here</strong> or click to browse</p>
+          </div>
+          <input type="file" id="mediaFileInput" multiple accept="image/*" class="file-input-hidden">
+        </div>
+
+        <div class="media-grid" id="mediaGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Add Product View -->
+      <div id="products-view" class="view-panel active">
+        <header class="section-header">
+          <h2>Add New Product</h2>
+          <div class="header-actions">
+            <button class="btn btn-outline" id="saveDraftBtn">Save Draft</button>
+            <button class="btn btn-primary" id="publishBtn">Publish</button>
+          </div>
+        </header>
+
+        <form id="productForm" class="product-form">
+          <!-- Basic Info -->
+          <div class="form-card">
+            <h3>Basic Information</h3>
+            <div class="form-group">
+              <label>Product Name</label>
+              <input type="text" id="p_name" placeholder="e.g. Vinato Hoodie" class="form-input">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Gender</label>
+                <select id="p_gender" class="form-input">
+                  <option value="Men">Men</option>
+                  <option value="Women">Women</option>
+                  <option value="Unisex">Unisex</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <select id="p_cat" class="form-input">
+                  <option value="Sweaters / Hoodies">Sweaters / Hoodies</option>
+                  <option value="Jackets">Jackets</option>
+                  <option value="Shirts">Shirts</option>
+                  <option value="Pants">Pants</option>
+                  <option value="Underwear">Underwear</option>
+                  <option value="Shoes / Boots">Shoes / Boots</option>
+                  <option value="Accessories">Accessories</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label>Price ($)</label>
+                <input type="number" id="p_price" placeholder="0.00" class="form-input">
+              </div>
+              <div class="form-group">
+                <label>Compare at Price ($)</label>
+                <input type="number" id="p_compare_price" placeholder="0.00" class="form-input">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Badge Text</label>
+                <input type="text" id="p_badge" placeholder="e.g. NEW, SALE, TRENDING" value="NEW" class="form-input">
+              </div>
+              <div class="form-group">
+                <label>Sort Order</label>
+                <input type="number" id="p_sort" placeholder="1" value="1" class="form-input">
+              </div>
+            </div>
+            
+            <!-- Meta Options -->
+            <div class="meta-options">
+              <label class="checkbox-label">
+                <input type="checkbox" id="p_featured">
+                <span class="checkmark"></span>
+                ⭐ Featured Product (Show on Homepage)
+              </label>
+              <div class="status-toggle">
+                <label>Status:</label>
+                <select id="p_status" class="form-input form-input-sm">
+                  <option value="Draft">Draft</option>
+                  <option value="Published">Published</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sizes -->
+          <div class="form-card">
+            <h3>Available Sizes</h3>
+            <div class="sizes-grid">
+              <label class="checkbox-label"><input type="checkbox" name="size" value="S"><span class="checkmark"></span>S</label>
+              <label class="checkbox-label"><input type="checkbox" name="size" value="M"><span class="checkmark"></span>M</label>
+              <label class="checkbox-label"><input type="checkbox" name="size" value="L"><span class="checkmark"></span>L</label>
+              <label class="checkbox-label"><input type="checkbox" name="size" value="XL"><span class="checkmark"></span>XL</label>
+            </div>
+          </div>
+
+          <!-- Colors & Images -->
+          <div class="form-card" id="colorsContainer">
+            <div class="card-header">
+              <h3>Color Variations & Images</h3>
+              <button type="button" class="btn btn-sm btn-outline" id="addColorBtn">+ Add Color</button>
+            </div>
+            <p class="help-text">Select images from your Media Library for each color.</p>
+            
+            <div class="color-list" id="colorList">
+              <!-- Default Color Block -->
+              <div class="color-block" data-color-id="c1">
+                <div class="color-header">
+                  <input type="text" class="form-input color-name-input" placeholder="Color Name (e.g. Black)" value="Black">
+                  <input type="color" class="color-picker" value="#000000">
+                  <button type="button" class="btn-icon remove-color-btn" title="Remove Color">×</button>
+                </div>
+                <div class="color-images-area">
+                  <button type="button" class="btn-select-media" data-target="c1">Choose from Media Library</button>
+                  <div class="selected-images-grid" id="selectedImages_c1"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Collections View -->
+      <div id="collections-view" class="view-panel">
+        <header class="section-header">
+          <h2>Collections</h2>
+          <button class="btn btn-primary toast-btn">+ New Collection</button>
+        </header>
+        <div class="form-card">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Collection Name</th>
+                <th>Products</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Summer Essentials</td>
+                <td>8 Products</td>
+                <td><span class="badge-status">Active</span></td>
+                <td><button class="btn-icon toast-btn">✎</button></td>
+              </tr>
+              <tr>
+                <td>Winter 2026</td>
+                <td>14 Products</td>
+                <td><span class="badge-status">Hidden</span></td>
+                <td><button class="btn-icon toast-btn">✎</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Website Images & Content View -->
+      <div id="site-images-view" class="view-panel">
+        <header class="section-header">
+          <h2>Homepage Content</h2>
+          <button class="btn btn-primary toast-btn">Save Changes</button>
+        </header>
+
+        <div class="form-card">
+          <h3>Hero Section Text</h3>
+          <p class="help-text">Edit the main text overlay on the homepage.</p>
+          <div class="form-group">
+            <label>Hero Title</label>
+            <input type="text" class="form-input" id="h_title" value="THE NEW STANDARD">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Hero Subtitle</label>
+              <input type="text" class="form-input" id="h_subtitle" value="Unisex Collection 2026">
+            </div>
+            <div class="form-group">
+              <label>Call-to-Action Text</label>
+              <input type="text" class="form-input" id="h_cta" value="Shop The Collection">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h3>Hero Background</h3>
+          <p class="help-text">Choose the main image for the homepage hero section.</p>
+          <div class="color-images-area">
+            <button type="button" class="btn-select-media" data-target="site-hero">Select Image</button>
+            <div class="selected-images-grid" id="selectedImages_site-hero">
+              <div class="selected-image-thumb">
+                <img src="../store/images/hero_unisex.png.jpeg" alt="Hero">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders View -->
+      <div id="orders-view" class="view-panel">
+        <header class="section-header">
+          <h2>Orders</h2>
+        </header>
+        <div class="form-card">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#1082</td>
+                <td>Sarah Ahmed</td>
+                <td>Today</td>
+                <td>$240.00</td>
+                <td><span class="badge-status">Processing</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Settings View -->
+      <div id="settings-view" class="view-panel">
+        <header class="section-header">
+          <h2>Store Settings</h2>
+          <button class="btn btn-primary" id="saveSettingsBtn">Save Settings</button>
+        </header>
+        <div class="form-card">
+          <div class="form-group">
+            <label>Store Name</label>
+            <input type="text" class="form-input" id="s_name" value="VINATO">
+          </div>
+          <div class="form-group">
+            <label>Announcement Bar Text</label>
+            <input type="text" class="form-input" id="s_announcement" value="FREE GLOBAL SHIPPING ON ORDERS OVER $200">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Support Email</label>
+              <input type="email" class="form-input" id="s_email" value="support@vinato.com">
+            </div>
+            <div class="form-group">
+              <label>Instagram URL</label>
+              <input type="url" class="form-input" id="s_instagram" value="https://instagram.com/vinato">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Shipping Policy URL</label>
+            <input type="url" class="form-input" id="s_shipping" value="/policies/shipping">
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Right Panel: Live Preview -->
+    <section class="preview-panel">
+      <div class="preview-header">
+        <span class="preview-indicator">LIVE PREVIEW</span>
+        <div class="preview-device-toggle">
+          <button class="active">Desktop</button>
+          <button>Mobile</button>
+        </div>
+      </div>
+      <div class="preview-frame-wrap">
+        <!-- Rendered HTML replicating the store view -->
+        <div class="preview-content" id="previewContent">
+          
+          <div class="store-preview-layout">
+            <div class="sp-gallery" id="prevGallery">
+              <span class="badge" id="prevBadge">NEW</span>
+              <div class="sp-placeholder">Add images to see preview</div>
+            </div>
+            <div class="sp-details">
+              <span class="sp-cat" id="prevCat"><span id="prevGenderLabel">Men</span> / <span id="prevCatLabel">Sweaters / Hoodies</span></span>
+              <h1 class="sp-name" id="prevName">Product Name</h1>
+              <span class="sp-price"><s id="prevComparePrice" style="display:none; color:#999; margin-right:8px;"></s><span id="prevPrice">$0.00</span></span>
+              
+              <div class="sp-divider"></div>
+              
+              <div class="sp-section">
+                <span>Color: <strong id="prevColorLabel">Black</strong></span>
+                <div class="sp-color-swatches" id="prevSwatches">
+                  <div class="sp-swatch active" style="background: #000;"></div>
+                </div>
+              </div>
+
+              <div class="sp-section">
+                <span>Size <a href="#" class="sp-size-guide">Size Guide</a></span>
+                <div class="sp-size-grid" id="prevSizes">
+                  <!-- Generated dynamically -->
+                </div>
+              </div>
+
+              <button class="sp-add-btn">Add to Bag</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Media Select Modal -->
+  <div class="modal-overlay hidden" id="mediaSelectModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Select Images</h3>
+        <button class="btn-icon" id="closeMediaModal">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="media-grid modal-media-grid" id="modalMediaGrid">
+          <!-- Populated from Media Library -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="cancelMediaSelect">Cancel</button>
+        <button class="btn btn-primary" id="confirmMediaSelect">Add Selected</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
