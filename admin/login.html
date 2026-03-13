@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinato — Admin Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .login-card {
+            background: #111;
+            padding: 3rem;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #333;
+            text-align: center;
+        }
+        .login-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            letter-spacing: 0.2em;
+            margin-bottom: 2rem;
+            color: #fff;
+        }
+        .login-title {
+            font-size: 0.8rem;
+            letter-spacing: 0.3em;
+            color: #888;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .form-label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            color: #999;
+        }
+        .password-wrap {
+            position: relative;
+        }
+        .toggle-pass {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 5px;
+        }
+        .toggle-pass:hover {
+            color: #fff;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #fff;
+            color: #000;
+            border: none;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        .login-btn:hover {
+            background: #888;
+        }
+        .error-msg {
+            color: #ff4444;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="login-logo">VINATO</div>
+        <div class="login-title">Administration Access</div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" id="username" class="form-input" autocomplete="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <div class="password-wrap">
+                    <input type="password" id="password" class="form-input" autocomplete="current-password" required>
+                    <button type="button" class="toggle-pass" id="togglePass">SHOW</button>
+                </div>
+            </div>
+            
+            <button type="submit" class="login-btn">Secure Login</button>
+            <div id="errorMsg" class="error-msg">Invalid credentials. Access denied.</div>
+        </form>
+    </div>
+
+    <script src="js/login.js"></script>
+</body>
+</html>

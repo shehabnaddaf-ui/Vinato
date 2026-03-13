@@ -8,6 +8,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/admin.css">
+  <script>
+    // Session Guard
+    if (!localStorage.getItem('admin_session')) {
+      window.location.href = 'login.html';
+    }
+  </script>
 </head>
 <body>
 
@@ -22,6 +28,9 @@
       <a href="#" class="nav-item" data-view="site-images-view">Website Images</a>
       <a href="#" class="nav-item" data-view="orders-view">Orders</a>
       <a href="#" class="nav-item" data-view="settings-view">Settings</a>
+      <div class="sidebar-footer">
+        <a href="#" class="nav-item logout-link" id="logoutBtn">Logout</a>
+      </div>
     </nav>
   </aside>
 
@@ -321,6 +330,24 @@
             <label>Shipping Policy URL</label>
             <input type="url" class="form-input" id="s_shipping" value="/policies/shipping">
           </div>
+        </div>
+
+        <!-- Security & Login -->
+        <div class="form-card">
+          <h3>Security & Login</h3>
+          <p class="help-text">Change your administration credentials below.</p>
+          <div class="form-group">
+            <label>Admin Username</label>
+            <input type="text" class="form-input" id="admin_user_input" placeholder="New Username">
+          </div>
+          <div class="form-group">
+            <label>New Password</label>
+            <div class="password-wrap" style="position: relative;">
+              <input type="password" class="form-input" id="admin_pass_input" placeholder="New Password">
+              <button type="button" class="toggle-pass-settings" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #888; cursor: pointer; font-size: 0.7rem;">SHOW</button>
+            </div>
+          </div>
+          <button class="btn btn-outline" id="updateCredsBtn">Update Credentials</button>
         </div>
       </div>
 

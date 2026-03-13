@@ -30,18 +30,6 @@
   <!-- Intro & Cursor -->
   <div class="custom-cursor" id="customCursor"></div>
 
-  <!-- Full Screen Menu -->
-  <div class="fs-menu" id="fsMenu">
-    <div class="fs-menu-bg"></div>
-    <div class="fs-menu-content">
-      <button class="close-menu" id="closeFsMenu">×</button>
-      <nav class="fs-nav">
-        <a href="index.html" class="menu-link">Home</a>
-        <a href="shop.html" class="menu-link">Shop</a>
-        <a href="lookbook.html" class="menu-link">Lookbook</a>
-      </nav>
-    </div>
-  </div>
 
   <nav class="navbar scrolled" id="navbar">
     <div class="nav-inner">
@@ -51,11 +39,20 @@
       </div>
       <a href="index.html" class="nav-logo">VINATO</a>
       <div class="nav-links nav-right">
-        <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+        <a href="index.html#footer" class="nav-link">Contact</a>
       </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <!-- Mobile drawer -->
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="shop.html?gender=men" class="mobile-link">Shop Men</a>
+      <a href="shop.html?gender=women" class="mobile-link">Shop Women</a>
+      <a href="shop.html?gender=unisex" class="mobile-link">Shop Unisex</a>
+      <a href="index.html#footer" class="mobile-link">Contact</a>
     </div>
   </nav>
-
   <main data-barba="container" data-barba-namespace="lookbook">
     
     <header class="lookbook-header">

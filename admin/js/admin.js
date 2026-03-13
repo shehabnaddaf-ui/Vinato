@@ -12,6 +12,48 @@ document.addEventListener('DOMContentLoaded', () => {
     activeColorIdForMedia: null
   };
 
+  // Credentials Management
+  const updateCredsBtn = document.getElementById('updateCredsBtn');
+  const adminUserInput = document.getElementById('admin_user_input');
+  const adminPassInput = document.getElementById('admin_pass_input');
+  const togglePassSettings = document.querySelector('.toggle-pass-settings');
+
+  if (togglePassSettings) {
+    togglePassSettings.addEventListener('click', () => {
+      const type = adminPassInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      adminPassInput.setAttribute('type', type);
+      togglePassSettings.textContent = type === 'password' ? 'SHOW' : 'HIDE';
+    });
+  }
+
+  if (updateCredsBtn) {
+    updateCredsBtn.addEventListener('click', () => {
+      const newUser = adminUserInput.value.trim();
+      const newPass = adminPassInput.value.trim();
+
+      if (!newUser || !newPass) {
+        showToast("Please enter both username and password");
+        return;
+      }
+
+      localStorage.setItem('admin_user', newUser);
+      localStorage.setItem('admin_pass', newPass);
+      showToast("Credentials updated successfully!");
+      adminUserInput.value = '';
+      adminPassInput.value = '';
+    });
+  }
+
+  // Logout Logic
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('admin_session');
+      window.location.href = 'login.html';
+    });
+  }
+
   /* ─── Navigation & Views ─── */
   const navItems = document.querySelectorAll('.nav-item');
   const views = document.querySelectorAll('.view-panel');

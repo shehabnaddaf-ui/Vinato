@@ -6,6 +6,12 @@ gsap.registerPlugin(ScrollTrigger);
 let lenis;
 
 function initLenis() {
+  // Disable Lenis entirely on touch devices. Native scrolling is infinitely better 
+  // and faster on mobile. This fixes the severe "lag" users report.
+  if (window.matchMedia("(pointer: coarse)").matches || 'ontouchstart' in window) {
+    return;
+  }
+
   lenis = new Lenis({
     duration: 1.2,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -63,7 +69,8 @@ function playIntro() {
     .to(introLoader, { 
       yPercent: -100, 
       duration: 1.2, 
-      ease: 'expo.inOut' 
+      ease: 'expo.inOut',
+      display: 'none'
     });
 }
 
@@ -112,49 +119,32 @@ function initCursor() {
 }
 
 // ═══════════════════════════════════════════════
-//   FULL SCREEN MENU
+//   FULL SCREEN MENU / MOBILE MENU
 // ═══════════════════════════════════════════════
 function initMenu() {
-  const menuToggle = document.querySelector('.menu-toggle');
-  const navToggle = document.querySelector('#navToggle'); 
-  const closeMenu = document.getElementById('closeFsMenu');
-  const fsMenu = document.getElementById('fsMenu');
-  const fsMenuBg = document.querySelector('.fs-menu-bg');
-  const fsContent = document.querySelector('.fs-menu-content');
-  const links = document.querySelectorAll('.menu-link');
-
-  if(!fsMenu) return;
-
-  let menuOpen = false;
-  const tl = gsap.timeline({ paused: true });
-
-  tl.to(fsMenu, { pointerEvents: 'auto', duration: 0 })
-    .to(fsMenuBg, { yPercent: 100, duration: 0.8, ease: 'expo.inOut' })
-    .to(fsContent, { opacity: 1, visibility: 'visible', duration: 0.3 }, "-=0.2")
-    .fromTo(links, 
-      { y: 40, opacity: 0 }, 
-      { y: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: 'power3.out' }, 
-      "-=0.4"
-    );
-
-  const toggleAction = () => {
-    if (menuOpen) {
-      tl.reverse();
-      if(lenis) lenis.start();
-    } else {
-      tl.play();
-      if(lenis) lenis.stop();
-    }
-    menuOpen = !menuOpen;
-  };
-
-  if(menuToggle) menuToggle.addEventListener('click', toggleAction);
-  if(navToggle) navToggle.addEventListener('click', toggleAction);
-  if(closeMenu) closeMenu.addEventListener('click', toggleAction);
+  const navToggle = document.getElementById('navToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
   
-  links.forEach(l => l.addEventListener('click', () => {
-    if(menuOpen) toggleAction();
-  }));
+  if (navToggle && mobileMenu) {
+    navToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mobileMenu.classList.toggle('open');
+    });
+
+    const links = mobileMenu.querySelectorAll('.mobile-link');
+    links.forEach(l => {
+      l.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+      });
+    });
+    
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!mobileMenu.contains(e.target) && !navToggle.contains(e.target)) {
+        mobileMenu.classList.remove('open');
+      }
+    });
+  }
 }
 
 // ═══════════════════════════════════════════════

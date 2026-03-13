@@ -33,6 +33,10 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
+  overscroll-behavior-y: none;
+  background-color: var(--white);
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -41,7 +45,9 @@ body {
   font-family: var(--font-sans);
   font-weight: 300;
   line-height: 1.7;
+  max-width: 100%;
   overflow-x: hidden;
+  position: relative;
 }
 
 img {
@@ -136,8 +142,6 @@ ul { list-style: none; }
 /* ─── Section Helpers ─── */
 .section {
   padding: 100px 5%;
-  content-visibility: auto;
-  contain-intrinsic-size: auto 800px;
 }
 
 .section-header {
@@ -1974,6 +1978,13 @@ ul { list-style: none; }
   }
   .qv-details {
     padding: 24px;
+  }
+  
+  .nav-links {
+    display: none !important;
+  }
+  .nav-toggle {
+    display: flex !important;
   }
 }
 
