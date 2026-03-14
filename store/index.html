@@ -243,16 +243,6 @@
     </div>
   </section>
 
-  <section class="newsletter-section reveal-up">
-    <div class="newsletter-inner">
-      <span class="section-label gold">Inner Circle</span>
-      <h2 class="newsletter-title">Join the Vinato World</h2>
-      <form class="newsletter-form" id="newsletterForm">
-        <input type="email" class="newsletter-input" placeholder="Your email address" required />
-        <button type="submit" class="btn btn-primary newsletter-btn">Subscribe</button>
-      </form>
-    </div>
-  </section>
 
   <footer class="footer" id="footer">
     <div class="footer-centered-wrap">
@@ -326,6 +316,47 @@
           const handle = storedInsta.split('/').filter(Boolean).pop();
           if (handle) instaHandle.textContent = `@${handle}`;
         }
+      }
+
+      loadFeaturedProducts();
+
+      function loadFeaturedProducts() {
+        const dynamicProducts = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
+        const featuredProducts = dynamicProducts.filter(p => p.featured);
+        if (featuredProducts.length === 0) return;
+
+        const collectionGrid = document.getElementById('collectionGrid');
+        if (!collectionGrid) return;
+
+        featuredProducts.forEach(prod => {
+          const card = document.createElement('div');
+          card.className = 'product-card reveal-up';
+          card.setAttribute('data-sort', prod.sort);
+
+          const mainImg = prod.colors[0]?.images[0] || '';
+
+          card.innerHTML = `
+            <div class="product-img-wrap">
+              <img src="${mainImg}" alt="${prod.name}" class="product-img" loading="lazy"/>
+              <div class="product-overlay">
+                <a href="shop.html?featured=true" class="quick-view-btn" style="text-decoration:none; display:flex; align-items:center; justify-content:center;">View Details</a>
+              </div>
+              ${prod.badge ? `<span class="badge">${prod.badge}</span>` : ''}
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">${prod.name}</h3>
+              <p class="product-sub">${prod.cat}</p>
+              <div class="product-price-row">
+                <span>
+                  ${prod.comparePrice && prod.comparePrice > prod.price ? `<span class="product-compare-price">$${prod.comparePrice}</span>` : ''}
+                  <span class="product-price">$${prod.price}</span>
+                </span>
+                <button class="add-btn">+</button>
+              </div>
+            </div>
+          `;
+          collectionGrid.prepend(card);
+        });
       }
     });
   </script>

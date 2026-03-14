@@ -65,16 +65,16 @@ function playIntro() {
     }
   });
 
-  // Spinner fades out after 1.5s
-  tl.to(spinner, { opacity: 0, duration: 0.5, delay: 1 })
+  // Spinner fades out after 0.2s
+  tl.to(spinner, { opacity: 0, duration: 0.3, delay: 0.2 })
     // Logo "draws" in/fades in
-    .to(logo, { opacity: 1, scale: 1, duration: 1, ease: 'power3.out' })
-    // Hold for a moment to feel luxury
-    .to(logo, { opacity: 1, duration: 1 })
+    .to(logo, { opacity: 1, scale: 1, duration: 0.6, ease: 'power3.out' })
+    // Reduced hold for a moment to feel luxury
+    .to(logo, { opacity: 1, duration: 0.2 })
     // Shrink logo to top and fade out overlay
     .to(introLoader, { 
       yPercent: -100, 
-      duration: 1.2, 
+      duration: 0.8, 
       ease: 'expo.inOut',
       display: 'none',
       onComplete: () => {
@@ -142,7 +142,10 @@ function initMenu() {
 
     const links = mobileMenu.querySelectorAll('.mobile-link');
     links.forEach(l => {
-      l.addEventListener('click', () => {
+      l.addEventListener('click', (e) => {
+        // If it's a dropdown toggle, don't close the menu
+        if (l.classList.contains('mobile-dropdown-btn')) return;
+        
         mobileMenu.classList.remove('open');
       });
     });
@@ -173,17 +176,17 @@ function initScrollTriggers() {
   // Reveal Up
   gsap.utils.toArray('.reveal-up').forEach(el => {
     gsap.fromTo(el, { y: 50, opacity: 0 }, {
-      scrollTrigger: { trigger: el, start: "top 85%" },
-      y: 0, opacity: 1, duration: 1, ease: "power3.out"
+      scrollTrigger: { trigger: el, start: "top 90%" },
+      y: 0, opacity: 1, duration: 0.6, ease: "power3.out"
     });
   });
 
   // Reveal Left/Right
   gsap.utils.toArray('.reveal-left').forEach(el => {
-    gsap.fromTo(el, { x: -50, opacity: 0 }, { scrollTrigger: { trigger: el, start: "top 85%" }, x: 0, opacity: 1, duration: 1, ease: "power3.out" });
+    gsap.fromTo(el, { x: -50, opacity: 0 }, { scrollTrigger: { trigger: el, start: "top 90%" }, x: 0, opacity: 1, duration: 0.6, ease: "power3.out" });
   });
   gsap.utils.toArray('.reveal-right').forEach(el => {
-    gsap.fromTo(el, { x: 50, opacity: 0 }, { scrollTrigger: { trigger: el, start: "top 85%" }, x: 0, opacity: 1, duration: 1, ease: "power3.out" });
+    gsap.fromTo(el, { x: 50, opacity: 0 }, { scrollTrigger: { trigger: el, start: "top 90%" }, x: 0, opacity: 1, duration: 0.6, ease: "power3.out" });
   });
 
   // Parallax BGs

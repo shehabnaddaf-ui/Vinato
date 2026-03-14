@@ -129,13 +129,57 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3000);
   }
 
-  const placeholderBtnIds = ['saveDraftBtn', 'publishBtn', 'saveSettingsBtn'];
+  // Products Management (Save/Publish)
+  const publishBtn = document.getElementById('publishBtn');
+  if (publishBtn) {
+    publishBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      saveCurrentProduct();
+    });
+  }
+
+  function saveCurrentProduct() {
+    const product = {
+      id: 'p' + Date.now(),
+      name: inputs.name.value.trim(),
+      gender: inputs.gender.value,
+      cat: inputs.cat.value,
+      price: inputs.price.value,
+      comparePrice: inputs.comparePrice.value,
+      badge: inputs.badge.value.trim(),
+      sort: inputs.p_sort.value || 1,
+      featured: document.getElementById('p_featured').checked,
+      status: document.getElementById('p_status').value,
+      sizes: Array.from(inputs.sizes).filter(s => s.checked).map(s => s.value),
+      colors: state.colors.map(c => ({
+        name: c.name,
+        hex: c.hex,
+        images: c.images // These are now Base64 strings
+      })),
+      timestamp: Date.now()
+    };
+
+    if (!product.name || product.colors.every(c => c.images.length === 0)) {
+      showToast("Please provide at least a name and one image.");
+      return;
+    }
+
+    const existingProducts = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
+    existingProducts.push(product);
+    localStorage.setItem('vinato_dynamic_products', JSON.stringify(existingProducts));
+
+    showToast("Product published successfully!");
+    // productForm.reset(); 
+    // updateLivePreview();
+  }
+
+  const placeholderBtnIds = ['saveDraftBtn', 'saveSettingsBtn'];
   placeholderBtnIds.forEach(id => {
     const btn = document.getElementById(id);
     if(btn) {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        showToast('Action successful (Supabase sync pending)');
+        showToast('Action successful');
       });
     }
   });
@@ -143,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.toast-btn, .sp-add-btn, .sp-size-guide').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      showToast('Action successful (Supabase sync pending)');
+      showToast('Action successful');
     });
   });
 
@@ -199,9 +243,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function handleFiles(files) {
     [...files].forEach(file => {
       if (!file.type.startsWith('image/')) return;
-      const url = URL.createObjectURL(file);
-      state.mediaLibrary.push(url);
-      renderMediaGrid();
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64Url = e.target.result;
+        state.mediaLibrary.push(base64Url);
+        renderMediaGrid();
+      };
+      reader.readAsDataURL(file);
     });
   }
 
@@ -350,8 +399,9 @@ document.addEventListener('DOMContentLoaded', () => {
     cat: document.getElementById('p_cat'),
     gender: document.getElementById('p_gender'), // NEW
     price: document.getElementById('p_price'),
-    comparePrice: document.getElementById('p_compare_price'), // NEW
-    badge: document.getElementById('p_badge'), // NEW
+    comparePrice: document.getElementById('p_compare_price'),
+    badge: document.getElementById('p_badge'),
+    p_sort: document.getElementById('p_sort'),
     sizes: document.querySelectorAll('input[name="size"]')
   };
 

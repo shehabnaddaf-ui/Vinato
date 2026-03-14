@@ -335,6 +335,7 @@
       let urlParams = new URL(window.location).searchParams;
 
       function applyFilters() {
+        const currentCards = document.querySelectorAll('.product-card');
         urlParams = new URL(window.location).searchParams;
         const genderParam = urlParams.get('gender');
         const catParam = urlParams.get('cat');
@@ -354,7 +355,7 @@
 
         let visibleCount = 0;
 
-        cards.forEach(card => {
+        currentCards.forEach(card => {
           const cGender = card.getAttribute('data-gender');
           const cCat = card.getAttribute('data-cat');
           const cNew = card.getAttribute('data-new') === 'true';
@@ -393,8 +394,8 @@
 
         // Active States
         filterBtns.forEach(b => b.classList.remove('active'));
-        if (genderParam && !catParam) {
-          const btn = document.querySelector(`.filter-btn[data-filter="${genderParam}"]`);
+        if (genderParam) {
+          const btn = document.querySelector(`.filter-btn[data-filter="${genderParam.toLowerCase()}"]`);
           if (btn) btn.classList.add('active');
         } else if (sortParam === 'new') {
           const btn = document.querySelector(`.filter-btn[data-filter="new"]`);
@@ -457,6 +458,60 @@
       });
 
       applyFilters();
+      loadDynamicProducts();
+
+      function loadDynamicProducts() {
+        const dynamicProducts = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
+        if (dynamicProducts.length === 0) return;
+
+        dynamicProducts.forEach(prod => {
+          const card = document.createElement('div');
+          card.className = 'product-card reveal-up';
+          card.setAttribute('data-gender', prod.gender.toLowerCase());
+          card.setAttribute('data-cat', prod.cat.toLowerCase().split(' / ')[0]);
+          card.setAttribute('data-new', 'true');
+          card.setAttribute('data-sale', (prod.comparePrice > prod.price) ? 'true' : 'false');
+          card.setAttribute('data-featured', prod.featured ? 'true' : 'false');
+          card.setAttribute('data-sort', prod.sort);
+
+          const mainImg = prod.colors[0]?.images[0] || '';
+          const hoverImg = prod.colors[0]?.images[1] || mainImg;
+
+          card.innerHTML = `
+            <div class="product-img-wrap">
+              <img src="${mainImg}" alt="${prod.name}" class="product-img" loading="lazy">
+              <img src="${hoverImg}" alt="${prod.name} Hover" class="product-img-secondary" loading="lazy">
+              <div class="product-overlay">
+                <div class="product-details">
+                  <span>${prod.cat}</span>
+                  <span>${prod.colors.length} Colors</span>
+                  <button class="quick-view-btn">Add to Bag</button>
+                </div>
+              </div>
+              ${prod.badge ? `<span class="badge">${prod.badge}</span>` : ''}
+            </div>
+            <div class="product-info">
+              <h2 class="product-name">${prod.name}</h2>
+              <div class="product-price-row">
+                <span>
+                  ${prod.comparePrice && prod.comparePrice > prod.price ? `<span class="product-compare-price">$${prod.comparePrice}</span>` : ''}
+                  <span class="product-price">$${prod.price}</span>
+                </span>
+              </div>
+            </div>
+          `;
+          productGrid.prepend(card);
+        });
+
+        // Re-query cards and re-apply filters if needed
+        setTimeout(() => {
+          const allCards = document.querySelectorAll('.product-card');
+          // Update the localized 'cards' variable if it was in scope, 
+          // but since it's a constant in the DOMContentLoaded, we need to handle it carefully.
+          // Simplest is to just re-apply filters to newly added cards.
+          applyFilters();
+        }, 100);
+      }
     });
   </script>
 </body>

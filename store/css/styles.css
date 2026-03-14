@@ -69,7 +69,7 @@ ul { list-style: none; }
 .reveal-left,
 .reveal-right {
   opacity: 0;
-  transition: opacity 0.8s var(--transition), transform 0.8s var(--transition);
+  transition: opacity 0.4s var(--transition), transform 0.4s var(--transition);
 }
 .reveal-up    { transform: translateY(50px); }
 .reveal-left  { transform: translateX(-60px); }
