@@ -9,7 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
     colors: [
       { id: 'c1', name: 'Black', hex: '#000000', images: [] }
     ],
-    activeColorIdForMedia: null
+    activeColorIdForMedia: null,
+    settings: {
+      instagram: localStorage.getItem('s_instagram') || 'https://instagram.com/vinato',
+      phone: localStorage.getItem('s_phone') || '+1 (212) 555-1234'
+    }
   };
 
   // Credentials Management
@@ -142,6 +146,30 @@ document.addEventListener('DOMContentLoaded', () => {
       showToast('Action successful (Supabase sync pending)');
     });
   });
+
+  // Settings Management
+  const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+  const sInstagramInput = document.getElementById('s_instagram');
+  const sPhoneInput = document.getElementById('s_phone');
+
+  if (saveSettingsBtn) {
+    // Populate initial values
+    if (sInstagramInput) sInstagramInput.value = state.settings.instagram;
+    if (sPhoneInput) sPhoneInput.value = state.settings.phone;
+
+    saveSettingsBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const newInsta = sInstagramInput.value.trim();
+      const newPhone = sPhoneInput.value.trim();
+
+      localStorage.setItem('s_instagram', newInsta);
+      localStorage.setItem('s_phone', newPhone);
+      state.settings.instagram = newInsta;
+      state.settings.phone = newPhone;
+
+      showToast("Store settings saved!");
+    });
+  }
 
   const productForm = document.getElementById('productForm');
   if(productForm) {

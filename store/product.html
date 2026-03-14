@@ -71,9 +71,30 @@
     </div>
     <!-- Mobile drawer -->
     <div class="mobile-menu" id="mobileMenu">
-      <a href="shop.html?gender=men" class="mobile-link">Shop Men</a>
-      <a href="shop.html?gender=women" class="mobile-link">Shop Women</a>
-      <a href="shop.html?gender=unisex" class="mobile-link">Shop Unisex</a>
+      <a href="shop.html?sort=new" class="mobile-link">New Collection</a>
+      <div class="mobile-dropdown">
+        <button class="mobile-link mobile-dropdown-btn">Men <span>+</span></button>
+        <div class="mobile-dropdown-content">
+          <a href="shop.html?gender=men&cat=jackets">Jackets</a>
+          <a href="shop.html?gender=men&cat=shirts">Shirts</a>
+          <a href="shop.html?gender=men&cat=sweaters">Sweaters</a>
+          <a href="shop.html?gender=men&cat=pants">Pants</a>
+          <a href="shop.html?gender=men&cat=underwear">Underwear</a>
+          <a href="shop.html?gender=men&cat=shoes">Boots</a>
+        </div>
+      </div>
+      <div class="mobile-dropdown">
+        <button class="mobile-link mobile-dropdown-btn">Women <span>+</span></button>
+        <div class="mobile-dropdown-content">
+          <a href="shop.html?gender=women&cat=jackets">Jackets</a>
+          <a href="shop.html?gender=women&cat=shirts">Shirts</a>
+          <a href="shop.html?gender=women&cat=sweaters">Sweaters</a>
+          <a href="shop.html?gender=women&cat=pants">Pants</a>
+          <a href="shop.html?gender=women&cat=underwear">Underwear</a>
+          <a href="shop.html?gender=women&cat=shoes">Boots</a>
+        </div>
+      </div>
+      <a href="shop.html?sale=true" class="mobile-link" style="color: var(--gold);">Sale</a>
       <a href="lookbook.html" class="mobile-link">Lookbook</a>
       <a href="index.html#footer" class="mobile-link">Contact</a>
     </div>
@@ -87,9 +108,13 @@
       
       <!-- Left: Image Gallery -->
       <div class="product-gallery" id="productGallery">
-        <!-- Rendered dynamically -->
-        <img src="images/optimized/prod_knitwear.webp" alt="Cardigan Detail" class="pg-img active" />
-        <img src="images/optimized/hero_bg.webp" alt="Detail 2" class="pg-img active" />
+        <!-- Main images with skeleton -->
+        <div class="skeleton">
+          <img src="images/optimized/prod_knitwear.webp" data-src="images/optimized/prod_knitwear.webp" alt="Cardigan Detail" class="pg-img active lazy-image blur-load" decoding="async" loading="lazy" />
+        </div>
+        <div class="skeleton">
+          <img src="images/optimized/hero_bg.webp" data-src="images/optimized/hero_bg.webp" alt="Detail 2" class="pg-img active lazy-image blur-load" decoding="async" loading="lazy" />
+        </div>
       </div>
 
       <!-- Right: Sticky Details -->
@@ -253,6 +278,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/@barba/core"></script>
+  <script src="https://unpkg.com/@barba/prefetch"></script>
   <script src="js/animations.js"></script>
 </body>
 </html>

@@ -47,9 +47,31 @@
     </div>
     <!-- Mobile drawer -->
     <div class="mobile-menu" id="mobileMenu">
-      <a href="shop.html?gender=men" class="mobile-link">Shop Men</a>
-      <a href="shop.html?gender=women" class="mobile-link">Shop Women</a>
-      <a href="shop.html?gender=unisex" class="mobile-link">Shop Unisex</a>
+      <a href="shop.html?sort=new" class="mobile-link">New Collection</a>
+      <div class="mobile-dropdown">
+        <button class="mobile-link mobile-dropdown-btn">Men <span>+</span></button>
+        <div class="mobile-dropdown-content">
+          <a href="shop.html?gender=men&cat=jackets">Jackets</a>
+          <a href="shop.html?gender=men&cat=shirts">Shirts</a>
+          <a href="shop.html?gender=men&cat=sweaters">Sweaters</a>
+          <a href="shop.html?gender=men&cat=pants">Pants</a>
+          <a href="shop.html?gender=men&cat=underwear">Underwear</a>
+          <a href="shop.html?gender=men&cat=shoes">Boots</a>
+        </div>
+      </div>
+      <div class="mobile-dropdown">
+        <button class="mobile-link mobile-dropdown-btn">Women <span>+</span></button>
+        <div class="mobile-dropdown-content">
+          <a href="shop.html?gender=women&cat=jackets">Jackets</a>
+          <a href="shop.html?gender=women&cat=shirts">Shirts</a>
+          <a href="shop.html?gender=women&cat=sweaters">Sweaters</a>
+          <a href="shop.html?gender=women&cat=pants">Pants</a>
+          <a href="shop.html?gender=women&cat=underwear">Underwear</a>
+          <a href="shop.html?gender=women&cat=shoes">Boots</a>
+        </div>
+      </div>
+      <a href="shop.html?sale=true" class="mobile-link" style="color: var(--gold);">Sale</a>
+      <a href="lookbook.html" class="mobile-link">Lookbook</a>
       <a href="index.html#footer" class="mobile-link">Contact</a>
     </div>
   </nav>
@@ -60,11 +82,11 @@
     </header>
 
     <section class="lb-gallery">
-      <div class="lb-img lb-1 reveal-up"><img class="parallax-bg" src="images/hero_section_v2_1773376481866.png" alt="Editorial" loading="lazy"></div>
-      <div class="lb-img lb-2 reveal-up delay-1"><img class="parallax-bg" src="images/instagram_grid_1773375639452.png" alt="Editorial" loading="lazy"></div>
-      <div class="lb-img lb-3 reveal-up"><img class="parallax-bg" src="images/optimized/prod_dress_silk.webp" alt="Editorial" loading="lazy"></div>
-      <div class="lb-img lb-4 reveal-up delay-2"><img class="parallax-bg" src="images/best_sellers_section_v2_1773376524782.png" alt="Editorial" loading="lazy"></div>
-      <div class="lb-img lb-5 reveal-up"><img class="parallax-bg" src="images/hero_bg_1773375626840.png" alt="Editorial" loading="lazy"></div>
+      <div class="lb-img lb-1 reveal-up skeleton"><img class="parallax-bg lazy-image blur-load" src="images/hero_section_v2_1773376481866.png" data-src="images/hero_section_v2_1773376481866.png" alt="Editorial" decoding="async" loading="lazy"></div>
+      <div class="lb-img lb-2 reveal-up delay-1 skeleton"><img class="parallax-bg lazy-image blur-load" src="images/instagram_grid_1773375639452.png" data-src="images/instagram_grid_1773375639452.png" alt="Editorial" decoding="async" loading="lazy"></div>
+      <div class="lb-img lb-3 reveal-up skeleton"><img class="parallax-bg lazy-image blur-load" src="images/optimized/prod_dress_silk.webp" data-src="images/optimized/prod_dress_silk.webp" alt="Editorial" decoding="async" loading="lazy"></div>
+      <div class="lb-img lb-4 reveal-up delay-2 skeleton"><img class="parallax-bg lazy-image blur-load" src="images/best_sellers_section_v2_1773376524782.png" data-src="images/best_sellers_section_v2_1773376524782.png" alt="Editorial" decoding="async" loading="lazy"></div>
+      <div class="lb-img lb-5 reveal-up skeleton"><img class="parallax-bg lazy-image blur-load" src="images/hero_bg_1773375626840.png" data-src="images/hero_bg_1773375626840.png" alt="Editorial" decoding="async" loading="lazy"></div>
     </section>
 
     <footer class="footer">
@@ -79,6 +101,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/@barba/core"></script>
+  <script src="https://unpkg.com/@barba/prefetch"></script>
   <script src="js/animations.js"></script>
 </body>
 </html>

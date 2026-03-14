@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="preload" as="image" href="images/optimized/hero_bg.webp">
 </head>
 <body class="shop-page" data-barba="wrapper">
 
@@ -30,9 +31,30 @@
     </div>
     <!-- Mobile drawer -->
     <div class="mobile-menu" id="mobileMenu">
-      <a href="shop.html?gender=men" class="mobile-link">Shop Men</a>
-      <a href="shop.html?gender=women" class="mobile-link">Shop Women</a>
-      <a href="shop.html?gender=unisex" class="mobile-link">Shop Unisex</a>
+      <a href="shop.html?sort=new" class="mobile-link">New Collection</a>
+      <div class="mobile-dropdown">
+        <button class="mobile-link mobile-dropdown-btn">Men <span>+</span></button>
+        <div class="mobile-dropdown-content">
+          <a href="shop.html?gender=men&cat=jackets">Jackets</a>
+          <a href="shop.html?gender=men&cat=shirts">Shirts</a>
+          <a href="shop.html?gender=men&cat=sweaters">Sweaters</a>
+          <a href="shop.html?gender=men&cat=pants">Pants</a>
+          <a href="shop.html?gender=men&cat=underwear">Underwear</a>
+          <a href="shop.html?gender=men&cat=shoes">Boots</a>
+        </div>
+      </div>
+      <div class="mobile-dropdown">
+        <button class="mobile-link mobile-dropdown-btn">Women <span>+</span></button>
+        <div class="mobile-dropdown-content">
+          <a href="shop.html?gender=women&cat=jackets">Jackets</a>
+          <a href="shop.html?gender=women&cat=shirts">Shirts</a>
+          <a href="shop.html?gender=women&cat=sweaters">Sweaters</a>
+          <a href="shop.html?gender=women&cat=pants">Pants</a>
+          <a href="shop.html?gender=women&cat=underwear">Underwear</a>
+          <a href="shop.html?gender=women&cat=shoes">Boots</a>
+        </div>
+      </div>
+      <a href="shop.html?sale=true" class="mobile-link" style="color: var(--gold);">Sale</a>
       <a href="lookbook.html" class="mobile-link">Lookbook</a>
       <a href="index.html#footer" class="mobile-link">Contact</a>
     </div>
@@ -57,11 +79,11 @@
   <!-- ═══════════════════════ PRODUCT GRID ═══════════════════════ -->
   <main class="shop-main">
     <div class="product-grid" id="productGrid">
-      
       <!-- Product 1: Men Knitwear (SALE) -->
-      <div class="product-card reveal-up" data-gender="men" data-cat="sweaters" data-trending="true" data-new="true">
-        <div class="product-img-wrap">
-          <img src="images/optimized/prod_knitwear.webp" alt="Oversized Cashmere Sweater" class="product-img" loading="lazy">
+      <div class="product-card reveal-up" data-gender="men" data-cat="sweaters" data-trending="true" data-new="true" data-sale="true" data-featured="true">
+        <div class="product-img-wrap skeleton">
+          <img src="images/optimized/prod_knitwear.webp" data-src="images/optimized/prod_knitwear.webp" alt="Oversized Cashmere Sweater" class="product-img lazy-image blur-load" decoding="async" loading="lazy">
+          <img src="images/hero_section_v2_1773376481866.png" data-src="images/hero_section_v2_1773376481866.png" alt="Oversized Cashmere Sweater Hover" class="product-img-secondary lazy-image blur-load" decoding="async" loading="lazy">
           <div class="product-overlay">
             <div class="product-details">
               <span>Luxe Knit</span>
@@ -83,9 +105,10 @@
       </div>
 
       <!-- Product 2: Women Trousers -->
-      <div class="product-card reveal-up" data-gender="women" data-cat="pants" data-new="true">
-        <div class="product-img-wrap">
-          <img src="images/optimized/prod_trousers.webp" alt="Tailored Wool Trousers" class="product-img" loading="lazy">
+      <div class="product-card reveal-up" data-gender="women" data-cat="pants" data-new="true" data-featured="true">
+        <div class="product-img-wrap skeleton">
+          <img src="images/optimized/prod_trousers.webp" data-src="images/optimized/prod_trousers.webp" alt="Tailored Wool Trousers" class="product-img lazy-image blur-load" decoding="async" loading="lazy">
+          <img src="images/hero_bg_1773375626840.png" data-src="images/hero_bg_1773375626840.png" alt="Tailored Wool Trousers Hover" class="product-img-secondary lazy-image blur-load" decoding="async" loading="lazy">
           <div class="product-overlay">
             <div class="product-details">
               <span>Tailored</span>
@@ -101,10 +124,11 @@
         </div>
       </div>
 
-      <!-- Product 3: Men Coat -->
-      <div class="product-card reveal-up" data-gender="men" data-cat="sweaters" data-trending="true">
-        <div class="product-img-wrap">
-          <img src="images/optimized/prod_coat_men.webp" alt="Structured Overcoat" class="product-img" loading="lazy">
+      <!-- Product 3: Men Coat (SALE) -->
+      <div class="product-card reveal-up" data-gender="men" data-cat="jackets" data-trending="true" data-sale="true">
+        <div class="product-img-wrap skeleton">
+          <img src="images/optimized/prod_coat_men.webp" data-src="images/optimized/prod_coat_men.webp" alt="Structured Overcoat" class="product-img lazy-image blur-load" decoding="async" loading="lazy">
+          <img src="images/instagram_grid_1773375639452.png" data-src="images/instagram_grid_1773375639452.png" alt="Structured Overcoat Hover" class="product-img-secondary lazy-image blur-load" decoding="async" loading="lazy">
           <div class="product-overlay">
             <div class="product-details">
               <span>Outerwear</span>
@@ -112,17 +136,24 @@
               <button class="quick-view-btn">Add to Bag</button>
             </div>
           </div>
+          <span class="badge">SALE</span>
         </div>
         <div class="product-info">
           <h2 class="product-name">Structured Overcoat</h2>
-          <span class="product-price">$1,490</span>
+          <div class="product-price-row">
+            <span>
+              <span class="product-compare-price">$1,490</span>
+              <span class="product-price">$1,190</span>
+            </span>
+          </div>
         </div>
       </div>
 
       <!-- Product 4: Women Dress -->
       <div class="product-card reveal-up" data-gender="women" data-cat="shirts" data-trending="true">
-        <div class="product-img-wrap">
-          <img src="images/optimized/prod_dress_silk.webp" alt="Silk Slip Dress" class="product-img" loading="lazy">
+        <div class="product-img-wrap skeleton">
+          <img src="images/optimized/prod_dress_silk.webp" data-src="images/optimized/prod_dress_silk.webp" alt="Silk Slip Dress" class="product-img lazy-image blur-load" decoding="async" loading="lazy">
+          <img src="images/hero_section_v2_1773376481866.png" data-src="images/hero_section_v2_1773376481866.png" alt="Silk Slip Dress Hover" class="product-img-secondary lazy-image blur-load" decoding="async" loading="lazy">
           <div class="product-overlay">
             <div class="product-details">
               <span>Evening</span>
@@ -137,10 +168,11 @@
         </div>
       </div>
 
-      <!-- Product 5: Repeat New -->
-      <div class="product-card reveal-up" data-gender="women" data-cat="shirts" data-new="true">
-        <div class="product-img-wrap">
-          <img src="images/optimized/new_collection.webp" alt="Silk Evening Gown" class="product-img" loading="lazy">
+      <!-- Product 5: Women Jacket -->
+      <div class="product-card reveal-up" data-gender="women" data-cat="jackets" data-new="true" data-featured="true">
+        <div class="product-img-wrap skeleton">
+          <img src="images/optimized/new_collection.webp" data-src="images/optimized/new_collection.webp" alt="Silk Evening Gown" class="product-img lazy-image blur-load" decoding="async" loading="lazy">
+          <img src="images/best_sellers_section_v2_1773376524782.png" data-src="images/best_sellers_section_v2_1773376524782.png" alt="Silk Evening Gown Hover" class="product-img-secondary lazy-image blur-load" decoding="async" loading="lazy">
           <div class="product-overlay">
             <div class="product-details">
               <span>Evening Gown</span>
@@ -156,24 +188,94 @@
         </div>
       </div>
 
-      <!-- Product 6: Accessories -->
-      <div class="product-card reveal-up" data-gender="men" data-cat="accessories">
-        <div class="product-img-wrap">
-          <img src="images/optimized/best_sellers.webp" alt="Minimal Leather Tote" class="product-img" loading="lazy">
+      <!-- Product 6: Men Shoes -->
+      <div class="product-card reveal-up" data-gender="men" data-cat="shoes" data-featured="true">
+        <div class="product-img-wrap skeleton">
+          <img src="images/optimized/best_sellers.webp" data-src="images/optimized/best_sellers.webp" alt="Leather Chelsea Boots" class="product-img lazy-image blur-load" decoding="async" loading="lazy">
+          <img src="images/optimized/prod_coat_men.webp" data-src="images/optimized/prod_coat_men.webp" alt="Leather Chelsea Boots Hover" class="product-img-secondary lazy-image blur-load" decoding="async" loading="lazy">
           <div class="product-overlay">
             <div class="product-details">
-              <span>Accessories</span>
+              <span>Footwear</span>
               <span>Italian Leather</span>
               <button class="quick-view-btn">Add to Bag</button>
             </div>
           </div>
         </div>
         <div class="product-info">
-          <h2 class="product-name">Minimal Leather Tote</h2>
+          <h2 class="product-name">Leather Chelsea Boots</h2>
           <span class="product-price">$650</span>
         </div>
       </div>
 
+      <!-- Product 7: Men Underwear -->
+      <div class="product-card reveal-up" data-gender="men" data-cat="underwear" data-new="true">
+        <div class="product-img-wrap skeleton">
+          <img src="images/optimized/prod_knitwear.webp" data-src="images/optimized/prod_knitwear.webp" alt="Premium Cotton Briefs" class="product-img lazy-image blur-load" decoding="async" loading="lazy">
+          <img src="images/optimized/prod_trousers.webp" data-src="images/optimized/prod_trousers.webp" alt="Premium Cotton Briefs Hover" class="product-img-secondary lazy-image blur-load" decoding="async" loading="lazy">
+          <div class="product-overlay">
+            <div class="product-details">
+              <span>Intimates</span>
+              <span>Organic Cotton</span>
+              <button class="quick-view-btn">Add to Bag</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-info">
+          <h2 class="product-name">Premium Cotton Briefs</h2>
+          <span class="product-price">$45</span>
+        </div>
+      </div>
+
+      <!-- Product 8: Women Underwear -->
+      <div class="product-card reveal-up" data-gender="women" data-cat="underwear" data-sale="true">
+        <div class="product-img-wrap skeleton">
+          <img src="images/optimized/prod_dress_silk.webp" data-src="images/optimized/prod_dress_silk.webp" alt="Silk Intimates Set" class="product-img lazy-image blur-load" decoding="async" loading="lazy">
+          <img src="images/optimized/prod_knitwear.webp" data-src="images/optimized/prod_knitwear.webp" alt="Silk Intimates Set Hover" class="product-img-secondary lazy-image blur-load" decoding="async" loading="lazy">
+          <div class="product-overlay">
+            <div class="product-details">
+              <span>Intimates</span>
+              <span>Pure Silk</span>
+              <button class="quick-view-btn">Add to Bag</button>
+            </div>
+          </div>
+          <span class="badge">SALE</span>
+        </div>
+        <div class="product-info">
+          <h2 class="product-name">Silk Intimates Set</h2>
+          <div class="product-price-row">
+            <span>
+              <span class="product-compare-price">$120</span>
+              <span class="product-price">$89</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 9: Men Shirt -->
+      <div class="product-card reveal-up" data-gender="men" data-cat="shirts">
+        <div class="product-img-wrap skeleton">
+          <img src="images/optimized/new_collection.webp" data-src="images/optimized/new_collection.webp" alt="Linen Dress Shirt" class="product-img lazy-image blur-load" decoding="async" loading="lazy">
+          <img src="images/optimized/prod_coat_men.webp" data-src="images/optimized/prod_coat_men.webp" alt="Linen Dress Shirt Hover" class="product-img-secondary lazy-image blur-load" decoding="async" loading="lazy">
+          <div class="product-overlay">
+            <div class="product-details">
+              <span>Shirts</span>
+              <span>100% Belgian Linen</span>
+              <button class="quick-view-btn">Add to Bag</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-info">
+          <h2 class="product-name">Linen Dress Shirt</h2>
+          <span class="product-price">$180</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Empty results message -->
+    <div id="noProducts" style="display:none; text-align:center; padding: 100px 0;">
+        <h2 style="font-family: var(--font-serif); font-size: 2rem; margin-bottom: 20px;">New items coming soon</h2>
+        <p style="color: var(--gray);">We are currently restocking this category. Please check back later.</p>
+        <button class="btn btn-outline-dark" style="margin-top: 32px;" onclick="window.location.href='shop.html'">View All Collections</button>
     </div>
   </main>
 
@@ -207,10 +309,10 @@
         </div>
         <div class="qv-details">
           <p class="qv-price" id="qvPrice">$0.00</p>
-          <div class="qv-actions">
-            <a href="product.html" class="btn btn-outline-dark">View Full Details</a>
-            <button class="btn btn-primary" style="margin-top: 12px; width: 100%;">Add to Bag</button>
+          <div class="section-cta reveal-up">
+            <a href="shop.html" class="btn btn-outline-dark">View Full Collection</a>
           </div>
+          <button class="btn btn-primary" style="margin-top: 12px; width: 100%;">Add to Bag</button>
         </div>
       </div>
     </div>
@@ -221,106 +323,140 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/@barba/core"></script>
+  <script src="https://unpkg.com/@barba/prefetch"></script>
   <script src="js/animations.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const cards = document.querySelectorAll('.product-card');
       const filterBtns = document.querySelectorAll('.filter-btn');
+      const productGrid = document.getElementById('productGrid');
+      const noProductsEl = document.getElementById('noProducts');
       
-      // 1. Read URL Parameters
-      const urlParams = new URLSearchParams(window.location.search);
-      const genderParam = urlParams.get('gender'); // men / women
-      const catParam = urlParams.get('cat');       // sweaters / shirts etc
-      const sortParam = urlParams.get('sort');     // trending / new
+      let urlParams = new URL(window.location).searchParams;
 
-      // 2. Apply Filter Logic on Load
       function applyFilters() {
-        // Change title if deep linked
+        urlParams = new URL(window.location).searchParams;
+        const genderParam = urlParams.get('gender');
+        const catParam = urlParams.get('cat');
+        const sortParam = urlParams.get('sort');
+        const saleFilter = urlParams.get('sale') === 'true';
+        const featuredFilter = urlParams.get('featured') === 'true';
+
         const title = document.querySelector('.shop-title');
-        if(genderParam && catParam) {
-          title.textContent = `${genderParam} / ${catParam}`.toUpperCase();
-        } else if(genderParam) {
-          title.textContent = `${genderParam} Collection`.toUpperCase();
-        } else if(sortParam === 'trending') {
-          title.textContent = 'Trending Now'.toUpperCase();
-        } else if(sortParam === 'new') {
-          title.textContent = 'New Arrivals'.toUpperCase();
-        }
-        
-        // Hide/Show matching cards immediately
+
+        // Update Title
+        if (genderParam && catParam) title.textContent = `${genderParam} / ${catParam}`.toUpperCase();
+        else if (genderParam) title.textContent = `${genderParam} Collection`.toUpperCase();
+        else if (sortParam === 'new') title.textContent = 'New Arrivals'.toUpperCase();
+        else if (saleFilter) title.textContent = 'Sale Items'.toUpperCase();
+        else if (featuredFilter) title.textContent = 'Featured Selection'.toUpperCase();
+        else title.textContent = 'Collections';
+
+        let visibleCount = 0;
+
         cards.forEach(card => {
           const cGender = card.getAttribute('data-gender');
           const cCat = card.getAttribute('data-cat');
-          const cTrending = card.getAttribute('data-trending') === 'true';
           const cNew = card.getAttribute('data-new') === 'true';
+          const cSale = card.getAttribute('data-sale') === 'true';
+          const cFeatured = card.getAttribute('data-featured') === 'true';
 
           let match = true;
-          
-          if(genderParam && genderParam !== cGender) match = false;
-          if(catParam && catParam !== cCat) match = false;
-          if(sortParam === 'trending' && !cTrending) match = false;
-          if(sortParam === 'new' && !cNew) match = false;
+          if (genderParam && genderParam !== cGender) match = false;
+          if (catParam && catParam !== cCat) match = false;
+          if (sortParam === 'new' && !cNew) match = false;
+          if (saleFilter && !cSale) match = false;
+          if (featuredFilter && !cFeatured) match = false;
 
-          // Apply match
           if (match) {
+            visibleCount++;
             card.style.display = 'block';
-            card.classList.remove('filtered-out');
-            setTimeout(() => { 
-                card.style.opacity = '1'; 
-                card.style.transform = 'translateY(0)'; 
+            setTimeout(() => {
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0)';
             }, 50);
           } else {
             card.style.display = 'none';
-            card.classList.add('filtered-out');
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
           }
         });
 
-        // Refresh GSAP ScrollTrigger after altering DOM flow so animations don't break
-        if(typeof ScrollTrigger !== 'undefined') {
-            setTimeout(() => {
-                ScrollTrigger.refresh();
-            }, 100);
+        // Toggle Grid/Empty Message
+        if (visibleCount === 0) {
+          if (productGrid) productGrid.style.display = 'none';
+          noProductsEl.style.display = 'block';
+        } else {
+          if (productGrid) productGrid.style.display = 'grid';
+          noProductsEl.style.display = 'none';
         }
 
-        // Set Active Button states based on URL
-        if (genderParam) {
-          filterBtns.forEach(b => b.classList.remove('active'));
+        // Active States
+        filterBtns.forEach(b => b.classList.remove('active'));
+        if (genderParam && !catParam) {
           const btn = document.querySelector(`.filter-btn[data-filter="${genderParam}"]`);
-          if(btn) btn.classList.add('active');
-        } else if (sortParam) {
-           filterBtns.forEach(b => b.classList.remove('active'));
+          if (btn) btn.classList.add('active');
+        } else if (sortParam === 'new') {
+          const btn = document.querySelector(`.filter-btn[data-filter="new"]`);
+          if (btn) btn.classList.add('active');
+        } else if (!genderParam && !catParam && !sortParam && !saleFilter && !featuredFilter) {
+          const btn = document.querySelector(`.filter-btn[data-filter="all"]`);
+          if (btn) btn.classList.add('active');
+        }
+
+        if (typeof ScrollTrigger !== 'undefined') {
+          setTimeout(() => ScrollTrigger.refresh(), 100);
         }
       }
 
-      applyFilters();
+      function updateURLAndFilter(gender = null, cat = null, sort = null, sale = false, featured = false) {
+        const url = new URL(window.location);
+        if (gender) url.searchParams.set('gender', gender); else url.searchParams.delete('gender');
+        if (cat) url.searchParams.set('cat', cat); else url.searchParams.delete('cat');
+        if (sort) url.searchParams.set('sort', sort); else url.searchParams.delete('sort');
+        if (sale) url.searchParams.set('sale', 'true'); else url.searchParams.delete('sale');
+        if (featured) url.searchParams.set('featured', 'true'); else url.searchParams.delete('featured');
 
-      // 4. Basic Button Click Filtering (Top level)
+        window.history.pushState({}, '', url);
+        applyFilters();
+      }
+
+      window.addEventListener('popstate', applyFilters);
+
       filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          filterBtns.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-
+        btn.addEventListener('click', (e) => {
           const filter = btn.getAttribute('data-filter');
-          
-          // Clear URL state for pure JS grid filtering to look smooth
-          window.history.replaceState({}, '', 'shop.html');
-          document.querySelector('.shop-title').textContent = filter === 'all' ? 'COLLECTIONS' : filter.toUpperCase();
-
-          cards.forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-            
-            setTimeout(() => {
-              if (filter === 'all' || card.getAttribute('data-gender') === filter || (filter==='new' && card.getAttribute('data-new'))) {
-                card.style.display = 'block';
-                setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 50);
-              } else {
-                card.style.display = 'none';
-              }
-            }, 300);
-          });
+          if (filter === 'all') updateURLAndFilter();
+          else if (filter === 'men') updateURLAndFilter('men');
+          else if (filter === 'women') updateURLAndFilter('women');
+          else if (filter === 'new') updateURLAndFilter(null, null, 'new');
         });
       });
+
+      // Mobile Menu Interception
+      document.addEventListener('click', (e) => {
+        const link = e.target.closest('.mobile-menu a');
+        if (link && link.href.includes('shop.html')) {
+          const targetUrl = new URL(link.href);
+          if (window.location.pathname.endsWith('shop.html')) {
+            e.preventDefault();
+            const g = targetUrl.searchParams.get('gender');
+            const c = targetUrl.searchParams.get('cat');
+            const s = targetUrl.searchParams.get('sort');
+            const sl = targetUrl.searchParams.get('sale') === 'true';
+            const f = targetUrl.searchParams.get('featured') === 'true';
+            updateURLAndFilter(g, c, s, sl, f);
+            
+            // Close menu
+            const mobileMenu = document.getElementById('mobileMenu');
+            const navToggle = document.getElementById('navToggle');
+            if (mobileMenu) mobileMenu.classList.remove('open');
+            if (navToggle) navToggle.classList.remove('active');
+          }
+        }
+      });
+
+      applyFilters();
     });
   </script>
 </body>

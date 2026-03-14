@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
-  <!-- Lenis CSS -->
+  <link rel="preload" as="image" href="images/optimized/hero_bg.webp">
   <style>
     html.lenis { height: auto; }
     .lenis.lenis-smooth { scroll-behavior: auto; }
@@ -19,7 +19,6 @@
 </head>
 <body data-barba="wrapper">
 
-  <!-- Loading Intro & Cinematic Logo -->
   <div class="intro-loader" id="introLoader">
     <div class="intro-spinner"></div>
     <div class="intro-logo">
@@ -28,11 +27,8 @@
     </div>
   </div>
 
-  <!-- Custom Cursor -->
   <div class="custom-cursor" id="customCursor"></div>
 
-
-  <!-- ═══════════════════════ NAVIGATION ═══════════════════════ -->
   <nav class="navbar" id="navbar">
     <div class="nav-inner">
       <div class="nav-links nav-left">
@@ -73,106 +69,96 @@
         <a href="lookbook.html" class="nav-link">Lookbook</a>
         <a href="#footer" class="nav-link">Contact</a>
       </div>
-      <!-- Mobile menu toggle -->
       <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
         <span></span><span></span><span></span>
       </button>
     </div>
-    <!-- Mobile drawer -->
     <div class="mobile-menu" id="mobileMenu">
-      <a href="shop.html?gender=men" class="mobile-link">Shop Men</a>
-      <a href="shop.html?gender=women" class="mobile-link">Shop Women</a>
-      <a href="shop.html?gender=unisex" class="mobile-link">Shop Unisex</a>
+      <a href="shop.html?sort=new" class="mobile-link">New Collection</a>
+      <div class="mobile-dropdown">
+        <button class="mobile-link mobile-dropdown-btn">Men <span>+</span></button>
+        <div class="mobile-dropdown-content">
+          <a href="shop.html?gender=men&cat=jackets">Jackets</a>
+          <a href="shop.html?gender=men&cat=shirts">Shirts</a>
+          <a href="shop.html?gender=men&cat=sweaters">Sweaters</a>
+          <a href="shop.html?gender=men&cat=pants">Pants</a>
+          <a href="shop.html?gender=men&cat=underwear">Underwear</a>
+          <a href="shop.html?gender=men&cat=shoes">Boots</a>
+        </div>
+      </div>
+      <div class="mobile-dropdown">
+        <button class="mobile-link mobile-dropdown-btn">Women <span>+</span></button>
+        <div class="mobile-dropdown-content">
+          <a href="shop.html?gender=women&cat=jackets">Jackets</a>
+          <a href="shop.html?gender=women&cat=shirts">Shirts</a>
+          <a href="shop.html?gender=women&cat=sweaters">Sweaters</a>
+          <a href="shop.html?gender=women&cat=pants">Pants</a>
+          <a href="shop.html?gender=women&cat=underwear">Underwear</a>
+          <a href="shop.html?gender=women&cat=shoes">Boots</a>
+        </div>
+      </div>
+      <a href="shop.html?sale=true" class="mobile-link" style="color: var(--gold);">Sale</a>
       <a href="lookbook.html" class="mobile-link">Lookbook</a>
       <a href="#footer" class="mobile-link">Contact</a>
     </div>
   </nav>
-  </nav>
 
-  <!-- ═══════════════════════ BARBA CONTAINER ═══════════════════════ -->
   <main data-barba="container" data-barba-namespace="home">
 
-  <!-- ═══════════════════════ HERO ═══════════════════════ -->
   <section class="hero" id="hero">
     <div class="hero-bg" style="background-image: url('images/optimized/hero_unisex.png.webp');"></div>
     <div class="hero-overlay"></div>
-
     <div class="hero-content">
       <div class="hero-logo reveal-up">VINATO</div>
       <p class="hero-tagline reveal-up delay-1">Where Silence Meets Style</p>
-      <p class="hero-sub reveal-up delay-2">SS 2026 Collection</p>
-      <div class="hero-buttons reveal-up delay-3">
-        <a href="shop.html?gender=men" class="btn btn-primary" id="shopMen">Shop Men</a>
-        <a href="shop.html?gender=women" class="btn btn-outline" id="shopWomen">Shop Women</a>
-      </div>
     </div>
-
     <div class="hero-scroll-hint">
       <span class="scroll-label">SCROLL</span>
       <div class="scroll-line"></div>
     </div>
   </section>
 
-  <!-- ═══════════════════════ MARQUEE ═══════════════════════ -->
   <div class="marquee-wrap">
     <div class="marquee-track">
-      <span>NEW COLLECTION 2026</span>
-      <span class="dot">·</span>
-      <span>LUXURY REDEFINED</span>
-      <span class="dot">·</span>
-      <span>FREE SHIPPING WORLDWIDE</span>
-      <span class="dot">·</span>
-      <span>VINATO SS26</span>
-      <span class="dot">·</span>
-      <span>NEW COLLECTION 2026</span>
-      <span class="dot">·</span>
-      <span>LUXURY REDEFINED</span>
-      <span class="dot">·</span>
-      <span>FREE SHIPPING WORLDWIDE</span>
-      <span class="dot">·</span>
-      <span>VINATO SS26</span>
-      <span class="dot">·</span>
+      <span>NEW COLLECTION 2026</span><span class="dot">·</span>
+      <span>LUXURY REDEFINED</span><span class="dot">·</span>
+      <span>FREE SHIPPING WORLDWIDE</span><span class="dot">·</span>
+      <span>VINATO SS26</span><span class="dot">·</span>
+      <span>NEW COLLECTION 2026</span><span class="dot">·</span>
+      <span>LUXURY REDEFINED</span><span class="dot">·</span>
+      <span>FREE SHIPPING WORLDWIDE</span><span class="dot">·</span>
+      <span>VINATO SS26</span><span class="dot">·</span>
     </div>
   </div>
 
-  <!-- ═══════════════════════ NEW COLLECTION ═══════════════════════ -->
   <section class="section collection-section" id="new-collection">
     <div class="section-header reveal-up">
       <span class="section-label">SS 2026</span>
       <h2 class="section-title">New Collection</h2>
       <p class="section-desc">Stripped of excess. Refined by purpose. Pieces built for those who speak through silence.</p>
     </div>
-
     <div class="collection-grid" id="collectionGrid">
       <!-- Product Card 1 -->
       <div class="product-card reveal-left" data-sort="2">
         <div class="product-img-wrap">
-          <img src="images/optimized/new_collection.webp" alt="Structured Overcoat — Vinato" class="product-img" loading="lazy"/>
-          <div class="product-overlay">
-            <button class="quick-view-btn">Quick View</button>
-          </div>
+          <img src="images/optimized/new_collection.webp" alt="Structured Overcoat" class="product-img" loading="lazy"/>
+          <div class="product-overlay"><button class="quick-view-btn">Quick View</button></div>
           <span class="badge">SALE</span>
         </div>
         <div class="product-info">
           <h3 class="product-name">Structured Overcoat</h3>
           <p class="product-sub">Tailored Black Wool</p>
           <div class="product-price-row">
-            <span>
-              <span class="product-compare-price">$1,600</span>
-              <span class="product-price">$1,290</span>
-            </span>
-            <button class="add-btn" aria-label="Add to cart">+</button>
+            <span><span class="product-compare-price">$1,600</span><span class="product-price">$1,290</span></span>
+            <button class="add-btn">+</button>
           </div>
         </div>
       </div>
-
-      <!-- Product Card 2 -->
+      <!-- Card 2 -->
       <div class="product-card reveal-up delay-1" data-sort="1">
-        <div class="product-img-wrap">
-          <img src="images/optimized/new_collection.webp" alt="Asymmetric Blazer — Vinato" class="product-img" loading="lazy"/>
-          <div class="product-overlay">
-            <button class="quick-view-btn">Quick View</button>
-          </div>
+        <div class="product-img-wrap skeleton">
+          <img src="images/optimized/new_collection.webp" data-src="images/optimized/new_collection.webp" alt="Asymmetric Blazer" class="product-img lazy-image blur-load" loading="lazy"/>
+          <div class="product-overlay"><button class="quick-view-btn">Quick View</button></div>
           <span class="badge">TRENDING</span>
         </div>
         <div class="product-info">
@@ -180,338 +166,116 @@
           <p class="product-sub">Double-Breasted Linen</p>
           <div class="product-price-row">
             <span class="product-price">$890</span>
-            <button class="add-btn" aria-label="Add to cart">+</button>
+            <button class="add-btn">+</button>
           </div>
         </div>
       </div>
-
-      <!-- Product Card 3 -->
+      <!-- Card 3 -->
       <div class="product-card reveal-right" data-sort="3">
-        <div class="product-img-wrap">
-          <img src="images/optimized/new_collection.webp" alt="Evening Gown — Vinato" class="product-img" loading="lazy"/>
-          <div class="product-overlay">
-            <button class="quick-view-btn">Quick View</button>
-          </div>
-          <span class="badge" style="display:none;"></span>
+        <div class="product-img-wrap skeleton">
+          <img src="images/optimized/new_collection.webp" data-src="images/optimized/new_collection.webp" alt="Silk Evening Gown" class="product-img lazy-image blur-load" loading="lazy">
+          <div class="product-overlay"><button class="quick-view-btn">Quick View</button></div>
         </div>
         <div class="product-info">
           <h3 class="product-name">Silk Evening Gown</h3>
           <p class="product-sub">Black Duchess Silk</p>
           <div class="product-price-row">
             <span class="product-price">$2,150</span>
-            <button class="add-btn" aria-label="Add to cart">+</button>
+            <button class="add-btn">+</button>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="section-cta reveal-up">
-      <a href="#" class="btn btn-outline-dark">View Full Collection</a>
-    </div>
   </section>
 
-  <!-- ═══════════════════════ SPLIT EDITORIAL ═══════════════════════ -->
   <section class="editorial-split">
     <div class="editorial-image reveal-left">
-      <img src="images/optimized/hero_bg.webp" alt="Vinato Editorial 2026" loading="lazy" />
+      <img src="images/optimized/hero_bg.webp" alt="Vinato Editorial" loading="lazy" />
       <div class="editorial-img-overlay"></div>
     </div>
     <div class="editorial-text reveal-right">
       <span class="section-label gold">Our Philosophy</span>
       <h2 class="editorial-title">The Art of<br/><em>Disappearing</em></h2>
-      <p class="editorial-body">Vinato was born from the belief that true luxury is restraint. Every piece is crafted to whisper — never shout. No logos. No excess. Just the perfect cut, the right weight, the exact shade of black.</p>
+      <p class="editorial-body">Vinato was born from the belief that true luxury is restraint. Every piece is crafted to whisper — never shout. No logos. No excess.</p>
       <a href="#" class="btn btn-primary">Discover Our Story</a>
     </div>
   </section>
 
-  <!-- ═══════════════════════ BEST SELLERS ═══════════════════════ -->
   <section class="section best-sellers-section" id="best-sellers">
     <div class="section-header reveal-up">
       <span class="section-label">Most Loved</span>
       <h2 class="section-title">Best Sellers</h2>
-      <p class="section-desc">The pieces that define the Vinato wardrobe — timeless, precise, enduring.</p>
     </div>
-
     <div class="bestsellers-grid">
       <a href="shop.html?gender=women&cat=accessories" class="bs-card reveal-up">
-        <div class="bs-img-wrap">
-          <img src="images/optimized/best_sellers.webp" alt="Leather Tote — Vinato" loading="lazy"/>
-          <div class="bs-overlay"></div>
+        <div class="bs-img-wrap skeleton">
+          <img src="images/optimized/best_sellers.webp" data-src="images/optimized/best_sellers.webp" alt="Minimal Leather Tote" class="lazy-image blur-load" loading="lazy">
         </div>
         <div class="bs-info">
-          <div>
-            <h3 class="bs-name">Minimal Leather Tote</h3>
-            <p class="bs-cat">Women / Accessories</p>
-          </div>
+          <div><h3 class="bs-name">Minimal Leather Tote</h3><p class="bs-cat">Women / Accessories</p></div>
           <span class="bs-price">$650</span>
         </div>
       </a>
-
       <a href="shop.html?gender=women&cat=sweaters" class="bs-card reveal-up delay-1">
-        <div class="bs-img-wrap">
-          <img src="images/optimized/best_sellers.webp" alt="Cashmere Turtleneck — Vinato" loading="lazy"/>
-          <div class="bs-overlay"></div>
-        </div>
+        <div class="bs-img-wrap"><img src="images/optimized/best_sellers.webp" alt="Cashmere Turtleneck" loading="lazy"/></div>
         <div class="bs-info">
-          <div>
-            <h3 class="bs-name">Cashmere Turtleneck</h3>
-            <p class="bs-cat">Women / Knitwear</p>
-          </div>
+          <div><h3 class="bs-name">Cashmere Turtleneck</h3><p class="bs-cat">Women / Knitwear</p></div>
           <span class="bs-price">$480</span>
         </div>
       </a>
-
-      <a href="shop.html?gender=women&cat=accessories" class="bs-card reveal-up delay-2">
-        <div class="bs-img-wrap">
-          <img src="images/optimized/best_sellers.webp" alt="Leather Belt — Vinato" loading="lazy"/>
-          <div class="bs-overlay"></div>
-        </div>
-        <div class="bs-info">
-          <div>
-            <h3 class="bs-name">Gold Clasp Belt</h3>
-            <p class="bs-cat">Women / Accessories</p>
-          </div>
-          <span class="bs-price">$290</span>
-        </div>
-      </a>
-
-      <a href="shop.html?gender=women&cat=shoes" class="bs-card reveal-up delay-3">
-        <div class="bs-img-wrap">
-          <img src="images/optimized/best_sellers.webp" alt="Ankle Boots — Vinato" loading="lazy"/>
-          <div class="bs-overlay"></div>
-        </div>
-        <div class="bs-info">
-          <div>
-            <h3 class="bs-name">Sculptural Ankle Boot</h3>
-            <p class="bs-cat">Women / Footwear</p>
-          </div>
-          <span class="bs-price">$920</span>
-        </div>
-      </a>
     </div>
   </section>
 
-  <!-- ═══════════════════════ STATS BAR ═══════════════════════ -->
-  <div class="stats-bar reveal-up">
-    <div class="stat-item">
-      <span class="stat-num" data-target="127">0</span><span class="stat-suffix">+</span>
-      <p class="stat-label">Countries</p>
-    </div>
-    <div class="stat-divider"></div>
-    <div class="stat-item">
-      <span class="stat-num" data-target="42">0</span><span class="stat-suffix">K</span>
-      <p class="stat-label">Clients</p>
-    </div>
-    <div class="stat-divider"></div>
-    <div class="stat-item">
-      <span class="stat-num" data-target="18">0</span><span class="stat-suffix"></span>
-      <p class="stat-label">Years of Excellence</p>
-    </div>
-    <div class="stat-divider"></div>
-    <div class="stat-item">
-      <span class="stat-num" data-target="100">0</span><span class="stat-suffix">%</span>
-      <p class="stat-label">Handcrafted</p>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════ CATEGORY CARDS (ZARA STYLE) ═══════════════════════ -->
-  <section class="section category-cards-section" id="categories">
-    <div class="category-grid">
-      <!-- Men -->
-      <a href="shop.html?gender=men" class="cat-card reveal-up">
-        <div class="cat-img-wrap">
-          <img src="images/optimized/prod_trousers.webp" alt="Men Collection" loading="lazy">
-          <div class="cat-overlay"></div>
-        </div>
-        <div class="cat-content">
-          <span class="cat-subtitle">Discover</span>
-          <h2 class="cat-title">Men Collection</h2>
-          <div class="cat-links">
-            <span>Hoodies & Sweaters</span>
-            <span>Shirts</span>
-            <span>Pants</span>
-            <span>Underwear</span>
-            <span>Boots</span>
-          </div>
-        </div>
-      </a>
-      
-      <!-- Women -->
-      <a href="shop.html?gender=women" class="cat-card reveal-up delay-1">
-        <div class="cat-img-wrap">
-          <img src="images/optimized/prod_dress_silk.webp" alt="Women Collection" loading="lazy">
-          <div class="cat-overlay"></div>
-        </div>
-        <div class="cat-content">
-          <span class="cat-subtitle">Discover</span>
-          <h2 class="cat-title">Women Collection</h2>
-          <div class="cat-links">
-            <span>Knitwear</span>
-            <span>Shirts</span>
-            <span>Trousers</span>
-            <span>Intimates</span>
-            <span>Shoes</span>
-          </div>
-        </div>
-      </a>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════ TRENDING IN MEN ═══════════════════════ -->
-  <section class="section collection-section" id="trending-men">
-    <div class="section-header reveal-up">
-      <span class="section-label">Most Wanted</span>
-      <h2 class="section-title">Trending in Men</h2>
-      <a href="shop.html?gender=men&sort=trending" class="btn btn-outline-dark" style="margin-top: 16px;">View All</a>
-    </div>
-
-    <div class="collection-grid">
-      <div class="product-card reveal-up">
-        <div class="product-img-wrap">
-          <div class="badge">Featured</div>
-          <img src="images/optimized/prod_coat_men.webp" alt="Structured Overcoat" class="product-img" loading="lazy"/>
-          <div class="product-overlay">
-            <button class="quick-view-btn">Quick View</button>
-          </div>
-        </div>
-        <div class="product-info">
-          <div class="product-price-row">
-            <div>
-              <h3 class="product-name">Structured Overcoat</h3>
-              <p class="product-sub">Black / Heavy Wool</p>
-            </div>
-            <span class="product-price">$1,490</span>
-          </div>
-        </div>
-      </div>
-      <!-- Add more trending items here dynamically later -->
-    </div>
-  </section>
-
-  <!-- ═══════════════════════ HIGHLIGHT: TRENDING IN WOMEN ═══════════════════════ -->
-  <section class="editorial-split" id="trending-women" style="background: var(--off-white); min-height: 80vh;">
-    <div class="editorial-text reveal-right">
-      <span class="section-label gold">Featured Women</span>
-      <h2 class="editorial-title">Trending <em>Now</em></h2>
-      <p class="editorial-body">
-        Explore the most coveted pieces from our recent women's release. Characterized by fluid drapes, structured tailoring, and uncompromising materials.
-      </p>
-      <div style="margin-top: 32px;">
-        <a href="shop.html?gender=women&sort=trending" class="btn btn-primary">Shop Women's Trending</a>
-      </div>
-    </div>
-    <div class="editorial-image reveal-left">
-      <img src="images/optimized/prod_dress_silk.webp" alt="Trending Women" loading="lazy">
-      <div class="editorial-img-overlay"></div>
-    </div>
-  </section>
-
-
-  <!-- ═══════════════════════ INSTAGRAM GALLERY ═══════════════════════ -->
   <section class="section instagram-section" id="instagram">
     <div class="section-header reveal-up">
-      <span class="section-label gold">@vinatostudio</span>
+      <span class="section-label gold" id="instaHandle">@vinatostudio</span>
       <h2 class="section-title">Follow Our World</h2>
-      <p class="section-desc">Behind the scenes, on the runway, and in your closet.</p>
     </div>
-
     <div class="instagram-grid">
-      <div class="ig-item ig-item--large reveal-left">
-        <img src="images/optimized/instagram_grid.webp" alt="Vinato Instagram 1" loading="lazy" />
-        <div class="ig-overlay">
-          <div class="ig-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-          </div>
-        </div>
-      </div>
-      <div class="ig-item reveal-up">
-        <img src="images/optimized/instagram_grid.webp" alt="Vinato Instagram 2" loading="lazy" />
+      <div class="ig-item ig-item--large reveal-left skeleton">
+        <img src="images/optimized/instagram_grid.webp" data-src="images/optimized/instagram_grid.webp" alt="Instagram 1" class="lazy-image blur-load" loading="lazy" />
         <div class="ig-overlay"><div class="ig-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></div></div>
       </div>
-      <div class="ig-item reveal-up delay-1">
-        <img src="images/optimized/instagram_grid.webp" alt="Vinato Instagram 3" loading="lazy" />
-        <div class="ig-overlay"><div class="ig-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></div></div>
+      <div class="ig-item reveal-up skeleton">
+        <img src="images/optimized/instagram_grid.webp" data-src="images/optimized/instagram_grid.webp" alt="Instagram 2" class="lazy-image blur-load" loading="lazy" />
+        <div class="ig-overlay"><div class="ig-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="5"/></svg></div></div>
       </div>
-      <div class="ig-item reveal-up delay-2">
-        <img src="images/optimized/new_collection.webp" alt="Vinato Instagram 4" loading="lazy" />
-        <div class="ig-overlay"><div class="ig-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></div></div>
-      </div>
-      <div class="ig-item reveal-right">
-        <img src="images/optimized/best_sellers.webp" alt="Vinato Instagram 5" loading="lazy" />
-        <div class="ig-overlay"><div class="ig-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></div></div>
-      </div>
-    </div>
-
-    <div class="section-cta reveal-up">
-      <a href="https://www.instagram.com" target="_blank" rel="noopener" class="btn btn-outline-dark">Follow @vinatostudio</a>
     </div>
   </section>
 
-  <!-- ═══════════════════════ NEWSLETTER ═══════════════════════ -->
   <section class="newsletter-section reveal-up">
     <div class="newsletter-inner">
       <span class="section-label gold">Inner Circle</span>
       <h2 class="newsletter-title">Join the Vinato World</h2>
-      <p class="newsletter-sub">Early access to new collections, private events, and exclusive offers.</p>
-      <form class="newsletter-form" id="newsletterForm" novalidate>
-        <input type="email" id="emailInput" class="newsletter-input" placeholder="Your email address" required />
+      <form class="newsletter-form" id="newsletterForm">
+        <input type="email" class="newsletter-input" placeholder="Your email address" required />
         <button type="submit" class="btn btn-primary newsletter-btn">Subscribe</button>
       </form>
-      <p class="newsletter-note">By subscribing you agree to our Privacy Policy. Unsubscribe at any time.</p>
     </div>
   </section>
 
-  <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
   <footer class="footer" id="footer">
-    <div class="footer-top">
-      <div class="footer-brand">
+    <div class="footer-centered-wrap">
+      <div class="footer-brand reveal-up">
         <div class="footer-logo">VINATO</div>
         <p class="footer-tagline">Where Silence Meets Style</p>
+        
+        <div class="footer-contact-info">
+          <a href="tel:+12125551234" class="footer-dynamic-phone" id="footerPhone">+1 (212) 555-1234</a>
+          <span class="dot">·</span>
+          <a href="mailto:hello@vinato.com" class="footer-link">hello@vinato.com</a>
+        </div>
+
         <div class="social-links">
-          <a href="https://www.instagram.com" target="_blank" rel="noopener" aria-label="Instagram" class="social-link">
+          <a href="https://www.instagram.com" target="_blank" rel="noopener" aria-label="Instagram" class="social-link" id="footerInsta">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
           </a>
           <a href="https://www.pinterest.com" target="_blank" rel="noopener" aria-label="Pinterest" class="social-link">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.236 2.636 7.855 6.356 9.312-.088-.791-.167-2.005.035-2.868.181-.78 1.172-4.97 1.172-4.97s-.299-.598-.299-1.482c0-1.388.806-2.428 1.808-2.428.853 0 1.267.641 1.267 1.408 0 .858-.546 2.14-.828 3.33-.236.995.499 1.806 1.475 1.806 1.77 0 3.132-1.866 3.132-4.562 0-2.387-1.715-4.054-4.163-4.054-2.836 0-4.5 2.127-4.5 4.326 0 .856.33 1.773.741 2.274a.3.3 0 01.069.284c-.075.314-.243.995-.276 1.134-.044.183-.146.222-.337.134-1.249-.581-2.03-2.407-2.03-3.874 0-3.154 2.292-6.052 6.608-6.052 3.469 0 6.165 2.473 6.165 5.776 0 3.447-2.173 6.22-5.19 6.22-1.013 0-1.967-.527-2.292-1.148l-.623 2.378c-.226.869-.835 1.958-1.244 2.621.937.29 1.931.446 2.962.446 5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
           </a>
-          <a href="https://www.tiktok.com" target="_blank" rel="noopener" aria-label="TikTok" class="social-link">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V9.01a8.16 8.16 0 004.77 1.52V7.1a4.85 4.85 0 01-1.01-.41z"/></svg>
-          </a>
         </div>
       </div>
-
-      <div class="footer-col">
-        <h4 class="footer-col-title">Shop</h4>
-        <ul class="footer-links">
-          <li><a href="#" class="footer-link">New Arrivals</a></li>
-          <li><a href="#" class="footer-link">Women</a></li>
-          <li><a href="#" class="footer-link">Men</a></li>
-          <li><a href="#" class="footer-link">Accessories</a></li>
-          <li><a href="#" class="footer-link">Sale</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-col-title">Brand</h4>
-        <ul class="footer-links">
-          <li><a href="#" class="footer-link">Our Story</a></li>
-          <li><a href="#" class="footer-link">Sustainability</a></li>
-          <li><a href="#" class="footer-link">Craftsmanship</a></li>
-          <li><a href="#" class="footer-link">Press</a></li>
-          <li><a href="#" class="footer-link">Careers</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-col-title">Contact</h4>
-        <ul class="footer-links">
-          <li><a href="mailto:hello@vinato.com" class="footer-link">hello@vinato.com</a></li>
-          <li><a href="tel:+12125551234" class="footer-link">+1 (212) 555-1234</a></li>
-          <li class="footer-address">12 Rue de la Paix<br/>Paris, 75002<br/>France</li>
-        </ul>
-      </div>
     </div>
-
     <div class="footer-bottom">
       <div class="footer-copy-wrap">
         <p class="footer-copy">© 2026 Vinato. All rights reserved.</p>
@@ -520,38 +284,50 @@
       <div class="footer-legal">
         <a href="#" class="footer-legal-link">Privacy Policy</a>
         <a href="#" class="footer-legal-link">Terms of Service</a>
-        <a href="#" class="footer-legal-link">Cookie Settings</a>
       </div>
     </div>
-  </main> <!-- /Barba Container -->
+  </footer>
+  </main>
 
-  <!-- QUICK VIEW MODAL -->
   <div class="modal-overlay hidden" id="quickViewModal">
     <div class="modal qv-modal">
-      <div class="modal-header">
-        <h3 id="qvTitle">Product Name</h3>
-        <button class="btn-icon" id="closeQuickView">×</button>
-      </div>
+      <div class="modal-header"><h3 id="qvTitle">Product Name</h3><button class="btn-icon" id="closeQuickView">×</button></div>
       <div class="modal-body qv-body">
-        <div class="qv-image">
-          <img src="" alt="Product Image" id="qvImg">
-        </div>
-        <div class="qv-details">
-          <p class="qv-price" id="qvPrice">$0.00</p>
-          <div class="qv-actions">
-            <a href="product.html" class="btn btn-outline-dark">View Full Details</a>
-            <button class="btn btn-primary" style="margin-top: 12px; width: 100%;">Add to Bag</button>
-          </div>
-        </div>
+        <div class="qv-image"><img src="" alt="Product" id="qvImg"></div>
+        <div class="qv-details"><p class="qv-price" id="qvPrice">$0.00</p><a href="product.html" class="btn btn-outline-dark">View Details</a></div>
       </div>
     </div>
   </div>
 
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/@barba/core"></script>
+  <script src="https://unpkg.com/@barba/prefetch"></script>
   <script src="js/animations.js"></script>
+  <script>
+    // Load dynamic settings from localStorage
+    document.addEventListener('DOMContentLoaded', () => {
+      const storedPhone = localStorage.getItem('s_phone');
+      const storedInsta = localStorage.getItem('s_instagram');
+      
+      const phoneEl = document.getElementById('footerPhone');
+      const instaEl = document.getElementById('footerInsta');
+      const instaHandle = document.getElementById('instaHandle');
+
+      if (storedPhone && phoneEl) {
+        phoneEl.textContent = storedPhone;
+        phoneEl.href = `tel:${storedPhone.replace(/\D/g, '')}`;
+      }
+      
+      if (storedInsta && instaEl) {
+        instaEl.href = storedInsta;
+        if (instaHandle) {
+          const handle = storedInsta.split('/').filter(Boolean).pop();
+          if (handle) instaHandle.textContent = `@${handle}`;
+        }
+      }
+    });
+  </script>
 </body>
 </html>
