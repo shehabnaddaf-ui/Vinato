@@ -1302,18 +1302,19 @@ ul { list-style: none; }
 
   .nav-links { display: none; }
 
-  /* Keep lang toggle always visible — show it next to hamburger on mobile */
+  /* Keep lang toggle always visible — absolute position on mobile */
   .lang-toggle {
     display: flex !important;
-    border-color: rgba(255, 255, 255, 0.4);
-    font-size: 0.55rem;
-    padding: 4px 10px;
     position: absolute;
-    right: 56px; /* sit left of the hamburger */
+    right: 5%;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 3;
+    z-index: 10;
+    border-color: rgba(255, 255, 255, 0.4);
+    font-size: 0.6rem;
+    padding: 5px 12px;
   }
+
   /* On white-navbar pages, adjust color */
   .shop-page .navbar:not(.scrolled) .lang-toggle,
   .product-page .navbar:not(.scrolled) .lang-toggle,
@@ -2468,7 +2469,8 @@ ul { list-style: none; }
 @media (max-width: 768px) {
   [dir="rtl"] .lang-toggle {
     right: auto;
-    left: 56px;
+    left: 5%;
   }
 }
+
 
