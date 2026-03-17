@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="/admin/css/admin.css">
   <script>
     // Session Guard
     if (!localStorage.getItem('admin_session')) {
@@ -25,6 +25,7 @@
       <a href="#" class="nav-item active" data-view="products-view">Products</a>
       <a href="#" class="nav-item" data-view="media-view">Media Library</a>
       <a href="#" class="nav-item" data-view="collections-view">Collections</a>
+      <a href="#" class="nav-item" data-view="server-media-view">🖼 مدير الصور</a>
       <a href="#" class="nav-item" data-view="site-images-view">Website Images</a>
       <a href="#" class="nav-item" data-view="orders-view">Orders</a>
       <a href="#" class="nav-item" data-view="settings-view">Settings</a>
@@ -94,31 +95,30 @@
         <form id="productForm" class="product-form">
           <!-- Basic Info -->
           <div class="form-card">
-            <h3>Basic Information</h3>
+            <h3>معلومات المنتج</h3>
             <div class="form-group">
-              <label>Product Name</label>
-              <input type="text" id="p_name" placeholder="e.g. Vinato Hoodie" class="form-input">
+              <label>اسم المنتج (بالعربية)</label>
+              <input type="text" id="p_name" placeholder="مثال: هودي فيناتو" class="form-input" dir="rtl">
+              <small style="color:#888; font-size:0.7rem; margin-top:4px; display:block;">سيتم ترجمته للإنجليزية تلقائياً عند النشر ✦</small>
+            </div>
+            <div class="form-group">
+              <label>وصف المنتج (بالعربية)</label>
+              <textarea id="p_description" placeholder="صف المنتج بالعربية..." class="form-input" dir="rtl" rows="3" style="resize:vertical;"></textarea>
+              <small style="color:#888; font-size:0.7rem; margin-top:4px; display:block;">سيتم ترجمته للإنجليزية تلقائياً عند النشر ✦</small>
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label>Gender</label>
+                <label>الجنس</label>
                 <select id="p_gender" class="form-input">
-                  <option value="Men">Men</option>
-                  <option value="Women">Women</option>
-                  <option value="Unisex">Unisex</option>
+                  <option value="Men">Men / رجال</option>
+                  <option value="Women">Women / نساء</option>
+                  <option value="Unisex">Unisex / يونيسكس</option>
                 </select>
               </div>
               <div class="form-group">
-                <label>Category</label>
-                <select id="p_cat" class="form-input">
-                  <option value="Sweaters / Hoodies">Sweaters / Hoodies</option>
-                  <option value="Jackets">Jackets</option>
-                  <option value="Shirts">Shirts</option>
-                  <option value="Pants">Pants</option>
-                  <option value="Underwear">Underwear</option>
-                  <option value="Shoes / Boots">Shoes / Boots</option>
-                  <option value="Accessories">Accessories</option>
-                </select>
+                <label>الفئة (بالعربية)</label>
+                <input type="text" id="p_cat_ar" placeholder="مثال: كنزات / هوديز" class="form-input" dir="rtl">
+                <small style="color:#888; font-size:0.7rem; margin-top:4px; display:block;">سيتم ترجمتها للإنجليزية تلقائياً ✦</small>
               </div>
             </div>
             
@@ -231,6 +231,31 @@
           </table>
         </div>
       </div>
+
+      <!-- Image Manager View (store/images folder) -->
+      <div id="server-media-view" class="view-panel">
+        <header class="section-header">
+          <h2>🖼 مدير الصور — Image Manager</h2>
+          <button class="btn btn-primary" id="openImageFolderBtn">📂 فتح مجلد الصور</button>
+        </header>
+        <p class="help-text" style="padding: 0 0 16px 0; color:#888;">
+          اضغط "فتح مجلد الصور" واختر مجلد <strong>store/images</strong> لعرض وحذف الصور.
+          <br><small>يعمل على Chrome / Edge فقط (يحتاج صلاحية الوصول للملفات)</small>
+        </p>
+
+        <!-- Stats bar -->
+        <div id="imgMgrStats" style="display:none; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 20px; margin-bottom:20px; font-size:0.8rem; color:var(--text-muted);">
+          <span id="imgMgrCount">0 صور</span> · <span id="imgMgrSize">0 KB</span>
+        </div>
+
+        <!-- Image grid -->
+        <div id="imageManagerGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:16px;">
+          <div style="grid-column:1/-1; text-align:center; padding:60px; color:var(--text-muted); font-size:0.85rem;">
+            لم يتم فتح أي مجلد بعد. اضغط الزر أعلاه.
+          </div>
+        </div>
+      </div>
+
 
       <!-- Website Images & Content View -->
       <div id="site-images-view" class="view-panel">
@@ -425,6 +450,6 @@
     </div>
   </div>
 
-  <script src="js/admin.js"></script>
+  <script src="/admin/js/admin.js"></script>
 </body>
 </html>

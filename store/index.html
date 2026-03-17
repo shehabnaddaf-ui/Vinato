@@ -7,7 +7,7 @@
   <title>VINATO — Luxury Fashion</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="preload" as="image" href="images/optimized/hero_bg.webp">
   <style>
@@ -32,74 +32,47 @@
   <nav class="navbar" id="navbar">
     <div class="nav-inner">
       <div class="nav-links nav-left">
-        <div class="nav-dropdown">
-          <a href="shop.html?gender=men" class="nav-link">Men</a>
-          <div class="dropdown-content">
-            <a href="shop.html?gender=men&cat=jackets">Jackets</a>
-            <a href="shop.html?gender=men&cat=sweaters">Sweaters / Hoodies</a>
-            <a href="shop.html?gender=men&cat=shirts">Shirts</a>
-            <a href="shop.html?gender=men&cat=pants">Pants</a>
-            <a href="shop.html?gender=men&cat=underwear">Underwear</a>
-            <a href="shop.html?gender=men&cat=shoes">Shoes / Boots</a>
-          </div>
-        </div>
-        <div class="nav-dropdown">
-          <a href="shop.html?gender=women" class="nav-link">Women</a>
-          <div class="dropdown-content">
-            <a href="shop.html?gender=women&cat=jackets">Jackets</a>
-            <a href="shop.html?gender=women&cat=sweaters">Sweaters / Hoodies</a>
-            <a href="shop.html?gender=women&cat=shirts">Shirts</a>
-            <a href="shop.html?gender=women&cat=pants">Pants</a>
-            <a href="shop.html?gender=women&cat=underwear">Underwear</a>
-            <a href="shop.html?gender=women&cat=shoes">Shoes / Boots</a>
-          </div>
-        </div>
-        <div class="nav-dropdown">
-          <a href="shop.html?gender=unisex" class="nav-link">Unisex</a>
-          <div class="dropdown-content">
-            <a href="shop.html?gender=unisex&cat=jackets">Jackets</a>
-            <a href="shop.html?gender=unisex&cat=sweaters">Sweaters / Hoodies</a>
-            <a href="shop.html?gender=unisex&cat=pants">Pants</a>
-            <a href="shop.html?gender=unisex&cat=accessories">Accessories</a>
-          </div>
-        </div>
+        <a href="/store/index.html" class="nav-link active" data-i18n="nav.home">Home</a>
+        <a href="/store/shop.html" class="nav-link" data-i18n="nav.shop">Shop</a>
       </div>
-      <a href="#hero" class="nav-logo">VINATO</a>
+      <a href="/store/index.html" class="nav-logo">VINATO</a>
       <div class="nav-links nav-right">
-        <a href="lookbook.html" class="nav-link">Lookbook</a>
-        <a href="#footer" class="nav-link">Contact</a>
+        <a href="/store/lookbook.html" class="nav-link" data-i18n="nav.lookbook">Lookbook</a>
+        <a href="#footer" class="nav-link" data-i18n="nav.contact">Contact</a>
+        <button class="lang-toggle" id="langToggle" onclick="toggleLang()" aria-label="Switch language">EN</button>
       </div>
       <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
         <span></span><span></span><span></span>
       </button>
     </div>
+    <!-- Mobile drawer -->
     <div class="mobile-menu" id="mobileMenu">
-      <a href="shop.html?sort=new" class="mobile-link">New Collection</a>
+      <a href="/store/shop.html?sort=new" class="mobile-link" data-i18n="nav.new_collection">New Collection</a>
       <div class="mobile-dropdown">
-        <button class="mobile-link mobile-dropdown-btn">Men <span>+</span></button>
+        <button class="mobile-link mobile-dropdown-btn"><span data-i18n="nav.men">Men</span> <span>+</span></button>
         <div class="mobile-dropdown-content">
-          <a href="shop.html?gender=men&cat=jackets">Jackets</a>
-          <a href="shop.html?gender=men&cat=shirts">Shirts</a>
-          <a href="shop.html?gender=men&cat=sweaters">Sweaters</a>
-          <a href="shop.html?gender=men&cat=pants">Pants</a>
-          <a href="shop.html?gender=men&cat=underwear">Underwear</a>
-          <a href="shop.html?gender=men&cat=shoes">Boots</a>
+          <a href="/store/shop.html?gender=men&cat=jackets" data-i18n="nav.men.jackets">Jackets</a>
+          <a href="/store/shop.html?gender=men&cat=shirts" data-i18n="nav.men.shirts">Shirts</a>
+          <a href="/store/shop.html?gender=men&cat=sweaters" data-i18n="nav.men.sweaters">Sweaters</a>
+          <a href="/store/shop.html?gender=men&cat=pants" data-i18n="nav.men.pants">Pants</a>
+          <a href="/store/shop.html?gender=men&cat=underwear" data-i18n="nav.men.underwear">Underwear</a>
+          <a href="/store/shop.html?gender=men&cat=shoes" data-i18n="nav.men.boots">Boots</a>
         </div>
       </div>
       <div class="mobile-dropdown">
-        <button class="mobile-link mobile-dropdown-btn">Women <span>+</span></button>
+        <button class="mobile-link mobile-dropdown-btn"><span data-i18n="nav.women">Women</span> <span>+</span></button>
         <div class="mobile-dropdown-content">
-          <a href="shop.html?gender=women&cat=jackets">Jackets</a>
-          <a href="shop.html?gender=women&cat=shirts">Shirts</a>
-          <a href="shop.html?gender=women&cat=sweaters">Sweaters</a>
-          <a href="shop.html?gender=women&cat=pants">Pants</a>
-          <a href="shop.html?gender=women&cat=underwear">Underwear</a>
-          <a href="shop.html?gender=women&cat=shoes">Boots</a>
+          <a href="/store/shop.html?gender=women&cat=jackets" data-i18n="nav.women.jackets">Jackets</a>
+          <a href="/store/shop.html?gender=women&cat=shirts" data-i18n="nav.women.shirts">Shirts</a>
+          <a href="/store/shop.html?gender=women&cat=sweaters" data-i18n="nav.women.sweaters">Sweaters</a>
+          <a href="/store/shop.html?gender=women&cat=pants" data-i18n="nav.women.pants">Pants</a>
+          <a href="/store/shop.html?gender=women&cat=underwear" data-i18n="nav.women.underwear">Underwear</a>
+          <a href="/store/shop.html?gender=women&cat=shoes" data-i18n="nav.women.boots">Boots</a>
         </div>
       </div>
-      <a href="shop.html?sale=true" class="mobile-link" style="color: var(--gold);">Sale</a>
-      <a href="lookbook.html" class="mobile-link">Lookbook</a>
-      <a href="#footer" class="mobile-link">Contact</a>
+      <a href="/store/shop.html?sale=true" class="mobile-link" style="color: var(--gold);" data-i18n="nav.sale">Sale</a>
+      <a href="/store/lookbook.html" class="mobile-link" data-i18n="nav.lookbook">Lookbook</a>
+      <a href="#footer" class="mobile-link" data-i18n="nav.contact">Contact</a>
     </div>
   </nav>
 
@@ -110,10 +83,10 @@
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <div class="hero-logo reveal-up">VINATO</div>
-      <p class="hero-tagline reveal-up delay-1">Where Silence Meets Style</p>
+      <p class="hero-tagline reveal-up delay-1" data-i18n="footer.tagline">Where Silence Meets Style</p>
     </div>
     <div class="hero-scroll-hint">
-      <span class="scroll-label">SCROLL</span>
+      <span class="scroll-label" data-i18n="scroll">SCROLL</span>
       <div class="scroll-line"></div>
     </div>
   </section>
@@ -133,16 +106,16 @@
 
   <section class="section collection-section" id="new-collection">
     <div class="section-header reveal-up">
-      <span class="section-label">SS 2026</span>
-      <h2 class="section-title">New Collection</h2>
-      <p class="section-desc">Stripped of excess. Refined by purpose. Pieces built for those who speak through silence.</p>
+      <span class="section-label" data-i18n="section.ss26">SS 2026</span>
+      <h2 class="section-title" data-i18n="section.new_collection">New Collection</h2>
+      <p class="section-desc" data-i18n="section.new_desc">Stripped of excess. Refined by purpose. Pieces built for those who speak through silence.</p>
     </div>
     <div class="collection-grid" id="collectionGrid">
       <!-- Product Card 1 -->
       <div class="product-card reveal-left" data-sort="2">
         <div class="product-img-wrap">
           <img src="images/optimized/new_collection.webp" alt="Structured Overcoat" class="product-img" loading="lazy"/>
-          <div class="product-overlay"><button class="quick-view-btn">Quick View</button></div>
+          <div class="product-overlay"></div>
           <span class="badge">SALE</span>
         </div>
         <div class="product-info">
@@ -158,7 +131,7 @@
       <div class="product-card reveal-up delay-1" data-sort="1">
         <div class="product-img-wrap skeleton">
           <img src="images/optimized/new_collection.webp" data-src="images/optimized/new_collection.webp" alt="Asymmetric Blazer" class="product-img lazy-image blur-load" loading="lazy"/>
-          <div class="product-overlay"><button class="quick-view-btn">Quick View</button></div>
+          <div class="product-overlay"></div>
           <span class="badge">TRENDING</span>
         </div>
         <div class="product-info">
@@ -174,7 +147,7 @@
       <div class="product-card reveal-right" data-sort="3">
         <div class="product-img-wrap skeleton">
           <img src="images/optimized/new_collection.webp" data-src="images/optimized/new_collection.webp" alt="Silk Evening Gown" class="product-img lazy-image blur-load" loading="lazy">
-          <div class="product-overlay"><button class="quick-view-btn">Quick View</button></div>
+          <div class="product-overlay"></div>
         </div>
         <div class="product-info">
           <h3 class="product-name">Silk Evening Gown</h3>
@@ -194,17 +167,17 @@
       <div class="editorial-img-overlay"></div>
     </div>
     <div class="editorial-text reveal-right">
-      <span class="section-label gold">Our Philosophy</span>
-      <h2 class="editorial-title">The Art of<br/><em>Disappearing</em></h2>
-      <p class="editorial-body">Vinato was born from the belief that true luxury is restraint. Every piece is crafted to whisper — never shout. No logos. No excess.</p>
-      <a href="#" class="btn btn-primary">Discover Our Story</a>
+      <span class="section-label gold" data-i18n="section.philosophy">Our Philosophy</span>
+      <h2 class="editorial-title" data-i18n="section.story.title">The Art of<br/><em>Disappearing</em></h2>
+      <p class="editorial-body" data-i18n="section.story.body">Vinato was born from the belief that true luxury is restraint. Every piece is crafted to whisper — never shout. No logos. No excess.</p>
+      <a href="#" class="btn btn-primary" data-i18n="section.story.btn">Discover Our Story</a>
     </div>
   </section>
 
   <section class="section best-sellers-section" id="best-sellers">
     <div class="section-header reveal-up">
-      <span class="section-label">Most Loved</span>
-      <h2 class="section-title">Best Sellers</h2>
+      <span class="section-label" data-i18n="section.most_loved">Most Loved</span>
+      <h2 class="section-title" data-i18n="section.best_sellers">Best Sellers</h2>
     </div>
     <div class="bestsellers-grid">
       <a href="shop.html?gender=women&cat=accessories" class="bs-card reveal-up">
@@ -229,7 +202,7 @@
   <section class="section instagram-section" id="instagram">
     <div class="section-header reveal-up">
       <span class="section-label gold" id="instaHandle">@vinatostudio</span>
-      <h2 class="section-title">Follow Our World</h2>
+      <h2 class="section-title" data-i18n="section.follow">Follow Our World</h2>
     </div>
     <div class="instagram-grid">
       <div class="ig-item ig-item--large reveal-left skeleton">
@@ -248,7 +221,7 @@
     <div class="footer-centered-wrap">
       <div class="footer-brand reveal-up">
         <div class="footer-logo">VINATO</div>
-        <p class="footer-tagline">Where Silence Meets Style</p>
+        <p class="footer-tagline" data-i18n="footer.tagline">Where Silence Meets Style</p>
         
         <div class="footer-contact-info">
           <a href="tel:+12125551234" class="footer-dynamic-phone" id="footerPhone">+1 (212) 555-1234</a>
@@ -260,20 +233,21 @@
           <a href="https://www.instagram.com" target="_blank" rel="noopener" aria-label="Instagram" class="social-link" id="footerInsta">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
           </a>
-          <a href="https://www.pinterest.com" target="_blank" rel="noopener" aria-label="Pinterest" class="social-link">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.236 2.636 7.855 6.356 9.312-.088-.791-.167-2.005.035-2.868.181-.78 1.172-4.97 1.172-4.97s-.299-.598-.299-1.482c0-1.388.806-2.428 1.808-2.428.853 0 1.267.641 1.267 1.408 0 .858-.546 2.14-.828 3.33-.236.995.499 1.806 1.475 1.806 1.77 0 3.132-1.866 3.132-4.562 0-2.387-1.715-4.054-4.163-4.054-2.836 0-4.5 2.127-4.5 4.326 0 .856.33 1.773.741 2.274a.3.3 0 01.069.284c-.075.314-.243.995-.276 1.134-.044.183-.146.222-.337.134-1.249-.581-2.03-2.407-2.03-3.874 0-3.154 2.292-6.052 6.608-6.052 3.469 0 6.165 2.473 6.165 5.776 0 3.447-2.173 6.22-5.19 6.22-1.013 0-1.967-.527-2.292-1.148l-.623 2.378c-.226.869-.835 1.958-1.244 2.621.937.29 1.931.446 2.962.446 5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
+          <a href="https://wa.me/+12125551234" target="_blank" rel="noopener" aria-label="WhatsApp" class="social-link" id="footerWhatsapp">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .015 5.398 0 12.032c0 2.119.554 4.188 1.604 6.046l-1.706 6.234 6.377-1.673a11.815 11.815 0 005.772 1.503h.005c6.635 0 12.034-5.399 12.036-12.033.001-3.214-1.25-6.234-3.52-8.509z"/></svg>
           </a>
         </div>
+
       </div>
     </div>
     <div class="footer-bottom">
       <div class="footer-copy-wrap">
-        <p class="footer-copy">© 2026 Vinato. All rights reserved.</p>
+        <p class="footer-copy" data-i18n="footer.rights">© 2026 Vinato. All rights reserved.</p>
         <p class="footer-credit" style="color:#c6a87c; font-size:0.8rem; margin-top:8px;">Designed & Developed by Eng. Shehab AL-Naddaf</p>
       </div>
       <div class="footer-legal">
-        <a href="#" class="footer-legal-link">Privacy Policy</a>
-        <a href="#" class="footer-legal-link">Terms of Service</a>
+        <a href="privacy-policy.html" class="footer-legal-link" data-i18n="footer.privacy">Privacy Policy</a>
+        <a href="terms-of-service.html" class="footer-legal-link" data-i18n="footer.terms">Terms of Service</a>
       </div>
     </div>
   </footer>
@@ -284,7 +258,7 @@
       <div class="modal-header"><h3 id="qvTitle">Product Name</h3><button class="btn-icon" id="closeQuickView">×</button></div>
       <div class="modal-body qv-body">
         <div class="qv-image"><img src="" alt="Product" id="qvImg"></div>
-        <div class="qv-details"><p class="qv-price" id="qvPrice">$0.00</p><a href="product.html" class="btn btn-outline-dark">View Details</a></div>
+        <div class="qv-details"><p class="qv-price" id="qvPrice">$0.00</p><a href="/store/product.html" class="btn btn-outline-dark">View Details</a></div>
       </div>
     </div>
   </div>
@@ -294,6 +268,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/@barba/core"></script>
   <script src="https://unpkg.com/@barba/prefetch"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/animations.js"></script>
   <script>
     // Load dynamic settings from localStorage
@@ -335,17 +310,21 @@
 
           const mainImg = prod.colors[0]?.images[0] || '';
 
+          // Use bilingual fields
+          const lang = (window.VinI18n && window.VinI18n.lang) || 'ar';
+          const displayName = lang === 'ar' ? (prod.name_ar || prod.name) : (prod.name_en || prod.name);
+          const displayCat  = lang === 'ar' ? (prod.cat_ar  || prod.cat)  : (prod.cat_en  || prod.cat);
+
           card.innerHTML = `
             <div class="product-img-wrap">
-              <img src="${mainImg}" alt="${prod.name}" class="product-img" loading="lazy"/>
+              <img src="${mainImg}" alt="${displayName}" class="product-img" loading="lazy"/>
               <div class="product-overlay">
-                <a href="shop.html?featured=true" class="quick-view-btn" style="text-decoration:none; display:flex; align-items:center; justify-content:center;">View Details</a>
               </div>
               ${prod.badge ? `<span class="badge">${prod.badge}</span>` : ''}
             </div>
             <div class="product-info">
-              <h3 class="product-name">${prod.name}</h3>
-              <p class="product-sub">${prod.cat}</p>
+              <h3 class="product-name">${displayName}</h3>
+              <p class="product-sub">${displayCat}</p>
               <div class="product-price-row">
                 <span>
                   ${prod.comparePrice && prod.comparePrice > prod.price ? `<span class="product-compare-price">$${prod.comparePrice}</span>` : ''}
@@ -356,6 +335,14 @@
             </div>
           `;
           collectionGrid.prepend(card);
+        });
+
+        // Re-render on language toggle
+        document.addEventListener('langChange', () => {
+          document.querySelectorAll('#collectionGrid .product-card[data-sort]').forEach(c => {
+            // Only remove dynamic ones (those prepended by JS)
+          });
+          // Simplest: reload the section
         });
       }
     });

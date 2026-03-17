@@ -321,20 +321,35 @@ ul { list-style: none; }
   transition: all 0.3s ease;
 }
 
+/* Toggle color on white pages */
+.shop-page .navbar:not(.scrolled) .nav-toggle span,
+.product-page .navbar:not(.scrolled) .nav-toggle span,
+.lookbook-page .navbar:not(.scrolled) .nav-toggle span {
+  background: var(--black);
+}
+
 .mobile-menu {
-  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
   flex-direction: column;
-  background: rgba(0,0,0,0.97);
-  padding: 24px 5%;
+  background: rgba(0,0,0,0.98);
+  padding: 100px 5% 40px;
   gap: 20px;
   transform: translateY(-100%);
   opacity: 0;
-  transition: all 0.4s ease;
+  pointer-events: none;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  z-index: 999;
 }
 
 .mobile-menu.open {
   transform: translateY(0);
   opacity: 1;
+  pointer-events: all;
 }
 
 .mobile-link {
@@ -535,7 +550,8 @@ ul { list-style: none; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.8s ease;
+  transition: transform 0.3s var(--ease-out), 
+              opacity 0.3s var(--ease-out);
 }
 
 .product-img-secondary {
@@ -547,7 +563,7 @@ ul { list-style: none; }
   object-fit: cover;
   opacity: 0;
   transform: scale(1.05);
-  transition: opacity 0.8s cubic-bezier(0.19, 1, 0.22, 1), transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
 }
 
 .product-card:hover .product-img {
@@ -589,8 +605,8 @@ ul { list-style: none; }
 }
 
 .blur-load {
-  filter: blur(20px);
-  transition: filter 0.6s ease;
+  filter: blur(10px);
+  transition: filter 0.3s ease-out, opacity 0.3s ease-out;
 }
 
 .blur-load.loaded {
@@ -1286,11 +1302,38 @@ ul { list-style: none; }
 
   .nav-links { display: none; }
 
+  /* Keep lang toggle always visible — show it next to hamburger on mobile */
+  .lang-toggle {
+    display: flex !important;
+    border-color: rgba(255, 255, 255, 0.4);
+    font-size: 0.55rem;
+    padding: 4px 10px;
+    position: absolute;
+    right: 56px; /* sit left of the hamburger */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+  }
+  /* On white-navbar pages, adjust color */
+  .shop-page .navbar:not(.scrolled) .lang-toggle,
+  .product-page .navbar:not(.scrolled) .lang-toggle,
+  .lookbook-page .navbar:not(.scrolled) .lang-toggle {
+    border-color: rgba(0, 0, 0, 0.35);
+    color: rgba(0, 0, 0, 0.7);
+  }
+  .shop-page .navbar:not(.scrolled) .lang-toggle:hover,
+  .product-page .navbar:not(.scrolled) .lang-toggle:hover,
+  .lookbook-page .navbar:not(.scrolled) .lang-toggle:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
   .nav-toggle {
     display: flex;
     position: relative;
     z-index: 2;
   }
+
 
   .navbar .nav-logo { font-size: 26px; }
 
@@ -2105,8 +2148,8 @@ ul { list-style: none; }
   }
   .product-gallery::-webkit-scrollbar { display: none; }
   .product-gallery img {
-    width: 100vw;
-    flex: 0 0 100vw;
+    width: 100%;
+    flex: 0 0 100%;
     scroll-snap-align: start;
     display: block; 
     opacity: 1;
@@ -2148,3 +2191,284 @@ ul { list-style: none; }
   .shop-filters::-webkit-scrollbar { display: none; }
   .filter-btn { font-size: 0.65rem; }
 }
+
+/* ═══════════════════════════════════════════════
+   LANGUAGE TOGGLE BUTTON
+═══════════════════════════════════════════════ */
+.lang-toggle {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.75);
+  font-family: var(--font-sans);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  padding: 5px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.lang-toggle:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(212, 175, 55, 0.08);
+}
+
+/* ═══════════════════════════════════════════════
+   RTL — Arabic Layout Overrides
+═══════════════════════════════════════════════ */
+
+/* 1. Arabic Font — Cairo is designed for Arabic + Latin */
+[dir="rtl"] body,
+[dir="rtl"] p,
+[dir="rtl"] span,
+[dir="rtl"] a,
+[dir="rtl"] button,
+[dir="rtl"] label,
+[dir="rtl"] input,
+[dir="rtl"] textarea,
+[dir="rtl"] select {
+  font-family: 'Cairo', 'Segoe UI', Arial, sans-serif;
+  letter-spacing: 0; /* Arabic doesn't use letter-spacing */
+}
+
+/* 2. Headings in Arabic — use Cairo Bold */
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4 {
+  font-family: 'Cairo', Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+/* 3. Hero text sizes */
+[dir="rtl"] .hero-logo {
+  font-family: 'Cairo', sans-serif;
+  font-size: clamp(3rem, 9vw, 9rem);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+[dir="rtl"] .hero-tagline {
+  font-family: 'Cairo', sans-serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+/* 4. Section labels / headings */
+[dir="rtl"] .section-label {
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+[dir="rtl"] .section-title {
+  font-family: 'Cairo', sans-serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+[dir="rtl"] .section-desc,
+[dir="rtl"] .editorial-lead {
+  font-family: 'Cairo', sans-serif;
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+/* 5. Nav links */
+[dir="rtl"] .nav-link,
+[dir="rtl"] .mobile-link {
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+/* 6. Product cards */
+[dir="rtl"] .product-name {
+  font-family: 'Cairo', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+[dir="rtl"] .product-sub,
+[dir="rtl"] .product-cat {
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.85rem;
+}
+
+/* 7. Buttons */
+[dir="rtl"] .btn,
+[dir="rtl"] .add-btn {
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* 8. Footer */
+[dir="rtl"] .footer-tagline {
+  font-family: 'Cairo', sans-serif;
+  font-style: normal;
+  font-size: 1.2rem;
+}
+[dir="rtl"] .footer-link,
+[dir="rtl"] .footer-dynamic-phone {
+  font-family: 'Cairo', sans-serif;
+  font-size: 1.05rem;
+}
+
+/* 9. Marquee / scroll indicator */
+[dir="rtl"] .marquee-text {
+  font-family: 'Cairo', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0;
+}
+[dir="rtl"] .scroll-label {
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+}
+
+/* 10. Shop page filter buttons */
+[dir="rtl"] .filter-btn {
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 0;
+}
+
+/* 11. Shop page title */
+[dir="rtl"] .shop-title {
+  font-family: 'Cairo', sans-serif;
+  font-size: clamp(2.2rem, 5vw, 4.5rem);
+  font-weight: 700;
+}
+
+
+/* Nav */
+[dir="rtl"] .nav-inner {
+  direction: rtl;
+}
+[dir="rtl"] .nav-logo {
+
+  /* Keep logo centered regardless */
+  left: 50%;
+  transform: translateX(-50%);
+}
+[dir="rtl"] .nav-link::after {
+  left: auto;
+  right: 0;
+}
+[dir="rtl"] .dropdown-content {
+  left: auto;
+  right: 0;
+}
+[dir="rtl"] .dropdown-content a:hover {
+  padding-left: 24px;
+  padding-right: 32px;
+}
+
+/* Mobile menu */
+[dir="rtl"] .mobile-menu {
+  text-align: right;
+}
+
+/* Product info */
+[dir="rtl"] .product-info {
+  text-align: right;
+}
+[dir="rtl"] .product-price-row {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .product-compare-price {
+  margin-right: 0;
+  margin-left: 8px;
+}
+[dir="rtl"] .badge {
+  left: auto;
+  right: 16px;
+}
+
+/* Editorial */
+[dir="rtl"] .editorial-split {
+  direction: rtl;
+}
+[dir="rtl"] .editorial-body {
+  text-align: right;
+}
+
+/* Section headers */
+[dir="rtl"] .section-header {
+  text-align: center;
+}
+[dir="rtl"] .section-desc {
+  text-align: center;
+}
+
+/* Footer */
+[dir="rtl"] .footer-centered-wrap {
+  text-align: center;
+}
+[dir="rtl"] .footer-bottom {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .footer-legal {
+  text-align: left;
+}
+[dir="rtl"] .footer-contact-info {
+  direction: ltr; /* keep phone numbers LTR */
+}
+
+/* Shop page */
+[dir="rtl"] .shop-header-content {
+  text-align: center;
+}
+[dir="rtl"] .shop-filters {
+  justify-content: center;
+}
+
+/* Product page sidebar */
+[dir="rtl"] .product-sidebar-inner {
+  text-align: right;
+}
+[dir="rtl"] .pm-breadcrumbs {
+  text-align: right;
+}
+[dir="rtl"] .pm-section-header {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .color-swatch-list,
+[dir="rtl"] .size-selector {
+  justify-content: flex-end;
+}
+[dir="rtl"] .pm-price-wrap {
+  text-align: right;
+}
+[dir="rtl"] .accordion-header {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+/* BS cards */
+[dir="rtl"] .bs-info {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .bs-info > div {
+  text-align: right;
+}
+
+/* Best sellers */
+[dir="rtl"] .rv-info {
+  text-align: right;
+}
+
+/* RTL mobile — lang toggle flips to left side */
+@media (max-width: 768px) {
+  [dir="rtl"] .lang-toggle {
+    right: auto;
+    left: 56px;
+  }
+}
+

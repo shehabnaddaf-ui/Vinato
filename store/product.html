@@ -7,8 +7,29 @@
   <title>Oversized Cashmere Sweater — VINATO</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/store/css/styles.css" />
+  <!-- Lenis CSS -->
+  <style>
+    html.lenis { height: auto; }
+    .lenis.lenis-smooth { scroll-behavior: auto; }
+    .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+    .lenis.lenis-stopped { overflow: hidden; }
+  </style>
+</head>
+<body data-barba="wrapper">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Vinato Product — Premium luxury fashion." />
+  <title>Oversized Cashmere Sweater — VINATO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/store/css/styles.css" />
   <!-- Lenis CSS -->
   <style>
     html.lenis { height: auto; }
@@ -28,25 +49,25 @@
     <div class="nav-inner">
       <div class="nav-links nav-left">
         <div class="nav-dropdown">
-          <a href="shop.html?gender=men" class="nav-link">Men</a>
+          <a href="shop.html?gender=men" class="nav-link" data-i18n="nav.men">Men</a>
           <div class="dropdown-content">
-            <a href="shop.html?gender=men&cat=jackets">Jackets</a>
-            <a href="shop.html?gender=men&cat=sweaters">Sweaters / Hoodies</a>
-            <a href="shop.html?gender=men&cat=shirts">Shirts</a>
-            <a href="shop.html?gender=men&cat=pants">Pants</a>
-            <a href="shop.html?gender=men&cat=underwear">Underwear</a>
-            <a href="shop.html?gender=men&cat=shoes">Shoes / Boots</a>
+            <a href="shop.html?gender=men&cat=jackets" data-i18n="nav.men.jackets">Jackets</a>
+            <a href="shop.html?gender=men&cat=sweaters" data-i18n="nav.men.sweaters">Sweaters / Hoodies</a>
+            <a href="shop.html?gender=men&cat=shirts" data-i18n="nav.men.shirts">Shirts</a>
+            <a href="shop.html?gender=men&cat=pants" data-i18n="nav.men.pants">Pants</a>
+            <a href="shop.html?gender=men&cat=underwear" data-i18n="nav.men.underwear">Underwear</a>
+            <a href="shop.html?gender=men&cat=shoes" data-i18n="nav.men.boots">Shoes / Boots</a>
           </div>
         </div>
         <div class="nav-dropdown">
-          <a href="shop.html?gender=women" class="nav-link">Women</a>
+          <a href="shop.html?gender=women" class="nav-link" data-i18n="nav.women">Women</a>
           <div class="dropdown-content">
-            <a href="shop.html?gender=women&cat=jackets">Jackets</a>
-            <a href="shop.html?gender=women&cat=sweaters">Sweaters / Hoodies</a>
-            <a href="shop.html?gender=women&cat=shirts">Shirts</a>
-            <a href="shop.html?gender=women&cat=pants">Pants</a>
-            <a href="shop.html?gender=women&cat=underwear">Underwear</a>
-            <a href="shop.html?gender=women&cat=shoes">Shoes / Boots</a>
+            <a href="shop.html?gender=women&cat=jackets" data-i18n="nav.women.jackets">Jackets</a>
+            <a href="shop.html?gender=women&cat=sweaters" data-i18n="nav.women.sweaters">Sweaters / Hoodies</a>
+            <a href="shop.html?gender=women&cat=shirts" data-i18n="nav.women.shirts">Shirts</a>
+            <a href="shop.html?gender=women&cat=pants" data-i18n="nav.women.pants">Pants</a>
+            <a href="shop.html?gender=women&cat=underwear" data-i18n="nav.women.underwear">Underwear</a>
+            <a href="shop.html?gender=women&cat=shoes" data-i18n="nav.women.boots">Shoes / Boots</a>
           </div>
         </div>
         <div class="nav-dropdown">
@@ -61,8 +82,9 @@
       </div>
       <a href="index.html" class="nav-logo">VINATO</a>
       <div class="nav-links nav-right">
-        <a href="lookbook.html" class="nav-link">Lookbook</a>
-        <a href="#footer" class="nav-link">Contact</a>
+        <a href="lookbook.html" class="nav-link" data-i18n="nav.lookbook">Lookbook</a>
+        <a href="#footer" class="nav-link" data-i18n="nav.contact">Contact</a>
+        <button class="lang-toggle" id="langToggle" onclick="toggleLang()" aria-label="Switch language">EN</button>
       </div>
       <!-- Mobile menu toggle -->
       <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
@@ -71,32 +93,32 @@
     </div>
     <!-- Mobile drawer -->
     <div class="mobile-menu" id="mobileMenu">
-      <a href="shop.html?sort=new" class="mobile-link">New Collection</a>
+      <a href="shop.html?sort=new" class="mobile-link" data-i18n="nav.new_collection">New Collection</a>
       <div class="mobile-dropdown">
-        <button class="mobile-link mobile-dropdown-btn">Men <span>+</span></button>
+        <button class="mobile-link mobile-dropdown-btn"><span data-i18n="nav.men">Men</span> <span>+</span></button>
         <div class="mobile-dropdown-content">
-          <a href="shop.html?gender=men&cat=jackets">Jackets</a>
-          <a href="shop.html?gender=men&cat=shirts">Shirts</a>
-          <a href="shop.html?gender=men&cat=sweaters">Sweaters</a>
-          <a href="shop.html?gender=men&cat=pants">Pants</a>
-          <a href="shop.html?gender=men&cat=underwear">Underwear</a>
-          <a href="shop.html?gender=men&cat=shoes">Boots</a>
+          <a href="shop.html?gender=men&cat=jackets" data-i18n="nav.men.jackets">Jackets</a>
+          <a href="shop.html?gender=men&cat=shirts" data-i18n="nav.men.shirts">Shirts</a>
+          <a href="shop.html?gender=men&cat=sweaters" data-i18n="nav.men.sweaters">Sweaters</a>
+          <a href="shop.html?gender=men&cat=pants" data-i18n="nav.men.pants">Pants</a>
+          <a href="shop.html?gender=men&cat=underwear" data-i18n="nav.men.underwear">Underwear</a>
+          <a href="shop.html?gender=men&cat=shoes" data-i18n="nav.men.boots">Boots</a>
         </div>
       </div>
       <div class="mobile-dropdown">
-        <button class="mobile-link mobile-dropdown-btn">Women <span>+</span></button>
+        <button class="mobile-link mobile-dropdown-btn"><span data-i18n="nav.women">Women</span> <span>+</span></button>
         <div class="mobile-dropdown-content">
-          <a href="shop.html?gender=women&cat=jackets">Jackets</a>
-          <a href="shop.html?gender=women&cat=shirts">Shirts</a>
-          <a href="shop.html?gender=women&cat=sweaters">Sweaters</a>
-          <a href="shop.html?gender=women&cat=pants">Pants</a>
-          <a href="shop.html?gender=women&cat=underwear">Underwear</a>
-          <a href="shop.html?gender=women&cat=shoes">Boots</a>
+          <a href="shop.html?gender=women&cat=jackets" data-i18n="nav.women.jackets">Jackets</a>
+          <a href="shop.html?gender=women&cat=shirts" data-i18n="nav.women.shirts">Shirts</a>
+          <a href="shop.html?gender=women&cat=sweaters" data-i18n="nav.women.sweaters">Sweaters</a>
+          <a href="shop.html?gender=women&cat=pants" data-i18n="nav.women.pants">Pants</a>
+          <a href="shop.html?gender=women&cat=underwear" data-i18n="nav.women.underwear">Underwear</a>
+          <a href="shop.html?gender=women&cat=shoes" data-i18n="nav.women.boots">Boots</a>
         </div>
       </div>
-      <a href="shop.html?sale=true" class="mobile-link" style="color: var(--gold);">Sale</a>
-      <a href="lookbook.html" class="mobile-link">Lookbook</a>
-      <a href="index.html#footer" class="mobile-link">Contact</a>
+      <a href="shop.html?sale=true" class="mobile-link" style="color: var(--gold);" data-i18n="nav.sale">Sale</a>
+      <a href="lookbook.html" class="mobile-link" data-i18n="nav.lookbook">Lookbook</a>
+      <a href="index.html#footer" class="mobile-link" data-i18n="nav.contact">Contact</a>
     </div>
   </nav>
 
@@ -150,7 +172,7 @@
           <div class="pm-section">
             <div class="pm-section-header">
               <span>Size</span>
-              <button type="button" class="btn-text-gold" id="openSizeGuide">Size Guide</button>
+          <button type="button" class="btn-text-gold" id="openSizeGuide" data-i18n="product.size_guide">Size Guide</button>
             </div>
             <div class="size-selector">
               <label class="size-opt"><input type="radio" name="size" value="S"><span>S</span></label>
@@ -160,19 +182,19 @@
             </div>
           </div>
 
-          <button class="btn btn-primary pm-add-btn magnetic">Add to Bag</button>
-          <p class="pm-shipping-note">Free standard shipping. Returns within 14 days.</p>
+          <button class="btn btn-primary pm-add-btn magnetic" data-i18n="product.add_bag">Add to Bag</button>
+          <p class="pm-shipping-note" data-i18n="product.shipping">Free standard shipping. Returns within 14 days.</p>
 
           <!-- Details Accordion -->
           <div class="pm-accordion">
             <div class="accordion-item">
-              <button class="accordion-header">Description <span class="icon">+</span></button>
+              <button class="accordion-header" data-i18n="product.description">Description <span class="icon">+</span></button>
               <div class="accordion-content">
                 <p>Woven from the finest pure Mongolian cashmere, this oversized silhouette drapes effortlessly. Dropped shoulders, ribbed trims, and a subtle raw-edge finish. Designed to transcend seasons.</p>
               </div>
             </div>
             <div class="accordion-item">
-              <button class="accordion-header">Details & Care <span class="icon">+</span></button>
+              <button class="accordion-header" data-i18n="product.details_care">Details &amp; Care <span class="icon">+</span></button>
               <div class="accordion-content">
                 <ul style="list-style:disc; margin-left: 1.5rem; font-size:0.85rem; color:var(--gray); line-height:1.8;">
                   <li>100% Cashmere</li>
@@ -190,7 +212,7 @@
     <!-- RECENTLY VIEWED SECTION -->
     <section class="recently-viewed">
       <div class="rv-header">
-        <h2 class="rv-title">Recently Viewed</h2>
+        <h2 class="rv-title" data-i18n="product.recently_viewed">Recently Viewed</h2>
       </div>
       <div class="rv-scroll-container">
         <!-- Scrollable list of recent items -->
@@ -229,13 +251,12 @@
   <footer class="footer">
     <div class="footer-bottom">
       <div class="footer-copy-wrap">
-        <p class="footer-copy">© 2026 Vinato. All rights reserved.</p>
+        <p class="footer-copy" data-i18n="footer.rights">© 2026 Vinato. All rights reserved.</p>
         <p class="footer-credit" style="color:#c6a87c; font-size:0.8rem; margin-top:8px;">Designed & Developed by Eng. Shehab AL-Naddaf</p>
       </div>
-      <div class="social-links">
-        <a href="#" class="social-link">IG</a>
-        <a href="#" class="social-link">PN</a>
-        <a href="#" class="social-link">TT</a>
+      <div class="footer-legal">
+        <a href="privacy-policy.html" class="footer-legal-link" style="font-size: 0.75rem; color: var(--gray); margin-right: 20px;" data-i18n="footer.privacy">Privacy Policy</a>
+        <a href="terms-of-service.html" class="footer-legal-link" style="font-size: 0.75rem; color: var(--gray);" data-i18n="footer.terms">Terms of Service</a>
       </div>
     </div>
   </footer>
@@ -279,6 +300,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/@barba/core"></script>
   <script src="https://unpkg.com/@barba/prefetch"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/animations.js"></script>
 </body>
 </html>

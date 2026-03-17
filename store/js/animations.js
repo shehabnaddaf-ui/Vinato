@@ -1,6 +1,9 @@
 // ═══════════════════════════════════════════════
 //   LENIS & GSAP SETUP
 // ═══════════════════════════════════════════════
+if (typeof window.__vinatoAnimationsInit === 'undefined') {
+window.__vinatoAnimationsInit = true;
+
 gsap.registerPlugin(ScrollTrigger);
 
 let lenis;
@@ -137,7 +140,14 @@ function initMenu() {
   if (navToggle && mobileMenu) {
     navToggle.addEventListener('click', (e) => {
       e.stopPropagation();
-      mobileMenu.classList.toggle('open');
+      const isOpen = mobileMenu.classList.toggle('open');
+      navToggle.classList.toggle('active');
+      
+      if (isOpen && lenis) {
+        lenis.stop();
+      } else if (lenis) {
+        lenis.start();
+      }
     });
 
     const links = mobileMenu.querySelectorAll('.mobile-link');
@@ -162,8 +172,10 @@ function initMenu() {
     
     // Close when clicking outside
     document.addEventListener('click', (e) => {
-      if (!mobileMenu.contains(e.target) && !navToggle.contains(e.target)) {
+      if (mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && !navToggle.contains(e.target)) {
         mobileMenu.classList.remove('open');
+        navToggle.classList.remove('active');
+        if(lenis) lenis.start();
       }
     });
   }
@@ -175,18 +187,18 @@ function initMenu() {
 function initScrollTriggers() {
   // Reveal Up
   gsap.utils.toArray('.reveal-up').forEach(el => {
-    gsap.fromTo(el, { y: 50, opacity: 0 }, {
-      scrollTrigger: { trigger: el, start: "top 90%" },
-      y: 0, opacity: 1, duration: 0.6, ease: "power3.out"
+    gsap.fromTo(el, { y: 30, opacity: 0 }, {
+      scrollTrigger: { trigger: el, start: "top 95%" },
+      y: 0, opacity: 1, duration: 0.35, ease: "power2.out"
     });
   });
 
   // Reveal Left/Right
   gsap.utils.toArray('.reveal-left').forEach(el => {
-    gsap.fromTo(el, { x: -50, opacity: 0 }, { scrollTrigger: { trigger: el, start: "top 90%" }, x: 0, opacity: 1, duration: 0.6, ease: "power3.out" });
+    gsap.fromTo(el, { x: -30, opacity: 0 }, { scrollTrigger: { trigger: el, start: "top 95%" }, x: 0, opacity: 1, duration: 0.35, ease: "power2.out" });
   });
   gsap.utils.toArray('.reveal-right').forEach(el => {
-    gsap.fromTo(el, { x: 50, opacity: 0 }, { scrollTrigger: { trigger: el, start: "top 90%" }, x: 0, opacity: 1, duration: 0.6, ease: "power3.out" });
+    gsap.fromTo(el, { x: 30, opacity: 0 }, { scrollTrigger: { trigger: el, start: "top 95%" }, x: 0, opacity: 1, duration: 0.35, ease: "power2.out" });
   });
 
   // Parallax BGs
@@ -429,7 +441,7 @@ function initLazyLoading() {
       }
     });
   }, {
-    rootMargin: '100px 0px',
+    rootMargin: '200px 0px',
     threshold: 0.01
   });
 
@@ -502,3 +514,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initLazyLoading();
   initBarba();
 });
+
+} // end __vinatoAnimationsInit guard
