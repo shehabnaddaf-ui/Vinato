@@ -217,8 +217,17 @@ document.addEventListener('DOMContentLoaded', () => {
   function saveCurrentProduct() {
     const nameAr = inputs.name.value.trim();
     const descAr = (document.getElementById('p_description') || {}).value?.trim() || '';
-    const catArInput = document.getElementById('p_cat_ar');
-    const catAr = catArInput ? catArInput.value.trim() : '';
+    const catSelect = document.getElementById('p_cat_ar');
+    const catSlug = catSelect ? catSelect.value.trim() : '';
+
+    // Map English slugs → Arabic display names
+    const CAT_AR_MAP = {
+      jackets: 'جاكيتات', shirts: 'قمصان', sweaters: 'كنزات', pants: 'بناطيل',
+      suits: 'بدلات', dresses: 'فساتين', accessories: 'إكسسوارات',
+      pajamas: 'بيجامات', underwear: 'ملابس داخلية', shoes: 'أحذية'
+    };
+    const catAr = CAT_AR_MAP[catSlug] || catSlug;
+    const catEn = catSlug; // already English slug
 
     if (!nameAr || inputs.colors.every ? inputs.colors.every(c => c.images.length === 0) : false) {
       // We'll validate below
@@ -275,13 +284,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     Promise.all([
       translateText(nameAr),
-      translateText(descAr),
-      translateText(catAr)
-    ]).then(([nameEn, descEn, catEn]) => {
+      translateText(descAr)
+    ]).then(([nameEn, descEn]) => {
       product.name_en = nameEn || nameAr;
       product.description_en = descEn || descAr;
-      product.cat_en = catEn || catAr;
-      product.name = nameAr; // keep Arabic as primary
+      product.cat_en = catEn;
+      product.name = nameAr;
       product.cat  = catAr;
 
       const existingProducts = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
