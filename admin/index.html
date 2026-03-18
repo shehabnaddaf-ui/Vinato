@@ -22,11 +22,10 @@
     <div class="sidebar-logo">VINATO ADMIN</div>
     <nav class="sidebar-nav">
       <a href="#" class="nav-item" data-view="dashboard-view">Dashboard</a>
-      <a href="#" class="nav-item active" data-view="products-view">Products</a>
+      <a href="#" class="nav-item active" data-view="products-view">+ إضافة منتج</a>
+      <a href="#" class="nav-item" data-view="manage-products-view">📦 منتجاتي</a>
       <a href="#" class="nav-item" data-view="media-view">Media Library</a>
-      <a href="#" class="nav-item" data-view="collections-view">Collections</a>
       <a href="#" class="nav-item" data-view="server-media-view">🖼 مدير الصور</a>
-      <a href="#" class="nav-item" data-view="site-images-view">Website Images</a>
       <a href="#" class="nav-item" data-view="orders-view">Orders</a>
       <a href="#" class="nav-item" data-view="settings-view">Settings</a>
       <div class="sidebar-footer">
@@ -176,16 +175,12 @@
             
             <!-- Meta Options -->
             <div class="meta-options">
-              <label class="checkbox-label">
-                <input type="checkbox" id="p_featured">
-                <span class="checkmark"></span>
-                ⭐ Featured Product (Show on Homepage)
-              </label>
               <div class="status-toggle">
                 <label>Status:</label>
                 <select id="p_status" class="form-input form-input-sm">
-                  <option value="Draft">Draft</option>
-                  <option value="Published">Published</option>
+                  <option value="Draft">📝 Draft</option>
+                  <option value="Published">✅ Published</option>
+                  <option value="Hidden">🙈 Hidden</option>
                 </select>
               </div>
             </div>
@@ -223,6 +218,33 @@
                   <div class="selected-images-grid" id="selectedImages_c1"></div>
                 </div>
               </div>
+            </div>
+          </div>
+          <!-- Placement Card -->
+          <div class="form-card">
+            <h3>📍 مكان عرض المنتج</h3>
+            <p class="help-text">اختر أين سيظهر هذا المنتج على الموقع.</p>
+            <div class="meta-options" style="flex-direction:column; gap:12px;">
+              <label class="checkbox-label">
+                <input type="checkbox" id="place_shop" checked disabled>
+                <span class="checkmark"></span>
+                🛍 صفحة المتجر (دائماً)
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="place_featured">
+                <span class="checkmark"></span>
+                ⭐ الصفحة الرئيسية — قسم New Collection
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="place_editorial">
+                <span class="checkmark"></span>
+                🎨 الصفحة الرئيسية — القسم التحريري (صورة + نص)
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="place_bestseller">
+                <span class="checkmark"></span>
+                🔥 الصفحة الرئيسية — Best Sellers
+              </label>
             </div>
           </div>
         </form>
@@ -268,12 +290,67 @@
           <h2>🖼 مدير الصور — Image Manager</h2>
         </header>
         <p class="help-text" style="padding: 0 0 20px 0; color:#888;">
-          يمكنك هنا استبدال أي صورة في الموقع بصورة جديدة. أدخل رابط الصورة الجديدة في الحقل المخصص واضغط "استبدال".
-          <br><small>سيتم حفظ التعديلات وتطبيقها على الموقع في المتصفح.</small>
+          اضغط <strong>"اختر من المكتبة"</strong> لكل صورة واستبدلها بصورة من مكتبة الوسائط الخاصة بك.
+          <br><small>يحتاج رفع الصور أولاً إلى قسم <strong>Media Library</strong>.</small>
         </p>
-
         <div id="imageManagerList" style="display:flex; flex-direction:column; gap:20px;">
           <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Manage Products View -->
+      <div id="manage-products-view" class="view-panel">
+        <header class="section-header">
+          <h2>📦 منتجاتي</h2>
+        </header>
+        <div class="form-card" style="padding:0; overflow:hidden;">
+          <table class="admin-table" id="manageProductsTable">
+            <thead>
+              <tr>
+                <th>الصورة</th>
+                <th>الاسم</th>
+                <th>السعر</th>
+                <th>الجنس</th>
+                <th>المكان</th>
+                <th>الحالة</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="manageProductsBody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Inline Edit Form (hidden by default) -->
+        <div id="editProductForm" class="form-card" style="display:none; margin-top:20px;">
+          <h3 id="editFormTitle">✏️ تعديل المنتج</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>اسم المنتج</label>
+              <input type="text" id="edit_name" class="form-input" dir="rtl">
+            </div>
+            <div class="form-group">
+              <label>السعر ($)</label>
+              <input type="number" id="edit_price" class="form-input">
+            </div>
+            <div class="form-group">
+              <label>السعر الأصلي ($)</label>
+              <input type="number" id="edit_compare_price" class="form-input">
+            </div>
+            <div class="form-group">
+              <label>الحالة</label>
+              <select id="edit_status" class="form-input">
+                <option value="Draft">📝 Draft</option>
+                <option value="Published">✅ Published</option>
+                <option value="Hidden">🙈 Hidden</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; margin-top:12px;">
+            <button class="btn btn-primary" id="saveEditBtn">حفظ التعديلات</button>
+            <button class="btn btn-outline" id="cancelEditBtn">إلغاء</button>
+          </div>
         </div>
       </div>
 

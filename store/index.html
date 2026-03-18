@@ -167,15 +167,19 @@
     </div>
   </section>
 
-  <section class="editorial-split">
-    <div class="editorial-image reveal-left">
-      <img src="images/optimized/hero_bg.webp" alt="Vinato Editorial" loading="lazy" />
+  <section class="editorial-split" id="editorialSection">
+    <div class="editorial-image reveal-left" id="editorialImageWrap">
+      <img src="images/optimized/hero_bg.webp" alt="Vinato Editorial" loading="lazy" id="editorialImg" />
       <div class="editorial-img-overlay"></div>
     </div>
     <div class="editorial-text reveal-right">
       <span class="section-label gold" data-i18n="section.philosophy">Our Philosophy</span>
-      <h2 class="editorial-title" data-i18n="section.story.title">The Art of<br/><em>Disappearing</em></h2>
-      <p class="editorial-body" data-i18n="section.story.body">Vinato was born from the belief that true luxury is restraint. Every piece is crafted to whisper — never shout. No logos. No excess.</p>
+      <h2 class="editorial-title" data-i18n="section.story.title" id="editorialTitle">The Art of<br/><em>Disappearing</em></h2>
+      <p class="editorial-body" data-i18n="section.story.body" id="editorialBody">Vinato was born from the belief that true luxury is restraint. Every piece is crafted to whisper — never shout. No logos. No excess.</p>
+      <div id="editorialProductInfo" style="display:none; margin:16px 0;">
+        <div id="editorialProductName" style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:600; margin-bottom:4px;"></div>
+        <div id="editorialProductPrice" style="font-size:1rem; color:#d4af37;"></div>
+      </div>
       <a href="#" class="btn btn-primary" data-i18n="section.story.btn">Discover Our Story</a>
     </div>
   </section>
@@ -185,7 +189,7 @@
       <span class="section-label" data-i18n="section.most_loved">Most Loved</span>
       <h2 class="section-title" data-i18n="section.best_sellers">Best Sellers</h2>
     </div>
-    <div class="bestsellers-grid">
+    <div class="bestsellers-grid" id="bestsellersGrid">
       <a href="shop.html?gender=women&cat=accessories" class="bs-card reveal-up">
         <div class="bs-img-wrap skeleton">
           <img src="images/optimized/best_sellers.webp" data-src="images/optimized/best_sellers.webp" alt="Minimal Leather Tote" class="lazy-image blur-load" loading="lazy">
@@ -299,57 +303,87 @@
         }
       }
 
-      loadFeaturedProducts();
+      loadDynamicProducts();
 
-      function loadFeaturedProducts() {
-        const dynamicProducts = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
-        const featuredProducts = dynamicProducts.filter(p => p.featured);
-        if (featuredProducts.length === 0) return;
+      function loadDynamicProducts() {
+        const allProducts = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
+        // Only show Published products
+        const published = allProducts.filter(p => p.status === 'Published' || (!p.status && p.featured));
 
+        const lang = (window.VinI18n && window.VinI18n.lang) || 'ar';
+        const getName = p => lang === 'ar' ? (p.name_ar || p.name) : (p.name_en || p.name);
+        const getCat  = p => lang === 'ar' ? (p.cat_ar  || p.cat)  : (p.cat_en  || p.cat);
+
+        // ── Featured / collection grid ──
+        const featured = published.filter(p => (p.placement || []).includes('homepage_featured') || p.featured);
         const collectionGrid = document.getElementById('collectionGrid');
-        if (!collectionGrid) return;
-
-        featuredProducts.forEach(prod => {
-          const card = document.createElement('div');
-          card.className = 'product-card reveal-up';
-          card.setAttribute('data-sort', prod.sort);
-
-          const mainImg = prod.colors[0]?.images[0] || '';
-
-          // Use bilingual fields
-          const lang = (window.VinI18n && window.VinI18n.lang) || 'ar';
-          const displayName = lang === 'ar' ? (prod.name_ar || prod.name) : (prod.name_en || prod.name);
-          const displayCat  = lang === 'ar' ? (prod.cat_ar  || prod.cat)  : (prod.cat_en  || prod.cat);
-
-          card.innerHTML = `
-            <div class="product-img-wrap">
-              <img src="${mainImg}" alt="${displayName}" class="product-img" loading="lazy"/>
-              <div class="product-overlay">
+        if (collectionGrid && featured.length > 0) {
+          featured.forEach(prod => {
+            const card = document.createElement('div');
+            card.className = 'product-card reveal-up';
+            card.setAttribute('data-sort', prod.sort);
+            const mainImg = prod.colors?.[0]?.images?.[0] || '';
+            card.innerHTML = `
+              <div class="product-img-wrap">
+                <img src="${mainImg}" alt="${getName(prod)}" class="product-img" loading="lazy"/>
+                <div class="product-overlay"></div>
+                ${prod.badge ? `<span class="badge">${prod.badge}</span>` : ''}
               </div>
-              ${prod.badge ? `<span class="badge">${prod.badge}</span>` : ''}
-            </div>
-            <div class="product-info">
-              <h3 class="product-name">${displayName}</h3>
-              <p class="product-sub">${displayCat}</p>
-              <div class="product-price-row">
-                <span>
-                  ${prod.comparePrice && prod.comparePrice > prod.price ? `<span class="product-compare-price">$${prod.comparePrice}</span>` : ''}
-                  <span class="product-price">$${prod.price}</span>
-                </span>
-                <button class="add-btn">+</button>
+              <div class="product-info">
+                <h3 class="product-name">${getName(prod)}</h3>
+                <p class="product-sub">${getCat(prod)}</p>
+                <div class="product-price-row">
+                  <span>
+                    ${prod.comparePrice && prod.comparePrice > prod.price ? `<span class="product-compare-price">$${prod.comparePrice}</span>` : ''}
+                    <span class="product-price">$${prod.price}</span>
+                  </span>
+                  <button class="add-btn">+</button>
+                </div>
               </div>
-            </div>
-          `;
-          collectionGrid.prepend(card);
-        });
-
-        // Re-render on language toggle
-        document.addEventListener('langChange', () => {
-          document.querySelectorAll('#collectionGrid .product-card[data-sort]').forEach(c => {
-            // Only remove dynamic ones (those prepended by JS)
+            `;
+            collectionGrid.prepend(card);
           });
-          // Simplest: reload the section
-        });
+        }
+
+        // ── Editorial section ──
+        const editorialProd = published.find(p => (p.placement || []).includes('homepage_editorial'));
+        if (editorialProd) {
+          const mainImg = editorialProd.colors?.[0]?.images?.[0];
+          if (mainImg) {
+            const editImg = document.getElementById('editorialImg');
+            if (editImg) editImg.src = mainImg;
+          }
+          const nameEl = document.getElementById('editorialProductName');
+          const priceEl = document.getElementById('editorialProductPrice');
+          const infoEl = document.getElementById('editorialProductInfo');
+          if (nameEl && priceEl && infoEl) {
+            nameEl.textContent = getName(editorialProd);
+            priceEl.textContent = `$${editorialProd.price}`;
+            infoEl.style.display = 'block';
+          }
+        }
+
+        // ── Best Sellers section ──
+        const bestsellerProds = published.filter(p => (p.placement || []).includes('homepage_bestseller'));
+        const bsGrid = document.getElementById('bestsellersGrid');
+        if (bsGrid && bestsellerProds.length > 0) {
+          bestsellerProds.forEach(prod => {
+            const mainImg = prod.colors?.[0]?.images?.[0] || '';
+            const card = document.createElement('a');
+            card.href = 'shop.html';
+            card.className = 'bs-card reveal-up';
+            card.innerHTML = `
+              <div class="bs-img-wrap skeleton">
+                <img src="${mainImg}" alt="${getName(prod)}" loading="lazy">
+              </div>
+              <div class="bs-info">
+                <div><h3 class="bs-name">${getName(prod)}</h3><p class="bs-cat">${getCat(prod)}</p></div>
+                <span class="bs-price">$${prod.price}</span>
+              </div>
+            `;
+            bsGrid.prepend(card);
+          });
+        }
       }
     });
   </script>

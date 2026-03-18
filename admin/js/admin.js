@@ -110,22 +110,23 @@ document.addEventListener('DOMContentLoaded', () => {
     switchView('products-view'); // Fallback
   }
 
-  // Image Manager — renders all site images
+  // Image Manager — renders all site images with Media Library picker
+  let imgMgrTargetKey = null;
+
   function renderImageManager() {
     const list = document.getElementById('imageManagerList');
     if (!list) return;
 
-    // All images used across the website with their context
     const SITE_IMAGES = [
-      { key: 'hero_bg',          label: 'Hero Background',             location: 'Homepage → Hero Section',           path: '/store/images/optimized/hero_unisex.png.webp' },
-      { key: 'new_collection',   label: 'New Collection',              location: 'Homepage → New Collection Section',  path: '/store/images/optimized/new_collection.webp' },
-      { key: 'best_sellers',     label: 'Best Sellers',                location: 'Homepage → Best Sellers Section',    path: '/store/images/optimized/best_sellers.webp' },
-      { key: 'instagram_grid',   label: 'Instagram Gallery',           location: 'Homepage → Instagram Section',      path: '/store/images/optimized/instagram_grid.webp' },
-      { key: 'prod_coat_men',    label: 'Men\'s Structured Overcoat',  location: 'Shop → Men / Product Page',          path: '/store/images/optimized/prod_coat_men.webp' },
-      { key: 'prod_dress_silk',  label: 'Women\'s Silk Slip Dress',    location: 'Shop → Women / Category Section',    path: '/store/images/optimized/prod_dress_silk.webp' },
-      { key: 'prod_knitwear',    label: 'Oversized Cashmere Sweater',  location: 'Shop → Product Page (Main Image)',   path: '/store/images/optimized/prod_knitwear.webp' },
-      { key: 'prod_trousers',    label: 'Tailored Wool Trousers',      location: 'Shop → Women / Category Card',       path: '/store/images/optimized/prod_trousers.webp' },
-      { key: 'hero_bg_editorial','label': 'Editorial Split Image',    location: 'Homepage → Editorial Split Section', path: '/store/images/optimized/hero_bg.webp' },
+      { key: 'hero_bg',           label: 'Hero Background',            location: 'Homepage → Hero Section',           path: '/store/images/optimized/hero_unisex.png.webp' },
+      { key: 'new_collection',    label: 'New Collection',             location: 'Homepage → New Collection Section', path: '/store/images/optimized/new_collection.webp' },
+      { key: 'best_sellers',      label: 'Best Sellers',               location: 'Homepage → Best Sellers Section',   path: '/store/images/optimized/best_sellers.webp' },
+      { key: 'instagram_grid',    label: 'Instagram Gallery',          location: 'Homepage → Instagram Section',     path: '/store/images/optimized/instagram_grid.webp' },
+      { key: 'prod_coat_men',     label: "Men's Structured Overcoat",  location: 'Shop → Men / Product Page',         path: '/store/images/optimized/prod_coat_men.webp' },
+      { key: 'prod_dress_silk',   label: "Women's Silk Slip Dress",    location: 'Shop → Women / Category Section',   path: '/store/images/optimized/prod_dress_silk.webp' },
+      { key: 'prod_knitwear',     label: 'Oversized Cashmere Sweater', location: 'Shop → Product Page (Main Image)',  path: '/store/images/optimized/prod_knitwear.webp' },
+      { key: 'prod_trousers',     label: 'Tailored Wool Trousers',     location: 'Shop → Women / Category Card',      path: '/store/images/optimized/prod_trousers.webp' },
+      { key: 'hero_bg_editorial', label: 'Editorial Split Image',      location: 'Homepage → Editorial Split Section',path: '/store/images/optimized/hero_bg.webp' },
     ];
 
     const replaced = JSON.parse(localStorage.getItem('vinato_replaced_server_files') || '{}');
@@ -146,11 +147,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <div style="font-weight:600; font-size:0.9rem; margin-bottom:4px;">${img.label}</div>
           <div style="font-size:0.72rem; color:#888; margin-bottom:2px;">📍 ${img.location}</div>
           <div style="font-size:0.68rem; color:#666; margin-bottom:12px; direction:ltr; word-break:break-all;">${img.path}</div>
-          ${isReplaced ? `<div style="font-size:0.68rem; color:var(--accent, #d4af37); margin-bottom:8px;">✓ تم استبداله → <span style="word-break:break-all;">${currentUrl}</span></div>` : ''}
+          ${isReplaced ? `<div style="font-size:0.68rem; color:#d4af37; margin-bottom:8px;">✓ تم استبداله → <span style="word-break:break-all;">${currentUrl}</span></div>` : ''}
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <input type="url" id="imgInput_${img.key}" placeholder="أدخل رابط الصورة الجديدة..." class="form-input" style="flex:1; font-size:0.78rem;" value="">
-            <button class="btn btn-primary" style="font-size:0.75rem; white-space:nowrap;" onclick="replaceImage('${img.key}', '${img.path}')">
-              استبدال
+            <button class="btn btn-primary" style="font-size:0.78rem;" onclick="openImgMgrPicker('${img.key}')">
+              🖼 اختر من المكتبة
             </button>
             ${isReplaced ? `<button class="btn btn-outline" style="font-size:0.75rem;" onclick="resetImage('${img.key}')">♻ Reset</button>` : ''}
           </div>
@@ -160,15 +160,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  window.replaceImage = (key, originalPath) => {
-    const inp = document.getElementById('imgInput_' + key);
-    const newUrl = inp ? inp.value.trim() : '';
-    if (!newUrl) { showToast('يرجى إدخال رابط الصورة الجديدة.'); return; }
-    const replaced = JSON.parse(localStorage.getItem('vinato_replaced_server_files') || '{}');
-    replaced[key] = newUrl;
-    localStorage.setItem('vinato_replaced_server_files', JSON.stringify(replaced));
-    renderImageManager();
-    showToast('تم استبدال الصورة بنجاح ✓');
+  window.openImgMgrPicker = (key) => {
+    imgMgrTargetKey = key;
+    state.activeColorIdForMedia = '__imgmgr__';
+    openMediaModal('__imgmgr__');
   };
 
   window.resetImage = (key) => {
@@ -179,16 +174,134 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast('♻ تم إعادة الصورة الأصلية');
   };
 
-  // Trigger render when nav item clicked
+  // Trigger render when nav item clicked + manage-products-view
   navItems.forEach(item => {
     item.addEventListener('click', () => {
       if (item.dataset.view === 'server-media-view') renderImageManager();
+      if (item.dataset.view === 'manage-products-view') renderManageProducts();
     });
   });
 
-  if (currentActive && currentActive.dataset.view === 'server-media-view') {
-    renderImageManager();
+  if (currentActive && currentActive.dataset.view === 'server-media-view') renderImageManager();
+  if (currentActive && currentActive.dataset.view === 'manage-products-view') renderManageProducts();
+
+  // ─── Manage Products Table ───
+  let editingProductId = null;
+
+  function renderManageProducts() {
+    const tbody = document.getElementById('manageProductsBody');
+    if (!tbody) return;
+
+    const products = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
+    tbody.innerHTML = '';
+
+    if (products.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:40px; color:#888;">لا توجد منتجات منشورة بعد. اضغط "+ إضافة منتج" للبدء.</td></tr>`;
+      return;
+    }
+
+    const STATUS_ICONS = { Published: '✅', Draft: '📝', Hidden: '🙈' };
+    const PLACEMENT_LABELS = { shop: '🛍', homepage_featured: '⭐', homepage_editorial: '🎨', homepage_bestseller: '🔥' };
+
+    products.forEach(prod => {
+      const thumb = prod.colors?.[0]?.images?.[0] || '';
+      const placements = (prod.placement || ['shop']).map(p => PLACEMENT_LABELS[p] || p).join(' ');
+      const statusIcon = STATUS_ICONS[prod.status] || '📝';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><div style="width:50px; height:60px; overflow:hidden; border-radius:4px; background:#111;">
+          ${thumb ? `<img src="${thumb}" style="width:100%;height:100%;object-fit:cover;">` : '—'}
+        </div></td>
+        <td style="font-weight:500;">${prod.name_ar || prod.name || '—'}</td>
+        <td>$${prod.price || '0'}</td>
+        <td>${prod.gender || '—'}</td>
+        <td style="font-size:1.1rem; letter-spacing:4px;">${placements}</td>
+        <td><span class="badge-status ${prod.status === 'Published' ? 'active' : prod.status === 'Hidden' ? 'warning' : ''}"
+          style="cursor:pointer;" onclick="cycleStatus('${prod.id}')">${statusIcon} ${prod.status || 'Draft'}</span></td>
+        <td style="display:flex; gap:6px; align-items:center;">
+          <button class="btn-icon" title="تعديل" onclick="openEditProduct('${prod.id}')">✎</button>
+          <button class="btn-icon" title="نسخ" onclick="duplicateProduct('${prod.id}')">📄</button>
+          <button class="btn-icon" title="حذف" style="color:#e55;" onclick="deleteProduct('${prod.id}')">×</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('editProductForm').style.display = 'none';
   }
+
+  window.deleteProduct = (id) => {
+    if (!confirm('حذف المنتج نهائياً؟')) return;
+    let products = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
+    products = products.filter(p => p.id !== id);
+    localStorage.setItem('vinato_dynamic_products', JSON.stringify(products));
+    renderManageProducts();
+    showToast('تم حذف المنتج ✓');
+  };
+
+  window.duplicateProduct = (id) => {
+    let products = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
+    const orig = products.find(p => p.id === id);
+    if (!orig) return;
+    const copy = JSON.parse(JSON.stringify(orig));
+    copy.id = 'p' + Date.now();
+    copy.name_ar = 'نسخة - ' + (copy.name_ar || copy.name || '');
+    copy.name = copy.name_ar;
+    copy.status = 'Draft';
+    copy.timestamp = Date.now();
+    products.push(copy);
+    localStorage.setItem('vinato_dynamic_products', JSON.stringify(products));
+    renderManageProducts();
+    showToast('📄 تم نسخ المنتج ✓');
+  };
+
+  window.cycleStatus = (id) => {
+    const cycle = ['Draft', 'Published', 'Hidden'];
+    let products = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
+    const prod = products.find(p => p.id === id);
+    if (!prod) return;
+    const idx = cycle.indexOf(prod.status || 'Draft');
+    prod.status = cycle[(idx + 1) % cycle.length];
+    localStorage.setItem('vinato_dynamic_products', JSON.stringify(products));
+    renderManageProducts();
+    showToast(`الحالة: ${prod.status}`);
+  };
+
+  window.openEditProduct = (id) => {
+    const products = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
+    const prod = products.find(p => p.id === id);
+    if (!prod) return;
+    editingProductId = id;
+    document.getElementById('edit_name').value = prod.name_ar || prod.name || '';
+    document.getElementById('edit_price').value = prod.price || '';
+    document.getElementById('edit_compare_price').value = prod.comparePrice || '';
+    document.getElementById('edit_status').value = prod.status || 'Draft';
+    document.getElementById('editFormTitle').textContent = `✏️ تعديل: ${prod.name_ar || prod.name}`;
+    document.getElementById('editProductForm').style.display = 'block';
+    document.getElementById('editProductForm').scrollIntoView({ behavior: 'smooth' });
+  };
+
+  document.getElementById('saveEditBtn')?.addEventListener('click', () => {
+    if (!editingProductId) return;
+    let products = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
+    const prod = products.find(p => p.id === editingProductId);
+    if (!prod) return;
+    prod.name_ar = document.getElementById('edit_name').value.trim();
+    prod.name = prod.name_ar;
+    prod.price = document.getElementById('edit_price').value;
+    prod.comparePrice = document.getElementById('edit_compare_price').value;
+    prod.status = document.getElementById('edit_status').value;
+    localStorage.setItem('vinato_dynamic_products', JSON.stringify(products));
+    editingProductId = null;
+    renderManageProducts();
+    showToast('تم حفظ التعديلات ✓');
+  });
+
+  document.getElementById('cancelEditBtn')?.addEventListener('click', () => {
+    editingProductId = null;
+    document.getElementById('editProductForm').style.display = 'none';
+  });
 
   /* ─── Toast Notifications (Interactive Feedback) ─── */
   function showToast(message) {
@@ -239,13 +352,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const product = {
       id: 'p' + Date.now(),
-      // Arabic originals
       name_ar: nameAr,
-      name: nameAr, // fallback
+      name: nameAr,
       description_ar: descAr,
       cat_ar: catAr,
-      cat: catAr || 'General', // fallback
-      // English (filled after translation)
+      cat: catAr || 'General',
       name_en: nameAr,
       description_en: descAr,
       cat_en: catAr,
@@ -254,8 +365,14 @@ document.addEventListener('DOMContentLoaded', () => {
       comparePrice: inputs.comparePrice.value,
       badge: inputs.badge.value.trim(),
       sort: inputs.p_sort.value || 1,
-      featured: document.getElementById('p_featured').checked,
       status: document.getElementById('p_status').value,
+      placement: [
+        'shop',
+        ...(document.getElementById('place_featured')?.checked ? ['homepage_featured'] : []),
+        ...(document.getElementById('place_editorial')?.checked ? ['homepage_editorial'] : []),
+        ...(document.getElementById('place_bestseller')?.checked ? ['homepage_bestseller'] : [])
+      ],
+      featured: document.getElementById('place_featured')?.checked || false,
       sizes: Array.from(inputs.sizes).filter(s => s.checked).map(s => s.value),
       colors: state.colors.map(c => ({
         name: c.name,
@@ -519,9 +636,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.getElementById('confirmMediaSelect').addEventListener('click', () => {
+    // Image Manager flow
+    if (state.activeColorIdForMedia === '__imgmgr__' && imgMgrTargetKey && selectedModalUrls.length > 0) {
+      const replaced = JSON.parse(localStorage.getItem('vinato_replaced_server_files') || '{}');
+      replaced[imgMgrTargetKey] = selectedModalUrls[0];
+      localStorage.setItem('vinato_replaced_server_files', JSON.stringify(replaced));
+      modal.classList.add('hidden');
+      imgMgrTargetKey = null;
+      state.activeColorIdForMedia = null;
+      renderImageManager();
+      showToast('تم استبدال الصورة ✓');
+      return;
+    }
+    // Normal product color flow
     const c = state.colors.find(c => c.id === state.activeColorIdForMedia);
     if(c && selectedModalUrls.length > 0) {
-      // Add unique urls
       selectedModalUrls.forEach(url => {
         if(!c.images.includes(url)) c.images.push(url);
       });
