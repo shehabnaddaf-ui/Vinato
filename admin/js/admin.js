@@ -110,80 +110,84 @@ document.addEventListener('DOMContentLoaded', () => {
     switchView('products-view'); // Fallback
   }
 
-  /* ─── Server Media Management (Simulated) ─── */
-  const serverMediaList = [
-    { name: 'best_sellers.png', path: '../store/images/best_sellers.png' },
-    { name: 'instagram_grid.png', path: '../store/images/instagram_grid.png' },
-    { name: 'new_collection.png', path: '../store/images/new_collection.png' },
-    { name: 'prod_coat_men.png', path: '../store/images/prod_coat_men.png' },
-    { name: 'prod_dress_silk.png', path: '../store/images/prod_dress_silk.png' },
-    { name: 'prod_knitwear.png', path: '../store/images/prod_knitwear.png' },
-    { name: 'prod_trousers.png', path: '../store/images/prod_trousers.png' }
-  ];
+  // Image Manager — renders all site images
+  function renderImageManager() {
+    const list = document.getElementById('imageManagerList');
+    if (!list) return;
 
-  function renderServerMediaTable() {
-    const tableBody = document.getElementById('serverMediaTableBody');
-    if (!tableBody) return;
+    // All images used across the website with their context
+    const SITE_IMAGES = [
+      { key: 'hero_bg',          label: 'Hero Background',             location: 'Homepage → Hero Section',           path: '/store/images/optimized/hero_unisex.png.webp' },
+      { key: 'new_collection',   label: 'New Collection',              location: 'Homepage → New Collection Section',  path: '/store/images/optimized/new_collection.webp' },
+      { key: 'best_sellers',     label: 'Best Sellers',                location: 'Homepage → Best Sellers Section',    path: '/store/images/optimized/best_sellers.webp' },
+      { key: 'instagram_grid',   label: 'Instagram Gallery',           location: 'Homepage → Instagram Section',      path: '/store/images/optimized/instagram_grid.webp' },
+      { key: 'prod_coat_men',    label: 'Men\'s Structured Overcoat',  location: 'Shop → Men / Product Page',          path: '/store/images/optimized/prod_coat_men.webp' },
+      { key: 'prod_dress_silk',  label: 'Women\'s Silk Slip Dress',    location: 'Shop → Women / Category Section',    path: '/store/images/optimized/prod_dress_silk.webp' },
+      { key: 'prod_knitwear',    label: 'Oversized Cashmere Sweater',  location: 'Shop → Product Page (Main Image)',   path: '/store/images/optimized/prod_knitwear.webp' },
+      { key: 'prod_trousers',    label: 'Tailored Wool Trousers',      location: 'Shop → Women / Category Card',       path: '/store/images/optimized/prod_trousers.webp' },
+      { key: 'hero_bg_editorial','label': 'Editorial Split Image',    location: 'Homepage → Editorial Split Section', path: '/store/images/optimized/hero_bg.webp' },
+    ];
 
-    const hiddenFiles = JSON.parse(localStorage.getItem('vinato_hidden_server_files') || '[]');
-    const replacedFiles = JSON.parse(localStorage.getItem('vinato_replaced_server_files') || '{}');
+    const replaced = JSON.parse(localStorage.getItem('vinato_replaced_server_files') || '{}');
+    list.innerHTML = '';
 
-    tableBody.innerHTML = '';
+    SITE_IMAGES.forEach(img => {
+      const currentUrl = replaced[img.key] || img.path;
+      const isReplaced = !!replaced[img.key];
 
-    serverMediaList.forEach(file => {
-      if (hiddenFiles.includes(file.name)) return;
-
-      const displayPath = replacedFiles[file.name] || file.path;
-      const isReplaced = !!replacedFiles[file.name];
-
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><div class="media-thumb-sm"><img src="${displayPath}" alt="${file.name}"></div></td>
-        <td>
-          <div style="font-weight:500;">${file.name}</div>
-          <div style="font-size:0.75rem; color:#888;">${file.path}</div>
-        </td>
-        <td><span class="badge-status ${isReplaced ? 'warning' : 'active'}">${isReplaced ? 'Replaced' : 'Original'}</span></td>
-        <td>
-          <button class="btn-icon" onclick="editServerImage('${file.name}')" title="Edit/Replace">✎</button>
-          <button class="btn-icon" onclick="deleteServerImage('${file.name}')" title="Delete">×</button>
-        </td>
+      const card = document.createElement('div');
+      card.className = 'form-card';
+      card.style.cssText = 'display:flex; gap:20px; align-items:flex-start; padding:20px;';
+      card.innerHTML = `
+        <div style="flex:0 0 120px; height:120px; background:#111; border-radius:6px; overflow:hidden;">
+          <img src="${currentUrl}" alt="${img.label}" style="width:100%; height:100%; object-fit:cover; display:block;" id="imgPreview_${img.key}">
+        </div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-weight:600; font-size:0.9rem; margin-bottom:4px;">${img.label}</div>
+          <div style="font-size:0.72rem; color:#888; margin-bottom:2px;">📍 ${img.location}</div>
+          <div style="font-size:0.68rem; color:#666; margin-bottom:12px; direction:ltr; word-break:break-all;">${img.path}</div>
+          ${isReplaced ? `<div style="font-size:0.68rem; color:var(--accent, #d4af37); margin-bottom:8px;">✓ تم استبداله → <span style="word-break:break-all;">${currentUrl}</span></div>` : ''}
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <input type="url" id="imgInput_${img.key}" placeholder="أدخل رابط الصورة الجديدة..." class="form-input" style="flex:1; font-size:0.78rem;" value="">
+            <button class="btn btn-primary" style="font-size:0.75rem; white-space:nowrap;" onclick="replaceImage('${img.key}', '${img.path}')">
+              استبدال
+            </button>
+            ${isReplaced ? `<button class="btn btn-outline" style="font-size:0.75rem;" onclick="resetImage('${img.key}')">♻ Reset</button>` : ''}
+          </div>
+        </div>
       `;
-      tableBody.appendChild(tr);
+      list.appendChild(card);
     });
   }
 
-  window.deleteServerImage = (name) => {
-    if (!confirm(`Are you sure you want to delete ${name}? This will hide it from the storage manager.`)) return;
-    const hiddenFiles = JSON.parse(localStorage.getItem('vinato_hidden_server_files') || '[]');
-    hiddenFiles.push(name);
-    localStorage.setItem('vinato_hidden_server_files', JSON.stringify(hiddenFiles));
-    renderServerMediaTable();
-    showToast(`${name} deleted (hidden).`);
+  window.replaceImage = (key, originalPath) => {
+    const inp = document.getElementById('imgInput_' + key);
+    const newUrl = inp ? inp.value.trim() : '';
+    if (!newUrl) { showToast('يرجى إدخال رابط الصورة الجديدة.'); return; }
+    const replaced = JSON.parse(localStorage.getItem('vinato_replaced_server_files') || '{}');
+    replaced[key] = newUrl;
+    localStorage.setItem('vinato_replaced_server_files', JSON.stringify(replaced));
+    renderImageManager();
+    showToast('تم استبدال الصورة بنجاح ✓');
   };
 
-  window.editServerImage = (name) => {
-    // Simulated editing: ask for a new URL or Base64
-    const newUrl = prompt(`Enter new URL or Base64 for ${name}:`);
-    if (newUrl) {
-      const replacedFiles = JSON.parse(localStorage.getItem('vinato_replaced_server_files') || '{}');
-      replacedFiles[name] = newUrl;
-      localStorage.setItem('vinato_replaced_server_files', JSON.stringify(replacedFiles));
-      renderServerMediaTable();
-      showToast(`${name} updated.`);
-    }
+  window.resetImage = (key) => {
+    const replaced = JSON.parse(localStorage.getItem('vinato_replaced_server_files') || '{}');
+    delete replaced[key];
+    localStorage.setItem('vinato_replaced_server_files', JSON.stringify(replaced));
+    renderImageManager();
+    showToast('♻ تم إعادة الصورة الأصلية');
   };
 
-  // Switch to server media view should trigger render
+  // Trigger render when nav item clicked
   navItems.forEach(item => {
     item.addEventListener('click', () => {
-      if (item.dataset.view === 'server-media-view') renderServerMediaTable();
+      if (item.dataset.view === 'server-media-view') renderImageManager();
     });
   });
 
-  // Also render if it's the default view (unlikely but safe)
   if (currentActive && currentActive.dataset.view === 'server-media-view') {
-    renderServerMediaTable();
+    renderImageManager();
   }
 
   /* ─── Toast Notifications (Interactive Feedback) ─── */
@@ -636,145 +640,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderColorBlocks();
   updateLivePreview();
 
-  // ═══════════════════════════════════════════════
-  // IMAGE MANAGER — File System Access API
-  // ═══════════════════════════════════════════════
-  (function initImageManager() {
-    const openBtn = document.getElementById('openImageFolderBtn');
-    const grid    = document.getElementById('imageManagerGrid');
-    const stats   = document.getElementById('imgMgrStats');
-    const countEl = document.getElementById('imgMgrCount');
-    const sizeEl  = document.getElementById('imgMgrSize');
 
-    if (!openBtn) return;
-
-    let rootDirHandle = null;
-
-    const IMAGE_EXTS = ['jpg','jpeg','png','webp','gif','svg','avif'];
-
-    function isImage(name) {
-      const ext = name.split('.').pop().toLowerCase();
-      return IMAGE_EXTS.includes(ext);
-    }
-
-    function formatSize(bytes) {
-      if (bytes < 1024) return bytes + ' B';
-      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-    }
-
-    async function loadDirectory(dirHandle, parentPath) {
-      const entries = [];
-      for await (const [name, handle] of dirHandle) {
-        if (handle.kind === 'file' && isImage(name)) {
-          const file = await handle.getFile();
-          entries.push({ name, handle, file, path: parentPath + '/' + name, dirHandle });
-        } else if (handle.kind === 'directory') {
-          const sub = await loadDirectory(handle, parentPath + '/' + name);
-          entries.push(...sub);
-        }
-      }
-      return entries;
-    }
-
-    function renderGrid(entries) {
-      grid.innerHTML = '';
-
-      if (entries.length === 0) {
-        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-muted)">لا توجد صور في هذا المجلد</div>';
-        return;
-      }
-
-      let totalSize = 0;
-      entries.forEach(entry => { totalSize += entry.file.size; });
-
-      // Stats
-      stats.style.display = 'block';
-      countEl.textContent = entries.length + ' صورة';
-      sizeEl.textContent  = formatSize(totalSize);
-
-      entries.forEach(entry => {
-        const url  = URL.createObjectURL(entry.file);
-        const card = document.createElement('div');
-        card.style.cssText = `
-          background: var(--surface);
-          border: 1px solid var(--border);
-          border-radius: 10px;
-          overflow: hidden;
-          position: relative;
-          transition: box-shadow 0.2s;
-        `;
-        card.innerHTML = `
-          <div style="position:relative;aspect-ratio:1;overflow:hidden;background:#111">
-            <img src="${url}" alt="${entry.name}" 
-                 style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s"
-                 onmouseover="this.style.transform='scale(1.05)'" 
-                 onmouseout="this.style.transform='scale(1)'">
-          </div>
-          <div style="padding:8px 10px;">
-            <div style="font-size:0.7rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px" title="${entry.path}">
-              ${entry.name}
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:0.65rem;color:var(--text-muted)">${formatSize(entry.file.size)}</span>
-              <button class="btn-icon" title="حذف الصورة" style="color:#e55;font-size:1.1rem;line-height:1;padding:2px 6px" 
-                      onclick="this.closest('[data-img-name]').remove(); ">🗑</button>
-            </div>
-          </div>
-        `;
-        card.setAttribute('data-img-name', entry.name);
-
-        // delete button
-        const delBtn = card.querySelector('button');
-        delBtn.addEventListener('click', async (e) => {
-          e.stopPropagation();
-          if (!confirm(`حذف الصورة "${entry.name}"؟\nهذا الإجراء لا يمكن التراجع عنه.`)) return;
-          try {
-            await entry.dirHandle.removeEntry(entry.name);
-            URL.revokeObjectURL(url);
-            card.style.opacity = '0';
-            card.style.transform = 'scale(0.8)';
-            card.style.transition = 'all 0.3s ease';
-            setTimeout(() => {
-              card.remove();
-              // Update count
-              const remaining = grid.querySelectorAll('[data-img-name]').length;
-              countEl.textContent = remaining + ' صورة';
-              if (remaining === 0) {
-                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-muted)">تم حذف جميع الصور</div>';
-              }
-            }, 300);
-            showToast('تم حذف ' + entry.name + ' ✓');
-          } catch(err) {
-            console.error(err);
-            showToast('فشل الحذف — تأكد من الصلاحيات');
-          }
-        });
-
-        grid.appendChild(card);
-      });
-    }
-
-    openBtn.addEventListener('click', async () => {
-      if (!window.showDirectoryPicker) {
-        alert('متصفحك لا يدعم هذه الميزة.\nاستخدم Chrome أو Edge.');
-        return;
-      }
-      try {
-        showToast('جارٍ فتح المجلد...');
-        rootDirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
-        showToast('جارٍ تحميل الصور...');
-        const entries = await loadDirectory(rootDirHandle, rootDirHandle.name);
-        renderGrid(entries);
-        showToast('تم تحميل ' + entries.length + ' صورة ✓');
-      } catch(err) {
-        if (err.name !== 'AbortError') {
-          console.error(err);
-          showToast('حدث خطأ: ' + err.message);
-        }
-      }
-    });
-  })();
 
 });
 

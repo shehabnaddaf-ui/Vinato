@@ -262,27 +262,18 @@
         </div>
       </div>
 
-      <!-- Image Manager View (store/images folder) -->
+      <!-- Image Manager View -->
       <div id="server-media-view" class="view-panel">
         <header class="section-header">
           <h2>🖼 مدير الصور — Image Manager</h2>
-          <button class="btn btn-primary" id="openImageFolderBtn">📂 فتح مجلد الصور</button>
         </header>
-        <p class="help-text" style="padding: 0 0 16px 0; color:#888;">
-          اضغط "فتح مجلد الصور" واختر مجلد <strong>store/images</strong> لعرض وحذف الصور.
-          <br><small>يعمل على Chrome / Edge فقط (يحتاج صلاحية الوصول للملفات)</small>
+        <p class="help-text" style="padding: 0 0 20px 0; color:#888;">
+          يمكنك هنا استبدال أي صورة في الموقع بصورة جديدة. أدخل رابط الصورة الجديدة في الحقل المخصص واضغط "استبدال".
+          <br><small>سيتم حفظ التعديلات وتطبيقها على الموقع في المتصفح.</small>
         </p>
 
-        <!-- Stats bar -->
-        <div id="imgMgrStats" style="display:none; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 20px; margin-bottom:20px; font-size:0.8rem; color:var(--text-muted);">
-          <span id="imgMgrCount">0 صور</span> · <span id="imgMgrSize">0 KB</span>
-        </div>
-
-        <!-- Image grid -->
-        <div id="imageManagerGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:16px;">
-          <div style="grid-column:1/-1; text-align:center; padding:60px; color:var(--text-muted); font-size:0.85rem;">
-            لم يتم فتح أي مجلد بعد. اضغط الزر أعلاه.
-          </div>
+        <div id="imageManagerList" style="display:flex; flex-direction:column; gap:20px;">
+          <!-- Populated by JS -->
         </div>
       </div>
 
