@@ -209,6 +209,14 @@
     </div>
   </section>
 
+  <section class="section" id="site-showcase" style="display:none; padding-bottom:0;">
+    <div class="section-header reveal-up">
+      <span class="section-label gold">Featured Showcase</span>
+      <h2 class="section-title">Exclusive Highlights</h2>
+    </div>
+    <div class="bs-grid" id="showcase-grid"></div>
+  </section>
+
   <section class="section instagram-section" id="instagram">
     <div class="section-header reveal-up">
       <span class="section-label gold" id="instaHandle">@vinatostudio</span>
@@ -290,16 +298,16 @@
       function applySiteImageReplacements() {
         try {
           const replacedImages = JSON.parse(localStorage.getItem('vinato_replaced_server_files') || '{}');
-          if (Object.keys(replacedImages).length === 0) return;
+          const siteConfig = JSON.parse(localStorage.getItem('vinato_site_images_config') || '[]');
+          
+          const showcaseGrid = document.getElementById('showcase-grid');
+          const showcaseSection = document.getElementById('site-showcase');
+          let hasCustom = false;
+          if (showcaseGrid) showcaseGrid.innerHTML = '';
 
-          // Hero BG
-          if (replacedImages['hero_bg']) {
-            const heroBg = document.querySelector('.hero-bg');
-            if (heroBg) heroBg.style.backgroundImage = `url('${replacedImages['hero_bg']}')`;
-          }
-
-          // Section & Product Images
+          // 1. Standard Keys Map
           const sectionImgMap = {
+            'hero_bg':           '.hero-bg',
             'new_collection':    '#new-collection .product-img, img[src*="new_collection.webp"]',
             'best_sellers':      '#best-sellers .bs-img-wrap img, img[src*="best_sellers.webp"]',
             'instagram_grid':    '#instagram .ig-item img, img[src*="instagram_grid.webp"]',
@@ -310,14 +318,65 @@
             'prod_trousers':      'img[src*="prod_trousers.webp"]'
           };
 
-          Object.entries(sectionImgMap).forEach(([key, selector]) => {
-            if (replacedImages[key]) {
-              document.querySelectorAll(selector).forEach(img => {
-                img.src = replacedImages[key];
-                if (img.dataset.src) img.dataset.src = replacedImages[key];
-              });
+          // 2. Iterate config for replacements, Metadata Updates & Dynamic Showcase
+          siteConfig.forEach(img => {
+            const url = replacedImages[img.key] || img.path;
+            
+            // If it's a standard key, apply to CSS selectors and labels
+            if (sectionImgMap[img.key]) {
+              const selector = sectionImgMap[img.key];
+              if (img.key === 'hero_bg') {
+                const heroBg = document.querySelector(selector);
+                if (heroBg) heroBg.style.backgroundImage = `url('${url}')`;
+              } else {
+                document.querySelectorAll(selector).forEach(el => {
+                  el.src = url;
+                  if (el.dataset.src) el.dataset.src = url;
+                });
+              }
+
+              // --- Dynamic Labels for Standard Sections ---
+              if (img.key === 'prod_coat_men') {
+                 // Example: find elements that originally said "Structured Overcoat"
+                 document.querySelectorAll('.product-name, .bs-name').forEach(nameEl => {
+                    if (nameEl.textContent.includes('Overcoat')) nameEl.textContent = img.name;
+                 });
+                 document.querySelectorAll('.product-price, .bs-price').forEach(priceEl => {
+                    if (priceEl.parentElement.textContent.includes('Overcoat') || (priceEl.closest('.bs-info')?.textContent.includes(img.name))) {
+                       priceEl.textContent = img.price;
+                    }
+                 });
+              }
+              // For simplicity and to match the user's "edit everything" request:
+              // We'll target specific IDs or classes if they exist for these sections
+              if (img.key === 'hero_bg_editorial') {
+                const edName = document.getElementById('editorialProductName');
+                const edPrice = document.getElementById('editorialProductPrice');
+                if (edName) edName.textContent = img.name;
+                if (edPrice) edPrice.textContent = img.price;
+              }
+            }
+            
+            // If it's a custom key, add to showcase
+            if (img.key.startsWith('custom_img_')) {
+              hasCustom = true;
+              const card = `
+                <div class="bs-card reveal-up" style="opacity:1; visibility:visible;">
+                  <div class="bs-img-wrap" style="aspect-ratio:3/4; overflow:hidden;">
+                    <img src="${url}" alt="${img.name}" style="width:100%; height:100%; object-fit:cover;" loading="lazy"/>
+                  </div>
+                  <div class="bs-info">
+                    <div><h3 class="bs-name">${img.name}</h3><p class="bs-cat">${img.location}</p></div>
+                    <span class="bs-price">${img.price}</span>
+                  </div>
+                </div>
+              `;
+              if (showcaseGrid) showcaseGrid.insertAdjacentHTML('beforeend', card);
             }
           });
+
+          if (showcaseSection) showcaseSection.style.display = hasCustom ? 'block' : 'none';
+          if (window.ScrollTrigger) ScrollTrigger.refresh();
         } catch(e) { console.warn("Image replacement failed", e); }
       }
 
