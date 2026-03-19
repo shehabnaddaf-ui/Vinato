@@ -286,6 +286,43 @@
       const storedPhone = localStorage.getItem('s_phone');
       const storedInsta = localStorage.getItem('s_instagram');
       
+      // ─── Image Manager Replacements ───
+      function applySiteImageReplacements() {
+        try {
+          const replacedImages = JSON.parse(localStorage.getItem('vinato_replaced_server_files') || '{}');
+          if (Object.keys(replacedImages).length === 0) return;
+
+          // Hero BG
+          if (replacedImages['hero_bg']) {
+            const heroBg = document.querySelector('.hero-bg');
+            if (heroBg) heroBg.style.backgroundImage = `url('${replacedImages['hero_bg']}')`;
+          }
+
+          // Section & Product Images
+          const sectionImgMap = {
+            'new_collection':    '#new-collection .product-img, img[src*="new_collection.webp"]',
+            'best_sellers':      '#best-sellers .bs-img-wrap img, img[src*="best_sellers.webp"]',
+            'instagram_grid':    '#instagram .ig-item img, img[src*="instagram_grid.webp"]',
+            'hero_bg_editorial': '#editorialImg, img[src*="hero_bg.webp"]',
+            'prod_coat_men':     'img[src*="prod_coat_men.webp"]',
+            'prod_dress_silk':    'img[src*="prod_dress_silk.webp"]',
+            'prod_knitwear':      'img[src*="prod_knitwear.webp"]',
+            'prod_trousers':      'img[src*="prod_trousers.webp"]'
+          };
+
+          Object.entries(sectionImgMap).forEach(([key, selector]) => {
+            if (replacedImages[key]) {
+              document.querySelectorAll(selector).forEach(img => {
+                img.src = replacedImages[key];
+                if (img.dataset.src) img.dataset.src = replacedImages[key];
+              });
+            }
+          });
+        } catch(e) { console.warn("Image replacement failed", e); }
+      }
+
+      applySiteImageReplacements();
+
       const phoneEl = document.getElementById('footerPhone');
       const instaEl = document.getElementById('footerInsta');
       const instaHandle = document.getElementById('instaHandle');
@@ -384,6 +421,8 @@
             bsGrid.prepend(card);
           });
         }
+        
+        applyImageReplacements(); // Sync any replaced server images to the homepage
       }
     });
   </script>

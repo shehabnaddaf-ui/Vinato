@@ -147,7 +147,13 @@ document.addEventListener('DOMContentLoaded', () => {
           <div style="font-weight:600; font-size:0.9rem; margin-bottom:4px;">${img.label}</div>
           <div style="font-size:0.72rem; color:#888; margin-bottom:2px;">📍 ${img.location}</div>
           <div style="font-size:0.68rem; color:#666; margin-bottom:12px; direction:ltr; word-break:break-all;">${img.path}</div>
-          ${isReplaced ? `<div style="font-size:0.68rem; color:#d4af37; margin-bottom:8px;">✓ تم استبداله → <span style="word-break:break-all;">${currentUrl}</span></div>` : ''}
+          ${isReplaced ? `
+            <div style="font-size:0.68rem; color:#d4af37; margin-bottom:8px;">
+              ✓ تم استبداله → 
+              <span style="word-break:break-all; color:#888;">
+                ${currentUrl.startsWith('data:') ? '[Base64 Image Data]' : currentUrl}
+              </span>
+            </div>` : ''}
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button class="btn btn-primary" style="font-size:0.78rem;" onclick="openImgMgrPicker('${img.key}')">
               🖼 اختر من المكتبة
@@ -392,13 +398,21 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!text || !text.trim()) return text;
       try {
         const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=ar|en`;
-        const res = await fetch(url);
+        // 5 second timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        
+        const res = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        
         const data = await res.json();
         if (data.responseStatus === 200) {
           return data.responseData.translatedText || text;
         }
-      } catch(e) { /* fallback below */ }
-      return text; // fallback: return original on error
+      } catch(e) { 
+        console.warn("Translation failed or timed out", e);
+      }
+      return text;
     }
 
     showToast('جارٍ الترجمة...');
@@ -410,8 +424,9 @@ document.addEventListener('DOMContentLoaded', () => {
       product.name_en = nameEn || nameAr;
       product.description_en = descEn || descAr;
       product.cat_en = catEn;
+      product.cat = catEn; // Fix: compatibility for shop page
       product.name = nameAr;
-      product.cat  = catAr;
+      // cat property is set above
 
       const existingProducts = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
       existingProducts.push(product);
@@ -420,6 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
       showToast('تم النشر بنجاح ✓');
     }).catch(() => {
       // Even if translation failed, save with Arabic only
+      product.cat = catEn; // Fix: even on failure, keep the cat property
       const existingProducts = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
       existingProducts.push(product);
       localStorage.setItem('vinato_dynamic_products', JSON.stringify(existingProducts));

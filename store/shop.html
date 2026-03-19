@@ -456,17 +456,59 @@
       });
 
       applyFilters();
+      
+      // ─── Image Manager Replacements ───
+      function applySiteImageReplacements() {
+        try {
+          const replacedImages = JSON.parse(localStorage.getItem('vinato_replaced_server_files') || '{}');
+          if (Object.keys(replacedImages).length === 0) return;
+          
+          // Site-wide selectors
+          const imgMap = {
+            'hero_bg':           '.hero-bg',
+            'new_collection':    '#new-collection .product-img, img[src*="new_collection.webp"]',
+            'best_sellers':      '#best-sellers .bs-img-wrap img, img[src*="best_sellers.webp"]',
+            'instagram_grid':    '#instagram .ig-item img, img[src*="instagram_grid.webp"]',
+            'hero_bg_editorial': '#editorialImg, img[src*="hero_bg.webp"]',
+            'prod_coat_men':     'img[src*="prod_coat_men.webp"]',
+            'prod_dress_silk':    'img[src*="prod_dress_silk.webp"]',
+            'prod_knitwear':      'img[src*="prod_knitwear.webp"]',
+            'prod_trousers':      'img[src*="prod_trousers.webp"]'
+          };
+          Object.entries(imgMap).forEach(([key, selector]) => {
+            if (replacedImages[key]) {
+              if (key === 'hero_bg') {
+                const heroBg = document.querySelector(selector);
+                if (heroBg) heroBg.style.backgroundImage = `url('${replacedImages[key]}')`;
+              } else {
+                document.querySelectorAll(selector).forEach(img => {
+                  img.src = replacedImages[key];
+                  if (img.dataset.src) img.dataset.src = replacedImages[key];
+                });
+              }
+            }
+          });
+        } catch(e) { console.warn("Image replacement failed", e); }
+      }
+      applySiteImageReplacements();
+
       loadDynamicProducts();
 
       function loadDynamicProducts() {
-        const dynamicProducts = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
-        if (dynamicProducts.length === 0) return;
+        const allProducts = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
+        // Filter: Only Published
+        const published = allProducts.filter(p => p.status === 'Published' || (!p.status && p.featured));
+        if (published.length === 0) return;
 
-        dynamicProducts.forEach(prod => {
+        published.forEach(prod => {
           const card = document.createElement('div');
           card.className = 'product-card reveal-up';
-          card.setAttribute('data-gender', prod.gender.toLowerCase());
-          card.setAttribute('data-cat', prod.cat.toLowerCase().split(' / ')[0]);
+          card.setAttribute('data-dynamic', 'true');
+          card.setAttribute('data-gender', (prod.gender || 'unisex').toLowerCase());
+          
+          // Fix: handle missing .cat property
+          const catVal = (prod.cat || prod.cat_en || 'other').toLowerCase().split(' / ')[0];
+          card.setAttribute('data-cat', catVal);
           card.setAttribute('data-new', 'true');
           card.setAttribute('data-sale', (prod.comparePrice > prod.price) ? 'true' : 'false');
           card.setAttribute('data-featured', prod.featured ? 'true' : 'false');
@@ -513,6 +555,8 @@
           document.querySelectorAll('.product-card[data-dynamic]').forEach(c => c.remove());
           loadDynamicProducts();
         });
+
+        applySiteImageReplacements();
       }
     });
   </script>

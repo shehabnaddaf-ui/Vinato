@@ -500,9 +500,56 @@ function initBarba() {
 }
 
 // ═══════════════════════════════════════════════
+//   IMAGE REPLACEMENTS (From Admin Image Manager)
+// ═══════════════════════════════════════════════
+function applyImageReplacements() {
+  const replacementsStr = localStorage.getItem('vinato_replaced_server_files');
+  if (!replacementsStr) return;
+  
+  try {
+    const replacements = JSON.parse(replacementsStr);
+    const SITE_IMAGES = [
+      { key: 'hero_bg',           path: 'images/optimized/hero_unisex.png.webp' },
+      { key: 'new_collection',    path: 'images/optimized/new_collection.webp' },
+      { key: 'best_sellers',      path: 'images/optimized/best_sellers.webp' },
+      { key: 'instagram_grid',    path: 'images/optimized/instagram_grid.webp' },
+      { key: 'prod_coat_men',     path: 'images/optimized/prod_coat_men.webp' },
+      { key: 'prod_dress_silk',   path: 'images/optimized/prod_dress_silk.webp' },
+      { key: 'prod_knitwear',     path: 'images/optimized/prod_knitwear.webp' },
+      { key: 'prod_trousers',     path: 'images/optimized/prod_trousers.webp' },
+      { key: 'hero_bg_editorial', path: 'images/optimized/hero_bg.webp' },
+    ];
+
+    SITE_IMAGES.forEach(imgDef => {
+      const replacementUrl = replacements[imgDef.key];
+      if (replacementUrl) {
+        // 1. Normal <img> tags (src and data-src for lazy loading)
+        const imgs = document.querySelectorAll(`img[src*="${imgDef.path}"], img[data-src*="${imgDef.path}"]`);
+        imgs.forEach(img => {
+          if (img.getAttribute('src')) img.src = replacementUrl;
+          if (img.getAttribute('data-src')) img.setAttribute('data-src', replacementUrl);
+        });
+
+        // 2. CSS background-images (inline styles)
+        const bgEls = document.querySelectorAll(`[style*="${imgDef.path}"]`);
+        bgEls.forEach(el => {
+          el.style.backgroundImage = `url('${replacementUrl}')`;
+        });
+      }
+    });
+  } catch (err) {
+    console.error("Failed to apply image replacements", err);
+  }
+}
+
+// Export to window for access from other scripts
+window.applyImageReplacements = applyImageReplacements;
+
+// ═══════════════════════════════════════════════
 //   INITIALIZATION
 // ═══════════════════════════════════════════════
 document.addEventListener("DOMContentLoaded", () => {
+  applyImageReplacements(); // Run this first before animations/lazy loading
   initSortingAndBadges();
   initProductInteractions();
   initQuickView();
