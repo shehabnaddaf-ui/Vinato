@@ -118,15 +118,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!list) return;
 
     const SITE_IMAGES = [
-      { key: 'hero_bg',           label: 'Hero Background',            location: 'Homepage → Hero Section',           path: '/store/images/optimized/hero_unisex.png.webp' },
-      { key: 'new_collection',    label: 'New Collection',             location: 'Homepage → New Collection Section', path: '/store/images/optimized/new_collection.webp' },
-      { key: 'best_sellers',      label: 'Best Sellers',               location: 'Homepage → Best Sellers Section',   path: '/store/images/optimized/best_sellers.webp' },
-      { key: 'instagram_grid',    label: 'Instagram Gallery',          location: 'Homepage → Instagram Section',     path: '/store/images/optimized/instagram_grid.webp' },
-      { key: 'prod_coat_men',     label: "Men's Structured Overcoat",  location: 'Shop → Men / Product Page',         path: '/store/images/optimized/prod_coat_men.webp' },
-      { key: 'prod_dress_silk',   label: "Women's Silk Slip Dress",    location: 'Shop → Women / Category Section',   path: '/store/images/optimized/prod_dress_silk.webp' },
-      { key: 'prod_knitwear',     label: 'Oversized Cashmere Sweater', location: 'Shop → Product Page (Main Image)',  path: '/store/images/optimized/prod_knitwear.webp' },
-      { key: 'prod_trousers',     label: 'Tailored Wool Trousers',     location: 'Shop → Women / Category Card',      path: '/store/images/optimized/prod_trousers.webp' },
-      { key: 'hero_bg_editorial', label: 'Editorial Split Image',      location: 'Homepage → Editorial Split Section',path: '/store/images/optimized/hero_bg.webp' },
+      { key: 'hero_bg',           label: 'Hero Background',            location: 'Homepage → Hero Section',           path: '/store/images/optimized/hero_unisex.png.webp', price: 'Premium', name: 'Vintage Hero' },
+      { key: 'new_collection',    label: 'New Collection',             location: 'Homepage → New Collection Section', path: '/store/images/optimized/new_collection.webp', price: '$2,450', name: 'SS26 Showcase' },
+      { key: 'best_sellers',      label: 'Best Sellers',               location: 'Homepage → Best Sellers Section',   path: '/store/images/optimized/best_sellers.webp', price: '$1,890', name: 'Bestseller Grid' },
+      { key: 'instagram_grid',    label: 'Instagram Gallery',          location: 'Homepage → Instagram Section',     path: '/store/images/optimized/instagram_grid.webp', price: 'Social', name: 'IG Feed Main' },
+      { key: 'prod_coat_men',     label: "Men's Structured Overcoat",  location: 'Shop → Men / Product Page',         path: '/store/images/optimized/prod_coat_men.webp', price: '$1,290', name: 'Structured Overcoat' },
+      { key: 'prod_dress_silk',   label: "Women's Silk Slip Dress",    location: 'Shop → Women / Category Section',   path: '/store/images/optimized/prod_dress_silk.webp', price: '$950', name: 'Silk Slip Dress' },
+      { key: 'prod_knitwear',     label: 'Oversized Cashmere Sweater', location: 'Shop → Product Page (Main Image)',  path: '/store/images/optimized/prod_knitwear.webp', price: '$780', name: 'Cashmere Sweater' },
+      { key: 'prod_trousers',     label: 'Tailored Wool Trousers',     location: 'Shop → Women / Category Card',      path: '/store/images/optimized/prod_trousers.webp', price: '$640', name: 'Wool Trousers' },
+      { key: 'hero_bg_editorial', label: 'Editorial Split Image',      location: 'Homepage → Editorial Split Section',path: '/store/images/optimized/hero_bg.webp', price: 'Editorial', name: 'Philosophy Cover' },
     ];
 
     const replaced = JSON.parse(localStorage.getItem('vinato_replaced_server_files') || '{}');
@@ -144,7 +144,12 @@ document.addEventListener('DOMContentLoaded', () => {
           <img src="${currentUrl}" alt="${img.label}" style="width:100%; height:100%; object-fit:cover; display:block;" id="imgPreview_${img.key}">
         </div>
         <div style="flex:1; min-width:0;">
-          <div style="font-weight:600; font-size:0.9rem; margin-bottom:12px;">${img.label}</div>
+          <div style="font-weight:600; font-size:0.95rem; margin-bottom:4px; color:var(--gold);">${img.name}</div>
+          <div style="font-size:0.82rem; font-weight:500; margin-bottom:8px;">${img.price}</div>
+          <div style="font-size:0.72rem; color:#aaa; margin-bottom:12px; line-height:1.4;">
+            📍 ${img.location} <br>
+            <span style="font-size:0.65rem; color:#666;">${img.path}</span>
+          </div>
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button class="btn btn-primary" style="font-size:0.78rem;" onclick="openImgMgrPicker('${img.key}')">
               🖼 اختر من المكتبة
