@@ -144,16 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <img src="${currentUrl}" alt="${img.label}" style="width:100%; height:100%; object-fit:cover; display:block;" id="imgPreview_${img.key}">
         </div>
         <div style="flex:1; min-width:0;">
-          <div style="font-weight:600; font-size:0.9rem; margin-bottom:4px;">${img.label}</div>
-          <div style="font-size:0.72rem; color:#888; margin-bottom:2px;">📍 ${img.location}</div>
-          <div style="font-size:0.68rem; color:#666; margin-bottom:12px; direction:ltr; word-break:break-all;">${img.path}</div>
-          ${isReplaced ? `
-            <div style="font-size:0.68rem; color:#d4af37; margin-bottom:8px;">
-              ✓ تم استبداله → 
-              <span style="word-break:break-all; color:#888;">
-                ${currentUrl.startsWith('data:') ? '[Base64 Image Data]' : currentUrl}
-              </span>
-            </div>` : ''}
+          <div style="font-weight:600; font-size:0.9rem; margin-bottom:12px;">${img.label}</div>
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button class="btn btn-primary" style="font-size:0.78rem;" onclick="openImgMgrPicker('${img.key}')">
               🖼 اختر من المكتبة
