@@ -9,6 +9,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://rjjwznbpdjjhsckzazid.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_-9AD0IOVFUNKz4IRm_g-MQ_2qLZ8kiS';
+    window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  </script>
   <style>
     body { background-color: var(--bg-light); }
     .lookbook-header { height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; }
@@ -109,5 +115,38 @@
   <script src="https://unpkg.com/@barba/prefetch"></script>
   <script src="js/i18n.js"></script>
   <script src="js/animations.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      async function getSiteConfig(key, defaultVal) {
+        const { data, error } = await window.supabase.from('site_config').select('value').eq('key', key).single();
+        if (error || !data) return defaultVal;
+        return data.value;
+      }
+
+      async function applySiteImageReplacements() {
+        try {
+          const replacedImages = await getSiteConfig('vinato_replaced_server_files', {});
+          if (Object.keys(replacedImages).length === 0) return;
+          
+          const imgMap = {
+            'hero_bg':           '.hero-bg',
+            'new_collection':    '#new-collection .product-img',
+            'best_sellers':      '#best-sellers .bs-img-wrap img',
+            'instagram_grid':    '#instagram .ig-item img',
+            'hero_bg_editorial': '#editorialImg'
+          };
+          Object.entries(imgMap).forEach(([key, selector]) => {
+            if (replacedImages[key]) {
+              document.querySelectorAll(selector).forEach(img => {
+                img.src = replacedImages[key];
+                if (img.dataset.src) img.dataset.src = replacedImages[key];
+              });
+            }
+          });
+        } catch(e) { console.warn("Image replacement failed", e); }
+      }
+      await applySiteImageReplacements();
+    });
+  </script>
 </body>
 </html>

@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vinato Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@400;500;600&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="/admin/css/admin.css">
   <script>
     // Session Guard
@@ -14,7 +17,14 @@
       window.location.href = 'login.html';
     }
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://rjjwznbpdjjhsckzazid.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_-9AD0IOVFUNKz4IRm_g-MQ_2qLZ8kiS';
+    window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  </script>
 </head>
+
 <body>
 
   <!-- Sidebar Navigation -->
@@ -36,10 +46,10 @@
 
   <!-- Main Workspace (Editor + Live Preview) -->
   <main class="workspace">
-    
+
     <!-- Left Panel: Editor Area -->
     <section class="editor-panel">
-      
+
       <!-- Dashboard View -->
       <div id="dashboard-view" class="view-panel">
         <header class="section-header">
@@ -70,7 +80,11 @@
 
         <div class="drop-zone" id="mediaDropZone">
           <div class="drop-msg">
-            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
             <p><strong>Drag & Drop images here</strong> or click to browse</p>
           </div>
           <input type="file" id="mediaFileInput" multiple accept="image/*" class="file-input-hidden">
@@ -98,12 +112,15 @@
             <div class="form-group">
               <label>اسم المنتج (بالعربية)</label>
               <input type="text" id="p_name" placeholder="مثال: هودي فيناتو" class="form-input" dir="rtl">
-              <small style="color:#888; font-size:0.7rem; margin-top:4px; display:block;">سيتم ترجمته للإنجليزية تلقائياً عند النشر ✦</small>
+              <small style="color:#888; font-size:0.7rem; margin-top:4px; display:block;">سيتم ترجمته للإنجليزية
+                تلقائياً عند النشر ✦</small>
             </div>
             <div class="form-group">
               <label>وصف المنتج (بالعربية)</label>
-              <textarea id="p_description" placeholder="صف المنتج بالعربية..." class="form-input" dir="rtl" rows="3" style="resize:vertical;"></textarea>
-              <small style="color:#888; font-size:0.7rem; margin-top:4px; display:block;">سيتم ترجمته للإنجليزية تلقائياً عند النشر ✦</small>
+              <textarea id="p_description" placeholder="صف المنتج بالعربية..." class="form-input" dir="rtl" rows="3"
+                style="resize:vertical;"></textarea>
+              <small style="color:#888; font-size:0.7rem; margin-top:4px; display:block;">سيتم ترجمته للإنجليزية
+                تلقائياً عند النشر ✦</small>
             </div>
             <div class="form-row">
               <div class="form-group">
@@ -150,7 +167,7 @@
               </div>
 
             </div>
-            
+
             <div class="form-row">
               <div class="form-group">
                 <label>Price ($)</label>
@@ -172,7 +189,7 @@
                 <input type="number" id="p_sort" placeholder="1" value="1" class="form-input">
               </div>
             </div>
-            
+
             <!-- Meta Options -->
             <div class="meta-options">
               <div class="status-toggle">
@@ -189,11 +206,15 @@
           <!-- Sizes -->
           <div class="form-card">
             <h3>Available Sizes</h3>
-            <div class="sizes-grid">
-              <label class="checkbox-label"><input type="checkbox" name="size" value="S"><span class="checkmark"></span>S</label>
-              <label class="checkbox-label"><input type="checkbox" name="size" value="M"><span class="checkmark"></span>M</label>
-              <label class="checkbox-label"><input type="checkbox" name="size" value="L"><span class="checkmark"></span>L</label>
-              <label class="checkbox-label"><input type="checkbox" name="size" value="XL"><span class="checkmark"></span>XL</label>
+            <div class="sizes-grid" id="sizesGrid">
+              <label class="checkbox-label"><input type="checkbox" name="size" value="S"><span
+                  class="checkmark"></span>S</label>
+              <label class="checkbox-label"><input type="checkbox" name="size" value="M"><span
+                  class="checkmark"></span>M</label>
+              <label class="checkbox-label"><input type="checkbox" name="size" value="L"><span
+                  class="checkmark"></span>L</label>
+              <label class="checkbox-label"><input type="checkbox" name="size" value="XL"><span
+                  class="checkmark"></span>XL</label>
             </div>
           </div>
 
@@ -204,12 +225,13 @@
               <button type="button" class="btn btn-sm btn-outline" id="addColorBtn">+ Add Color</button>
             </div>
             <p class="help-text">Select images from your Media Library for each color.</p>
-            
+
             <div class="color-list" id="colorList">
               <!-- Default Color Block -->
               <div class="color-block" data-color-id="c1">
                 <div class="color-header">
-                  <input type="text" class="form-input color-name-input" placeholder="Color Name (e.g. Black)" value="Black">
+                  <input type="text" class="form-input color-name-input" placeholder="Color Name (e.g. Black)"
+                    value="Black">
                   <input type="color" class="color-picker" value="#000000">
                   <button type="button" class="btn-icon remove-color-btn" title="Remove Color">×</button>
                 </div>
@@ -347,6 +369,26 @@
               </select>
             </div>
           </div>
+          <!-- Edit Colors & Images -->
+          <div class="form-card" id="editColorsContainer" style="margin-top:12px;">
+            <div class="card-header">
+              <h3>🎨 Color Variations & Images (Edit)</h3>
+              <button type="button" class="btn btn-sm btn-outline" id="addEditColorBtn">+ Add Color</button>
+            </div>
+            <div class="color-list" id="editColorList">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+          <div class="form-row" style="margin-top:12px;">
+            <div class="form-group">
+              <label>Badge Text</label>
+              <input type="text" id="edit_badge" class="form-input" placeholder="e.g. NEW">
+            </div>
+            <div class="form-group">
+              <label>Sort Order</label>
+              <input type="number" id="edit_sort" class="form-input">
+            </div>
+          </div>
           <div style="display:flex; gap:10px; margin-top:12px;">
             <button class="btn btn-primary" id="saveEditBtn">حفظ التعديلات</button>
             <button class="btn btn-outline" id="cancelEditBtn">إلغاء</button>
@@ -471,7 +513,8 @@
             <label>New Password</label>
             <div class="password-wrap" style="position: relative;">
               <input type="password" class="form-input" id="admin_pass_input" placeholder="New Password">
-              <button type="button" class="toggle-pass-settings" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #888; cursor: pointer; font-size: 0.7rem;">SHOW</button>
+              <button type="button" class="toggle-pass-settings"
+                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #888; cursor: pointer; font-size: 0.7rem;">SHOW</button>
             </div>
           </div>
           <button class="btn btn-outline" id="updateCredsBtn">Update Credentials</button>
@@ -492,19 +535,24 @@
       <div class="preview-frame-wrap">
         <!-- Rendered HTML replicating the store view -->
         <div class="preview-content" id="previewContent">
-          
+
           <div class="store-preview-layout">
             <div class="sp-gallery" id="prevGallery">
               <span class="badge" id="prevBadge">NEW</span>
               <div class="sp-placeholder">Add images to see preview</div>
             </div>
             <div class="sp-details">
-              <span class="sp-cat" id="prevCat"><span id="prevGenderLabel">Men</span> / <span id="prevCatLabel">Sweaters / Hoodies</span></span>
+              <span class="sp-cat" id="prevCat"><span id="prevGenderLabel">Men</span> / <span id="prevCatLabel">Sweaters
+                  / Hoodies</span></span>
               <h1 class="sp-name" id="prevName">Product Name</h1>
-              <span class="sp-price"><s id="prevComparePrice" style="display:none; color:#999; margin-right:8px;"></s><span id="prevPrice">$0.00</span></span>
-              
+              <div id="prevNameEn"
+                style="font-size: 0.9rem; color: #888; margin-top: -10px; margin-bottom: 10px; font-style: italic;">
+                Product Name (EN)</div>
+              <span class="sp-price"><s id="prevComparePrice"
+                  style="display:none; color:#999; margin-right:8px;"></s><span id="prevPrice">$0.00</span></span>
+
               <div class="sp-divider"></div>
-              
+
               <div class="sp-section">
                 <span>Color: <strong id="prevColorLabel">Black</strong></span>
                 <div class="sp-color-swatches" id="prevSwatches">
@@ -550,4 +598,5 @@
 
   <script src="/admin/js/admin.js"></script>
 </body>
+
 </html>

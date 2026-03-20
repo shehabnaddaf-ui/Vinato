@@ -117,53 +117,8 @@
       <p class="section-desc" data-i18n="section.new_desc">Stripped of excess. Refined by purpose. Pieces built for those who speak through silence.</p>
     </div>
     <div class="collection-grid" id="collectionGrid">
-      <!-- Product Card 1 -->
-      <div class="product-card reveal-left" data-sort="2">
-        <div class="product-img-wrap">
-          <img src="images/optimized/new_collection.webp" alt="Structured Overcoat" class="product-img" loading="lazy"/>
-          <div class="product-overlay"></div>
-          <span class="badge">SALE</span>
-        </div>
-        <div class="product-info">
-          <h3 class="product-name">Structured Overcoat</h3>
-          <p class="product-sub">Tailored Black Wool</p>
-          <div class="product-price-row">
-            <span><span class="product-compare-price">$1,600</span><span class="product-price">$1,290</span></span>
-            <button class="add-btn">+</button>
-          </div>
-        </div>
-      </div>
-      <!-- Card 2 -->
-      <div class="product-card reveal-up delay-1" data-sort="1">
-        <div class="product-img-wrap skeleton">
-          <img src="images/optimized/new_collection.webp" data-src="images/optimized/new_collection.webp" alt="Asymmetric Blazer" class="product-img lazy-image blur-load" loading="lazy"/>
-          <div class="product-overlay"></div>
-          <span class="badge">TRENDING</span>
-        </div>
-        <div class="product-info">
-          <h3 class="product-name">Asymmetric Blazer</h3>
-          <p class="product-sub">Double-Breasted Linen</p>
-          <div class="product-price-row">
-            <span class="product-price">$890</span>
-            <button class="add-btn">+</button>
-          </div>
-        </div>
-      </div>
-      <!-- Card 3 -->
-      <div class="product-card reveal-right" data-sort="3">
-        <div class="product-img-wrap skeleton">
-          <img src="images/optimized/new_collection.webp" data-src="images/optimized/new_collection.webp" alt="Silk Evening Gown" class="product-img lazy-image blur-load" loading="lazy">
-          <div class="product-overlay"></div>
-        </div>
-        <div class="product-info">
-          <h3 class="product-name">Silk Evening Gown</h3>
-          <p class="product-sub">Black Duchess Silk</p>
-          <div class="product-price-row">
-            <span class="product-price">$2,150</span>
-            <button class="add-btn">+</button>
-          </div>
-        </div>
-      </div>
+      <!-- Dynamic featured products will be loaded here -->
+    </div>
     </div>
   </section>
 
@@ -286,19 +241,30 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/@barba/core"></script>
   <script src="https://unpkg.com/@barba/prefetch"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://rjjwznbpdjjhsckzazid.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_-9AD0IOVFUNKz4IRm_g-MQ_2qLZ8kiS';
+    window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  </script>
   <script src="js/i18n.js"></script>
   <script src="js/animations.js"></script>
   <script>
-    // Load dynamic settings from localStorage
-    document.addEventListener('DOMContentLoaded', () => {
-      const storedPhone = localStorage.getItem('s_phone');
-      const storedInsta = localStorage.getItem('s_instagram');
+    // Load dynamic settings from Supabase
+    document.addEventListener('DOMContentLoaded', async () => {
+      async function getSiteConfig(key, defaultVal) {
+        const { data, error } = await window.supabase.from('site_config').select('value').eq('key', key).single();
+        if (error || !data) return defaultVal;
+        return data.value;
+      }
+      
+      const { data: settings } = await window.supabase.from('store_settings').select('*').eq('id', 1).single();
       
       // ─── Image Manager Replacements ───
-      function applySiteImageReplacements() {
+      async function applySiteImageReplacements() {
         try {
-          const replacedImages = JSON.parse(localStorage.getItem('vinato_replaced_server_files') || '{}');
-          const siteConfig = JSON.parse(localStorage.getItem('vinato_site_images_config') || '[]');
+          const replacedImages = await getSiteConfig('vinato_replaced_server_files', {});
+          const siteConfig = await getSiteConfig('vinato_site_images_config', []);
           
           const showcaseGrid = document.getElementById('showcase-grid');
           const showcaseSection = document.getElementById('site-showcase');
@@ -380,64 +346,63 @@
         } catch(e) { console.warn("Image replacement failed", e); }
       }
 
-      applySiteImageReplacements();
+      await applySiteImageReplacements();
 
       const phoneEl = document.getElementById('footerPhone');
       const instaEl = document.getElementById('footerInsta');
       const instaHandle = document.getElementById('instaHandle');
 
-      if (storedPhone && phoneEl) {
-        phoneEl.textContent = storedPhone;
-        phoneEl.href = `tel:${storedPhone.replace(/\D/g, '')}`;
-      }
-      
-      if (storedInsta && instaEl) {
-        instaEl.href = storedInsta;
-        if (instaHandle) {
-          const handle = storedInsta.split('/').filter(Boolean).pop();
-          if (handle) instaHandle.textContent = `@${handle}`;
+      if (settings) {
+        if (settings.phone && phoneEl) {
+          phoneEl.textContent = settings.phone;
+          phoneEl.href = `tel:${settings.phone.replace(/\D/g, '')}`;
+        }
+        if (settings.instagram && instaEl) {
+          instaEl.href = settings.instagram;
+          const handle = settings.instagram.split('/').filter(Boolean).pop();
+          if (handle && instaHandle) instaHandle.textContent = `@${handle}`;
         }
       }
 
-      loadDynamicProducts();
-
-      function loadDynamicProducts() {
-        const allProducts = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
-        // Only show Published products
-        const published = allProducts.filter(p => p.status === 'Published' || (!p.status && p.featured));
+      async function loadDynamicProducts() {
+        const { data: products, error } = await window.supabase.from('products').select('*').eq('status', 'Published');
+        if (error || !products) return;
 
         const lang = (window.VinI18n && window.VinI18n.lang) || 'ar';
-        const getName = p => lang === 'ar' ? (p.name_ar || p.name) : (p.name_en || p.name);
-        const getCat  = p => lang === 'ar' ? (p.cat_ar  || p.cat)  : (p.cat_en  || p.cat);
+        const getName = p => lang === 'ar' ? p.name_ar : p.name_en;
+        const getCat  = p => p.category; // Simple category slug
 
         // ── Featured / collection grid ──
-        const featured = published.filter(p => (p.placement || []).includes('homepage_featured') || p.featured);
+        const featured = products.filter(p => (p.placement || []).includes('homepage_featured'));
         const collectionGrid = document.getElementById('collectionGrid');
         if (collectionGrid && featured.length > 0) {
+          collectionGrid.innerHTML = '';
           featured.forEach(prod => {
             const card = document.createElement('div');
             card.className = 'product-card reveal-up';
             card.setAttribute('data-sort', prod.sort);
-            const mainImg = prod.colors?.[0]?.images?.[0] || '';
+            const mainImg = prod.images?.[0] || '';
             card.innerHTML = `
-              <div class="product-img-wrap">
-                <img src="${mainImg}" alt="${getName(prod)}" class="product-img" loading="lazy"/>
-                <div class="product-overlay"></div>
-                ${prod.badge ? `<span class="badge">${prod.badge}</span>` : ''}
-              </div>
-              <div class="product-info">
-                <h3 class="product-name">${getName(prod)}</h3>
-                <p class="product-sub">${getCat(prod)}</p>
-                <div class="product-price-row">
-                  <span>
-                    ${prod.comparePrice && prod.comparePrice > prod.price ? `<span class="product-compare-price">$${prod.comparePrice}</span>` : ''}
-                    <span class="product-price">$${prod.price}</span>
-                  </span>
-                  <button class="add-btn">+</button>
+              <a href="product.html?id=${prod.id}" style="text-decoration:none; color:inherit; display:block;">
+                <div class="product-img-wrap">
+                  <img src="${mainImg}" alt="${getName(prod)}" class="product-img" loading="lazy"/>
+                  <div class="product-overlay"></div>
+                  ${prod.badge || '' ? `<span class="badge">${prod.badge}</span>` : ''}
                 </div>
-              </div>
+                <div class="product-info">
+                  <h3 class="product-name">${getName(prod)}</h3>
+                  <p class="product-sub">${getCat(prod)}</p>
+                  <div class="product-price-row">
+                    <span>
+                      ${prod.compare_price && prod.compare_price > prod.price ? `<span class="product-compare-price">$${prod.compare_price}</span>` : ''}
+                      <span class="product-price">$${prod.price}</span>
+                    </span>
+                    <button class="add-btn">+</button>
+                  </div>
+                </div>
+              </a>
             `;
-            collectionGrid.prepend(card);
+            collectionGrid.appendChild(card);
           });
         }
 

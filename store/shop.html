@@ -10,6 +10,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="preload" as="image" href="images/optimized/hero_bg.webp">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://rjjwznbpdjjhsckzazid.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_-9AD0IOVFUNKz4IRm_g-MQ_2qLZ8kiS';
+    window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  </script>
 </head>
 <body class="shop-page" data-barba="wrapper">
 
@@ -191,82 +197,7 @@
       </div>
 
       <!-- Product 6: Men Shoes -->
-      <div class="product-card reveal-up" data-gender="men" data-cat="shoes" data-featured="true">
-        <div class="product-img-wrap skeleton">
-          <img src="images/optimized/best_sellers.webp" data-src="images/optimized/best_sellers.webp" alt="Leather Chelsea Boots" class="product-img lazy-image blur-load" decoding="async" loading="lazy">
-          <img src="images/optimized/prod_coat_men.webp" data-src="images/optimized/prod_coat_men.webp" alt="Leather Chelsea Boots Hover" class="product-img-secondary lazy-image blur-load" decoding="async" loading="lazy">
-          <div class="product-overlay">
-            <div class="product-details">
-              <span>Footwear</span>
-              <span>Italian Leather</span>
-            </div>
-          </div>
-        </div>
-        <div class="product-info">
-          <h2 class="product-name">Leather Chelsea Boots</h2>
-          <span class="product-price">$650</span>
-        </div>
-      </div>
-
-      <!-- Product 7: Men Underwear -->
-      <div class="product-card reveal-up" data-gender="men" data-cat="underwear" data-new="true">
-        <div class="product-img-wrap skeleton">
-          <img src="images/optimized/prod_knitwear.webp" data-src="images/optimized/prod_knitwear.webp" alt="Premium Cotton Briefs" class="product-img lazy-image blur-load" decoding="async" loading="lazy">
-          <img src="images/optimized/prod_trousers.webp" data-src="images/optimized/prod_trousers.webp" alt="Premium Cotton Briefs Hover" class="product-img-secondary lazy-image blur-load" decoding="async" loading="lazy">
-          <div class="product-overlay">
-            <div class="product-details">
-              <span>Intimates</span>
-              <span>Organic Cotton</span>
-            </div>
-          </div>
-        </div>
-        <div class="product-info">
-          <h2 class="product-name">Premium Cotton Briefs</h2>
-          <span class="product-price">$45</span>
-        </div>
-      </div>
-
-      <!-- Product 8: Women Underwear -->
-      <div class="product-card reveal-up" data-gender="women" data-cat="underwear" data-sale="true">
-        <div class="product-img-wrap skeleton">
-          <img src="images/optimized/prod_dress_silk.webp" data-src="images/optimized/prod_dress_silk.webp" alt="Silk Intimates Set" class="product-img lazy-image blur-load" decoding="async" loading="lazy">
-          <img src="images/optimized/prod_knitwear.webp" data-src="images/optimized/prod_knitwear.webp" alt="Silk Intimates Set Hover" class="product-img-secondary lazy-image blur-load" decoding="async" loading="lazy">
-          <div class="product-overlay">
-            <div class="product-details">
-              <span>Intimates</span>
-              <span>Pure Silk</span>
-            </div>
-          </div>
-          <span class="badge">SALE</span>
-        </div>
-        <div class="product-info">
-          <h2 class="product-name">Silk Intimates Set</h2>
-          <div class="product-price-row">
-            <span>
-              <span class="product-compare-price">$120</span>
-              <span class="product-price">$89</span>
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Product 9: Men Shirt -->
-      <div class="product-card reveal-up" data-gender="men" data-cat="shirts">
-        <div class="product-img-wrap skeleton">
-          <img src="images/optimized/new_collection.webp" data-src="images/optimized/new_collection.webp" alt="Linen Dress Shirt" class="product-img lazy-image blur-load" decoding="async" loading="lazy">
-          <img src="images/optimized/prod_coat_men.webp" data-src="images/optimized/prod_coat_men.webp" alt="Linen Dress Shirt Hover" class="product-img-secondary lazy-image blur-load" decoding="async" loading="lazy">
-          <div class="product-overlay">
-            <div class="product-details">
-              <span>Shirts</span>
-              <span>100% Belgian Linen</span>
-            </div>
-          </div>
-        </div>
-        <div class="product-info">
-          <h2 class="product-name">Linen Dress Shirt</h2>
-          <span class="product-price">$180</span>
-        </div>
-      </div>
+      <!-- Dynamic products will be loaded here -->
     </div>
     
     <!-- Empty results message -->
@@ -324,13 +255,20 @@
   <script src="js/i18n.js"></script>
   <script src="js/animations.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
       const cards = document.querySelectorAll('.product-card');
       const filterBtns = document.querySelectorAll('.filter-btn');
       const productGrid = document.getElementById('productGrid');
       const noProductsEl = document.getElementById('noProducts');
       
       let urlParams = new URL(window.location).searchParams;
+
+      // --- Supabase Helpers ---
+      async function getSiteConfig(key, defaultVal) {
+        const { data, error } = await window.supabase.from('site_config').select('value').eq('key', key).single();
+        if (error || !data) return defaultVal;
+        return data.value;
+      }
 
       function applyFilters() {
         const currentCards = document.querySelectorAll('.product-card');
@@ -343,7 +281,6 @@
 
         const title = document.querySelector('.shop-title');
 
-        // Update Title
         if (genderParam && catParam) title.textContent = `${genderParam} / ${catParam}`.toUpperCase();
         else if (genderParam) title.textContent = `${genderParam} Collection`.toUpperCase();
         else if (sortParam === 'new') title.textContent = 'New Arrivals'.toUpperCase();
@@ -381,7 +318,6 @@
           }
         });
 
-        // Toggle Grid/Empty Message
         if (visibleCount === 0) {
           if (productGrid) productGrid.style.display = 'none';
           noProductsEl.style.display = 'block';
@@ -390,7 +326,6 @@
           noProductsEl.style.display = 'none';
         }
 
-        // Active States
         filterBtns.forEach(b => b.classList.remove('active'));
         if (genderParam) {
           const btn = document.querySelector(`.filter-btn[data-filter="${genderParam.toLowerCase()}"]`);
@@ -446,7 +381,6 @@
             const f = targetUrl.searchParams.get('featured') === 'true';
             updateURLAndFilter(g, c, s, sl, f);
             
-            // Close menu
             const mobileMenu = document.getElementById('mobileMenu');
             const navToggle = document.getElementById('navToggle');
             if (mobileMenu) mobileMenu.classList.remove('open');
@@ -456,24 +390,19 @@
       });
 
       applyFilters();
-      
+
       // ─── Image Manager Replacements ───
-      function applySiteImageReplacements() {
+      async function applySiteImageReplacements() {
         try {
-          const replacedImages = JSON.parse(localStorage.getItem('vinato_replaced_server_files') || '{}');
+          const replacedImages = await getSiteConfig('vinato_replaced_server_files', {});
           if (Object.keys(replacedImages).length === 0) return;
           
-          // Site-wide selectors
           const imgMap = {
             'hero_bg':           '.hero-bg',
-            'new_collection':    '#new-collection .product-img, img[src*="new_collection.webp"]',
-            'best_sellers':      '#best-sellers .bs-img-wrap img, img[src*="best_sellers.webp"]',
-            'instagram_grid':    '#instagram .ig-item img, img[src*="instagram_grid.webp"]',
-            'hero_bg_editorial': '#editorialImg, img[src*="hero_bg.webp"]',
-            'prod_coat_men':     'img[src*="prod_coat_men.webp"]',
-            'prod_dress_silk':    'img[src*="prod_dress_silk.webp"]',
-            'prod_knitwear':      'img[src*="prod_knitwear.webp"]',
-            'prod_trousers':      'img[src*="prod_trousers.webp"]'
+            'new_collection':    '#new-collection .product-img',
+            'best_sellers':      '#best-sellers .bs-img-wrap img',
+            'instagram_grid':    '#instagram .ig-item img',
+            'hero_bg_editorial': '#editorialImg'
           };
           Object.entries(imgMap).forEach(([key, selector]) => {
             if (replacedImages[key]) {
@@ -490,74 +419,70 @@
           });
         } catch(e) { console.warn("Image replacement failed", e); }
       }
-      applySiteImageReplacements();
+      await applySiteImageReplacements();
 
-      loadDynamicProducts();
+      async function loadDynamicProducts() {
+        const { data: products, error } = await window.supabase.from('products').select('*').eq('status', 'Published');
+        if (error || !products) return;
 
-      function loadDynamicProducts() {
-        const allProducts = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
-        // Filter: Only Published
-        const published = allProducts.filter(p => p.status === 'Published' || (!p.status && p.featured));
-        if (published.length === 0) return;
-
-        published.forEach(prod => {
+        products.forEach(prod => {
           const card = document.createElement('div');
           card.className = 'product-card reveal-up';
           card.setAttribute('data-dynamic', 'true');
           card.setAttribute('data-gender', (prod.gender || 'unisex').toLowerCase());
           
-          // Fix: handle missing .cat property
-          const catVal = (prod.cat || prod.cat_en || 'other').toLowerCase().split(' / ')[0];
+          const catVal = (prod.category || 'other').toLowerCase().split(' / ')[0];
           card.setAttribute('data-cat', catVal);
           card.setAttribute('data-new', 'true');
-          card.setAttribute('data-sale', (prod.comparePrice > prod.price) ? 'true' : 'false');
-          card.setAttribute('data-featured', prod.featured ? 'true' : 'false');
+          card.setAttribute('data-sale', (prod.compare_price > prod.price) ? 'true' : 'false');
+          card.setAttribute('data-featured', (prod.placement || []).includes('homepage_featured') ? 'true' : 'false');
           card.setAttribute('data-sort', prod.sort);
 
-          const mainImg = prod.colors[0]?.images[0] || '';
-          const hoverImg = prod.colors[0]?.images[1] || mainImg;
+          const mainImg = prod.images?.[0] || '';
+          const hoverImg = prod.images?.[1] || mainImg;
 
-          // Use bilingual names based on current language
           const lang = (window.VinI18n && window.VinI18n.lang) || 'ar';
-          const displayName = lang === 'ar' ? (prod.name_ar || prod.name) : (prod.name_en || prod.name);
-          const displayCat  = lang === 'ar' ? (prod.cat_ar  || prod.cat)  : (prod.cat_en  || prod.cat);
+          const displayName = lang === 'ar' ? prod.name_ar : prod.name_en;
+          const displayCat  = prod.category; 
 
           card.innerHTML = `
-            <div class="product-img-wrap">
-              <img src="${mainImg}" alt="${displayName}" class="product-img" loading="lazy">
-              <img src="${hoverImg}" alt="${displayName} Hover" class="product-img-secondary" loading="lazy">
-              <div class="product-overlay">
-                <div class="product-details">
-                  <span>${displayCat}</span>
-                  <span>${prod.colors.length} Colors</span>
+            <a href="product.html?id=${prod.id}" class="product-card-link" style="text-decoration:none; color:inherit; display:block;">
+              <div class="product-img-wrap">
+                <img src="${mainImg}" alt="${displayName}" class="product-img" loading="lazy">
+                <img src="${hoverImg}" alt="${displayName} Hover" class="product-img-secondary" loading="lazy">
+                <div class="product-overlay">
+                  <div class="product-details">
+                    <span>${displayCat}</span>
+                    <span>${prod.colors?.length || 0} Colors</span>
+                  </div>
+                </div>
+                ${prod.badge || '' ? `<span class="badge">${prod.badge}</span>` : ''}
+              </div>
+              <div class="product-info">
+                <h2 class="product-name">${displayName}</h2>
+                <div class="product-price-row">
+                  <span>
+                    ${prod.compare_price && prod.compare_price > prod.price ? `<span class="product-compare-price">$${prod.compare_price}</span>` : ''}
+                    <span class="product-price">$${prod.price}</span>
+                  </span>
                 </div>
               </div>
-              ${prod.badge ? `<span class="badge">${prod.badge}</span>` : ''}
-            </div>
-            <div class="product-info">
-              <h2 class="product-name">${displayName}</h2>
-              <div class="product-price-row">
-                <span>
-                  ${prod.comparePrice && prod.comparePrice > prod.price ? `<span class="product-compare-price">$${prod.comparePrice}</span>` : ''}
-                  <span class="product-price">$${prod.price}</span>
-                </span>
-              </div>
-            </div>
+            </a>
           `;
-          productGrid.prepend(card);
+          productGrid.appendChild(card);
         });
 
-        // Re-apply filters after adding cards
         setTimeout(() => { applyFilters(); }, 100);
 
-        // Re-render on language change
         document.addEventListener('langChange', () => {
           document.querySelectorAll('.product-card[data-dynamic]').forEach(c => c.remove());
           loadDynamicProducts();
         });
 
-        applySiteImageReplacements();
+        await applySiteImageReplacements();
       }
+      
+      loadDynamicProducts();
     });
   </script>
 </body>

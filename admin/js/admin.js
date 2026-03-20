@@ -5,225 +5,191 @@
 document.addEventListener('DOMContentLoaded', () => {
   /* ─── State Management ─── */
   const state = {
-    mediaLibrary: [], // Array of local object URLs
-    colors: [
-      { id: 'c1', name: 'Black', hex: '#000000', images: [] }
-    ],
-    activeColorIdForMedia: null,
-    settings: {
-      instagram: localStorage.getItem('s_instagram') || 'https://instagram.com/vinato',
-      phone: localStorage.getItem('s_phone') || '+1 (212) 555-1234'
-    }
+    mediaLibrary: [],
+    addColors: [{ id: 'c1', name: 'Black', hex: '#000000', images: [], inventory: null, price_adjustment: 0 }],
+    editColors: [],
+    activeColorListKey: null,
+    activeColorId: null
   };
 
-  // Credentials Management
-  const updateCredsBtn = document.getElementById('updateCredsBtn');
-  const adminUserInput = document.getElementById('admin_user_input');
-  const adminPassInput = document.getElementById('admin_pass_input');
-  const togglePassSettings = document.querySelector('.toggle-pass-settings');
-
-  if (togglePassSettings) {
-    togglePassSettings.addEventListener('click', () => {
-      const type = adminPassInput.getAttribute('type') === 'password' ? 'text' : 'password';
-      adminPassInput.setAttribute('type', type);
-      togglePassSettings.textContent = type === 'password' ? 'SHOW' : 'HIDE';
-    });
-  }
-
-  if (updateCredsBtn) {
-    updateCredsBtn.addEventListener('click', () => {
-      const newUser = adminUserInput.value.trim();
-      const newPass = adminPassInput.value.trim();
-
-      if (!newUser || !newPass) {
-        showToast("Please enter both username and password");
-        return;
-      }
-
-      localStorage.setItem('admin_user', newUser);
-      localStorage.setItem('admin_pass', newPass);
-      showToast("Credentials updated successfully!");
-      adminUserInput.value = '';
-      adminPassInput.value = '';
-    });
-  }
-
-  // Logout Logic
-  const logoutBtn = document.getElementById('logoutBtn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      localStorage.removeItem('admin_session');
-      window.location.href = 'login.html';
-    });
-  }
-
-  /* ─── Navigation & Views ─── */
   const navItems = document.querySelectorAll('.nav-item');
-  const views = document.querySelectorAll('.view-panel');
-  const previewPanel = document.querySelector('.preview-panel');
+  const viewPanels = document.querySelectorAll('.view-panel');
+  window.imgMgrTargetKey = null;
 
-  function switchView(targetViewId) {
-    // Update Nav
-    navItems.forEach(item => {
-      if (item.dataset.view === targetViewId) {
-        item.classList.add('active');
-      } else {
-        item.classList.remove('active');
-      }
+  window.switchView = (viewId) => {
+    console.log('Switching view to:', viewId);
+    viewPanels.forEach(panel => {
+      panel.classList.add('hidden');
+      panel.classList.remove('active');
     });
-
-    // Update Views
-    views.forEach(view => {
-      if (view.id === targetViewId) {
-        view.classList.add('active');
-      } else {
-        view.classList.remove('active');
-      }
-    });
-
-    // Preview Toggle (Only for products)
-    if (previewPanel) {
-      if (targetViewId === 'products-view') {
-        previewPanel.classList.remove('hidden');
-        previewPanel.style.display = 'flex';
-      } else {
-        previewPanel.classList.add('hidden');
-        previewPanel.style.display = 'none';
-      }
+    const target = document.getElementById(viewId);
+    if (target) {
+      target.classList.remove('hidden');
+      target.classList.add('active');
     }
-  }
+    navItems.forEach(item => {
+      if (item.dataset.view === viewId) item.classList.add('active');
+      else item.classList.remove('active');
+    });
 
+    if (viewId === 'server-media-view') renderImageManager();
+    if (viewId === 'manage-products-view') renderManageProducts();
+    if (viewId === 'media-view') renderMediaGrid();
+  };
+
+  // Trigger render when nav item clicked
   navItems.forEach(item => {
     item.addEventListener('click', (e) => {
       e.preventDefault();
-      const targetViewId = item.dataset.view;
-      if (targetViewId) switchView(targetViewId);
+      const vid = item.dataset.view;
+      if (vid) window.switchView(vid);
     });
   });
 
-  // Init default view
-  const currentActive = document.querySelector('.nav-item.active');
-  if (currentActive && currentActive.dataset.view) {
-    switchView(currentActive.dataset.view);
-  } else {
-    switchView('products-view'); // Fallback
+  // Init view (Standard sync part)
+  const queryView = new URLSearchParams(window.location.search).get('view');
+  const initialView = queryView || (document.querySelector('.nav-item.active')?.dataset.view) || 'products-view';
+  window.switchView(initialView);
+
+
+  // --- Supabase Storage Helper ---
+  async function uploadToSupabase(file, folder = 'products') {
+    const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+    const filePath = `${folder}/${fileName}`;
+
+    const { data, error } = await window.supabase.storage.from('media').upload(filePath, file);
+    if (error) throw error;
+
+    const { data: { publicUrl } } = window.supabase.storage.from('media').getPublicUrl(filePath);
+    return publicUrl;
   }
 
-  // Image Manager — renders all site images with Media Library picker
-  let imgMgrTargetKey = null;
+  // --- Translation Logic ---
+  async function translateText(text) {
+    if (!text || !text.trim()) return text;
+    try {
+      const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=ar|en`;
+      const res = await fetch(url);
+      const data = await res.json();
+      return data.responseStatus === 200 ? data.responseData.translatedText : text;
+    } catch (e) {
+      console.error('Translation error:', e);
+      return text;
+    }
+  }
+  window.translateText = translateText;
 
   const DEFAULT_SITE_IMAGES = [
-    { key: 'hero_bg',           label: 'Hero Background',            location: 'Homepage → Hero Section',           path: '/store/images/optimized/hero_unisex.png.webp', price: 'Premium', name: 'Vintage Hero' },
-    { key: 'new_collection',    label: 'New Collection',             location: 'Homepage → New Collection Section', path: '/store/images/optimized/new_collection.webp', price: '$2,450', name: 'SS26 Showcase' },
-    { key: 'best_sellers',      label: 'Best Sellers',               location: 'Homepage → Best Sellers Section',   path: '/store/images/optimized/best_sellers.webp', price: '$1,890', name: 'Bestseller Grid' },
-    { key: 'instagram_grid',    label: 'Instagram Gallery',          location: 'Homepage → Instagram Section',     path: '/store/images/optimized/instagram_grid.webp', price: 'Social', name: 'IG Feed Main' },
-    { key: 'prod_coat_men',     label: "Men's Structured Overcoat",  location: 'Shop → Men / Product Page',         path: '/store/images/optimized/prod_coat_men.webp', price: '$1,290', name: 'Structured Overcoat' },
-    { key: 'prod_dress_silk',   label: "Women's Silk Slip Dress",    location: 'Shop → Women / Category Section',   path: '/store/images/optimized/prod_dress_silk.webp', price: '$950', name: 'Silk Slip Dress' },
-    { key: 'prod_knitwear',     label: 'Oversized Cashmere Sweater', location: 'Shop → Product Page (Main Image)',  path: '/store/images/optimized/prod_knitwear.webp', price: '$780', name: 'Cashmere Sweater' },
-    { key: 'prod_trousers',     label: 'Tailored Wool Trousers',     location: 'Shop → Women / Category Card',      path: '/store/images/optimized/prod_trousers.webp', price: '$640', name: 'Wool Trousers' },
-    { key: 'hero_bg_editorial', label: 'Editorial Split Image',      location: 'Homepage → Editorial Split Section',path: '/store/images/optimized/hero_bg.webp', price: 'Editorial', name: 'Philosophy Cover' },
+    { key: 'hero_bg', label: 'Hero Background', location: 'Homepage → Hero Section', path: '/store/images/optimized/hero_unisex.png.webp', price: 'Premium', name: 'Vintage Hero' },
+    { key: 'new_collection', label: 'New Collection', location: 'Homepage → New Collection Section', path: '/store/images/optimized/new_collection.webp', price: '$2,450', name: 'SS26 Showcase' },
+    { key: 'best_sellers', label: 'Best Sellers', location: 'Homepage → Best Sellers Section', path: '/store/images/optimized/best_sellers.webp', price: '$1,890', name: 'Bestseller Grid' },
+    { key: 'instagram_grid', label: 'Instagram Gallery', location: 'Homepage → Instagram Section', path: '/store/images/optimized/instagram_grid.webp', price: 'Social', name: 'IG Feed Main' },
+    { key: 'prod_coat_men', label: "Men's Structured Overcoat", location: 'Shop → Men / Product Page', path: '/store/images/optimized/prod_coat_men.webp', price: '$1,290', name: 'Structured Overcoat' },
+    { key: 'prod_dress_silk', label: "Women's Silk Slip Dress", location: 'Shop → Women / Category Section', path: '/store/images/optimized/prod_dress_silk.webp', price: '$950', name: 'Silk Slip Dress' },
+    { key: 'prod_knitwear', label: 'Oversized Cashmere Sweater', location: 'Shop → Product Page (Main Image)', path: '/store/images/optimized/prod_knitwear.webp', price: '$780', name: 'Cashmere Sweater' },
+    { key: 'prod_trousers', label: 'Tailored Wool Trousers', location: 'Shop → Women / Category Card', path: '/store/images/optimized/prod_trousers.webp', price: '$640', name: 'Wool Trousers' },
+    { key: 'hero_bg_editorial', label: 'Editorial Split Image', location: 'Homepage → Editorial Split Section', path: '/store/images/optimized/hero_bg.webp', price: 'Editorial', name: 'Philosophy Cover' },
   ];
 
-  function getSiteImages() {
-    const saved = localStorage.getItem('vinato_site_images_config');
-    if (!saved) {
-      localStorage.setItem('vinato_site_images_config', JSON.stringify(DEFAULT_SITE_IMAGES));
-      return DEFAULT_SITE_IMAGES;
-    }
-    return JSON.parse(saved);
+  async function getSiteConfig(key, defaultVal) {
+    const { data, error } = await window.supabase.from('site_config').select('value').eq('key', key).single();
+    if (error || !data) return defaultVal;
+    return data.value;
   }
 
-  function saveSiteImages(config) {
-    localStorage.setItem('vinato_site_images_config', JSON.stringify(config));
+  async function saveSiteConfig(key, value) {
+    await window.supabase.from('site_config').upsert({ key, value });
   }
 
-  function renderImageManager() {
+  async function getSiteImages() {
+    return await getSiteConfig('vinato_site_images_config', DEFAULT_SITE_IMAGES);
+  }
+
+  async function saveSiteImages(config) {
+    await saveSiteConfig('vinato_site_images_config', config);
+  }
+
+  async function renderImageManager() {
     const list = document.getElementById('imageManagerList');
     if (!list) return;
 
-    const SITE_IMAGES = getSiteImages();
-    const replaced = JSON.parse(localStorage.getItem('vinato_replaced_server_files') || '{}');
-    list.innerHTML = '';
+    const SITE_IMAGES = await getSiteImages();
+    const replaced = await getSiteConfig('vinato_replaced_server_files', {});
+    list.innerHTML = `<div style="padding:20px; color:#aaa; font-size:0.8rem;">Loading settings...</div>`;
 
-    // --- Header & Add New Section ---
-    const addSection = document.createElement('div');
-    addSection.className = 'form-card';
-    addSection.style.padding = '20px';
-    addSection.style.marginBottom = '30px';
-    addSection.innerHTML = `
-      <div style="font-weight:600; margin-bottom:15px; display:flex; align-items:center; gap:8px;">
-        <i class="fas fa-plus-circle" style="color:var(--gold);"></i> إضافة صورة جديدة للموقع
+    let html = `
+      <div class="form-card" style="padding:20px; margin-bottom:30px;">
+        <div style="font-weight:600; margin-bottom:15px; display:flex; align-items:center; gap:8px;">
+          <i class="fas fa-plus-circle" style="color:var(--gold);"></i> إضافة صورة جديدة للموقع
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:15px;">
+          <input type="text" id="newImgName" class="form-control" placeholder="اسم الصورة/المنتج (مثلاً: رداء صيفي)">
+          <input type="text" id="newImgPrice" class="form-control" placeholder="السعر (مثلاً: $1,200)">
+          <input type="text" id="newImgLoc" class="form-control" placeholder="الموقع (مثلاً: الصفحة الرئيسية)">
+        </div>
+        <button class="btn btn-primary" onclick="window.addNewSiteImage()">➕ إضافة للقائمة</button>
       </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:15px;">
-        <input type="text" id="newImgName" class="form-control" placeholder="اسم الصورة/المنتج (مثلاً: رداء صيفي)">
-        <input type="text" id="newImgPrice" class="form-control" placeholder="السعر (مثلاً: $1,200)">
-        <input type="text" id="newImgLoc" class="form-control" placeholder="الموقع (مثلاً: الصفحة الرئيسية)">
-      </div>
-      <button class="btn btn-primary" onclick="window.addNewSiteImage()">➕ إضافة للقائمة</button>
     `;
-    list.appendChild(addSection);
 
-    SITE_IMAGES.forEach((img, idx) => {
+    SITE_IMAGES.forEach((img) => {
       const currentUrl = replaced[img.key] || img.path;
       const isReplaced = !!replaced[img.key];
 
-      const card = document.createElement('div');
-      card.className = 'form-card';
-      card.style.cssText = 'display:flex; gap:20px; align-items:flex-start; padding:20px;';
-      card.innerHTML = `
-        <div style="flex:0 0 120px; height:120px; background:#111; border-radius:6px; overflow:hidden;">
-          <img src="${currentUrl}" alt="${img.label || img.name}" style="width:100%; height:100%; object-fit:cover; display:block;" id="imgPreview_${img.key}">
-        </div>
-        <div style="flex:1; min-width:0;">
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
-            <div>
-              <label style="font-size:0.65rem; color:#888; display:block; margin-bottom:4px;">اسم المنتج/الصورة</label>
-              <input type="text" class="form-control" style="font-size:0.85rem; height:32px;" value="${img.name}" 
-                     onchange="window.editImageMetadata('${img.key}', 'name', this.value)">
-            </div>
-            <div>
-              <label style="font-size:0.65rem; color:#888; display:block; margin-bottom:4px;">السعر</label>
-              <input type="text" class="form-control" style="font-size:0.85rem; height:32px;" value="${img.price}" 
-                     onchange="window.editImageMetadata('${img.key}', 'price', this.value)">
-            </div>
+      html += `
+        <div class="form-card" style="display:flex; gap:20px; align-items:flex-start; padding:20px; margin-bottom:15px;">
+          <div style="flex:0 0 120px; height:120px; background:#111; border-radius:6px; overflow:hidden;">
+            <img src="${currentUrl}" alt="${img.label || img.name}" style="width:100%; height:100%; object-fit:cover; display:block;" id="imgPreview_${img.key}">
           </div>
-          <div style="font-size:0.72rem; color:#aaa; margin-bottom:12px; line-height:1.4;">
-            📍 ${img.location} <br>
-            <span style="font-size:0.65rem; color:#666; word-break:break-all;">${img.path}</span>
-          </div>
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button class="btn btn-primary" style="font-size:0.78rem;" onclick="openImgMgrPicker('${img.key}')">
-              🖼 استبدال الصورة
-            </button>
-            ${isReplaced ? `<button class="btn btn-outline" style="font-size:0.75rem;" onclick="resetImage('${img.key}')">♻ Reset Image</button>` : ''}
-            <button class="btn btn-outline" style="font-size:0.75rem; color:#ff4d4d; border-color:#ff4d4d;" onclick="window.removeSiteImage('${img.key}')">🗑 حذف</button>
+          <div style="flex:1; min-width:0;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+              <div>
+                <label style="font-size:0.65rem; color:#888; display:block; margin-bottom:4px;">اسم المنتج/الصورة</label>
+                <input type="text" class="form-control" style="font-size:0.85rem; height:32px;" value="${img.name}" 
+                       onchange="window.editImageMetadata('${img.key}', 'name', this.value)">
+              </div>
+              <div>
+                <label style="font-size:0.65rem; color:#888; display:block; margin-bottom:4px;">السعر</label>
+                <input type="text" class="form-control" style="font-size:0.85rem; height:32px;" value="${img.price}" 
+                       onchange="window.editImageMetadata('${img.key}', 'price', this.value)">
+              </div>
+            </div>
+            <div style="font-size:0.72rem; color:#aaa; margin-bottom:12px; line-height:1.4;">
+              📍 ${img.location} <br>
+              <span style="font-size:0.65rem; color:#666; word-break:break-all;">${img.path}</span>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="btn btn-primary" style="font-size:0.78rem;" onclick="openImgMgrPicker('${img.key}')">
+                🖼 استبدال الصورة
+              </button>
+              ${isReplaced ? `<button class="btn btn-outline" style="font-size:0.75rem;" onclick="resetImage('${img.key}')">♻ Reset Image</button>` : ''}
+              <button class="btn btn-outline" style="font-size:0.75rem; color:#ff4d4d; border-color:#ff4d4d;" onclick="window.removeSiteImage('${img.key}')">🗑 حذف</button>
+            </div>
           </div>
         </div>
       `;
-      list.appendChild(card);
     });
+
+    list.innerHTML = html;
   }
 
-  // --- Globals for Image Manager ---
-  window.editImageMetadata = (key, field, value) => {
-    const config = getSiteImages();
+  window.editImageMetadata = async (key, field, value) => {
+    const config = await getSiteImages();
     const item = config.find(i => i.key === key);
     if (item) {
       item[field] = value;
-      saveSiteImages(config);
+      await saveSiteImages(config);
       showToast('تم تحديث البيانات بنجاح');
     }
   };
 
-  window.addNewSiteImage = () => {
+  window.addNewSiteImage = async () => {
     const name = document.getElementById('newImgName').value.trim();
     const price = document.getElementById('newImgPrice').value.trim();
     const loc = document.getElementById('newImgLoc').value.trim();
-    
+
     if (!name) return showToast('يرجى إدخال اسم الصورة', 'error');
 
-    const config = getSiteImages();
+    const config = await getSiteImages();
     const key = 'custom_img_' + Date.now();
     config.unshift({
       key,
@@ -234,61 +200,49 @@ document.addEventListener('DOMContentLoaded', () => {
       path: '/store/images/placeholder.webp'
     });
 
-    saveSiteImages(config);
-    renderImageManager();
+    await saveSiteImages(config);
+    await renderImageManager();
     showToast('تمت الإضافة بنجاح');
   };
 
-  window.removeSiteImage = (key) => {
+  window.removeSiteImage = async (key) => {
     if (!confirm('هل أنت متأكد من حذف هذه الصورة؟')) return;
-    const config = getSiteImages().filter(i => i.key !== key);
-    saveSiteImages(config);
-    
+    const config = (await getSiteImages()).filter(i => i.key !== key);
+    await saveSiteImages(config);
+
     // Also remove any replacement
-    const replaced = JSON.parse(localStorage.getItem('vinato_replaced_server_files') || '{}');
+    const replaced = await getSiteConfig('vinato_replaced_server_files', {});
     delete replaced[key];
-    localStorage.setItem('vinato_replaced_server_files', JSON.stringify(replaced));
-    
-    renderImageManager();
+    await saveSiteConfig('vinato_replaced_server_files', replaced);
+
+    await renderImageManager();
     showToast('تم الحذف');
   };
 
-  window.openImgMgrPicker = (key) => {
-    imgMgrTargetKey = key;
-    state.activeColorIdForMedia = '__imgmgr__';
-    openMediaModal('__imgmgr__');
-  };
 
-  window.resetImage = (key) => {
-    const replaced = JSON.parse(localStorage.getItem('vinato_replaced_server_files') || '{}');
-    delete replaced[key];
-    localStorage.setItem('vinato_replaced_server_files', JSON.stringify(replaced));
-    renderImageManager();
-    showToast('♻ تم إعادة الصورة الأصلية');
-  };
 
   // Trigger render when nav item clicked + manage-products-view
-  navItems.forEach(item => {
-    item.addEventListener('click', () => {
-      if (item.dataset.view === 'server-media-view') renderImageManager();
-      if (item.dataset.view === 'manage-products-view') renderManageProducts();
-    });
-  });
-
-  if (currentActive && currentActive.dataset.view === 'server-media-view') renderImageManager();
-  if (currentActive && currentActive.dataset.view === 'manage-products-view') renderManageProducts();
+  // Initial data load
+  (async function initAdmin() {
+    const gallery = await getSiteConfig('vinato_media_gallery', []);
+    state.mediaLibrary = gallery;
+    await loadSettings();
+    if (document.getElementById('manage-products-view').classList.contains('active')) renderManageProducts();
+    if (document.getElementById('media-view').classList.contains('active')) renderMediaGrid();
+    if (document.getElementById('server-media-view').classList.contains('active')) renderImageManager();
+  })();
 
   // ─── Manage Products Table ───
   let editingProductId = null;
 
-  function renderManageProducts() {
+  async function renderManageProducts() {
     const tbody = document.getElementById('manageProductsBody');
     if (!tbody) return;
 
-    const products = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
+    const { data: products, error } = await window.supabase.from('products').select('*').order('created_at', { ascending: false });
     tbody.innerHTML = '';
 
-    if (products.length === 0) {
+    if (error || !products || products.length === 0) {
       tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:40px; color:#888;">لا توجد منتجات منشورة بعد. اضغط "+ إضافة منتج" للبدء.</td></tr>`;
       return;
     }
@@ -297,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const PLACEMENT_LABELS = { shop: '🛍', homepage_featured: '⭐', homepage_editorial: '🎨', homepage_bestseller: '🔥' };
 
     products.forEach(prod => {
-      const thumb = prod.colors?.[0]?.images?.[0] || '';
+      const thumb = (prod.images && prod.images[0]) || '';
       const placements = (prod.placement || ['shop']).map(p => PLACEMENT_LABELS[p] || p).join(' ');
       const statusIcon = STATUS_ICONS[prod.status] || '📝';
 
@@ -306,12 +260,12 @@ document.addEventListener('DOMContentLoaded', () => {
         <td><div style="width:50px; height:60px; overflow:hidden; border-radius:4px; background:#111;">
           ${thumb ? `<img src="${thumb}" style="width:100%;height:100%;object-fit:cover;">` : '—'}
         </div></td>
-        <td style="font-weight:500;">${prod.name_ar || prod.name || '—'}</td>
+        <td style="font-weight:500;">${prod.name_ar || '—'}</td>
         <td>$${prod.price || '0'}</td>
         <td>${prod.gender || '—'}</td>
         <td style="font-size:1.1rem; letter-spacing:4px;">${placements}</td>
         <td><span class="badge-status ${prod.status === 'Published' ? 'active' : prod.status === 'Hidden' ? 'warning' : ''}"
-          style="cursor:pointer;" onclick="cycleStatus('${prod.id}')">${statusIcon} ${prod.status || 'Draft'}</span></td>
+          style="cursor:pointer;" onclick="cycleStatus('${prod.id}', '${prod.status}')">${statusIcon} ${prod.status || 'Draft'}</span></td>
         <td style="display:flex; gap:6px; align-items:center;">
           <button class="btn-icon" title="تعديل" onclick="openEditProduct('${prod.id}')">✎</button>
           <button class="btn-icon" title="نسخ" onclick="duplicateProduct('${prod.id}')">📄</button>
@@ -324,70 +278,107 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('editProductForm').style.display = 'none';
   }
 
-  window.deleteProduct = (id) => {
+  window.deleteProduct = async (id) => {
     if (!confirm('حذف المنتج نهائياً؟')) return;
-    let products = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
-    products = products.filter(p => p.id !== id);
-    localStorage.setItem('vinato_dynamic_products', JSON.stringify(products));
-    renderManageProducts();
+    const { error } = await window.supabase.from('products').delete().eq('id', id);
+    if (error) return showToast('Error deleting product');
+    await renderManageProducts();
     showToast('تم حذف المنتج ✓');
   };
 
-  window.duplicateProduct = (id) => {
-    let products = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
-    const orig = products.find(p => p.id === id);
-    if (!orig) return;
-    const copy = JSON.parse(JSON.stringify(orig));
-    copy.id = 'p' + Date.now();
-    copy.name_ar = 'نسخة - ' + (copy.name_ar || copy.name || '');
-    copy.name = copy.name_ar;
+  window.duplicateProduct = async (id) => {
+    const { data: orig, error } = await window.supabase.from('products').select('*').eq('id', id).single();
+    if (error || !orig) return;
+
+    const copy = { ...orig };
+    delete copy.id;
+    delete copy.created_at;
+    delete copy.updated_at;
+    copy.name_ar = 'نسخة - ' + (copy.name_ar || '');
     copy.status = 'Draft';
-    copy.timestamp = Date.now();
-    products.push(copy);
-    localStorage.setItem('vinato_dynamic_products', JSON.stringify(products));
-    renderManageProducts();
+
+    const { error: insError } = await window.supabase.from('products').insert(copy);
+    if (insError) return showToast('Error duplicating product');
+
+    await renderManageProducts();
     showToast('📄 تم نسخ المنتج ✓');
   };
 
-  window.cycleStatus = (id) => {
+  window.cycleStatus = async (id, currentStatus) => {
     const cycle = ['Draft', 'Published', 'Hidden'];
-    let products = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
-    const prod = products.find(p => p.id === id);
-    if (!prod) return;
-    const idx = cycle.indexOf(prod.status || 'Draft');
-    prod.status = cycle[(idx + 1) % cycle.length];
-    localStorage.setItem('vinato_dynamic_products', JSON.stringify(products));
-    renderManageProducts();
-    showToast(`الحالة: ${prod.status}`);
+    const idx = cycle.indexOf(currentStatus || 'Draft');
+    const newStatus = cycle[(idx + 1) % cycle.length];
+
+    const { error } = await window.supabase.from('products').update({ status: newStatus }).eq('id', id);
+    if (error) return showToast('Error updating status');
+
+    await renderManageProducts();
+    showToast(`الحالة: ${newStatus}`);
   };
 
-  window.openEditProduct = (id) => {
-    const products = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
-    const prod = products.find(p => p.id === id);
-    if (!prod) return;
+  window.openEditProduct = async (id) => {
+    const { data: prod, error } = await window.supabase.from('products').select('*').eq('id', id).single();
+    if (error || !prod) return;
     editingProductId = id;
-    document.getElementById('edit_name').value = prod.name_ar || prod.name || '';
+    document.getElementById('edit_name').value = prod.name_ar || '';
     document.getElementById('edit_price').value = prod.price || '';
-    document.getElementById('edit_compare_price').value = prod.comparePrice || '';
+    document.getElementById('edit_compare_price').value = prod.compare_price || '';
     document.getElementById('edit_status').value = prod.status || 'Draft';
-    document.getElementById('editFormTitle').textContent = `✏️ تعديل: ${prod.name_ar || prod.name}`;
+    // Populate Colors
+    state.editColors = prod.colors || [{ id: 'c1', name: 'Original', hex: '#000000', images: prod.images || [], inventory: null, price_adjustment: 0 }];
+    renderColorBlocks('editColorList', 'editColors');
+
     document.getElementById('editProductForm').style.display = 'block';
     document.getElementById('editProductForm').scrollIntoView({ behavior: 'smooth' });
   };
 
-  document.getElementById('saveEditBtn')?.addEventListener('click', () => {
+  document.getElementById('saveEditBtn')?.addEventListener('click', async () => {
     if (!editingProductId) return;
-    let products = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
-    const prod = products.find(p => p.id === editingProductId);
-    if (!prod) return;
-    prod.name_ar = document.getElementById('edit_name').value.trim();
-    prod.name = prod.name_ar;
-    prod.price = document.getElementById('edit_price').value;
-    prod.comparePrice = document.getElementById('edit_compare_price').value;
-    prod.status = document.getElementById('edit_status').value;
-    localStorage.setItem('vinato_dynamic_products', JSON.stringify(products));
+    const nameAr = document.getElementById('edit_name').value.trim();
+    const price = document.getElementById('edit_price').value;
+    const compare = document.getElementById('edit_compare_price').value;
+    const status = document.getElementById('edit_status').value;
+
+    const colorBlocks = Array.from(document.querySelectorAll('#editColorList .color-block'));
+    const updatedColors = colorBlocks.map(block => {
+      const id = block.dataset.colorId;
+      const name = block.querySelector('.color-name-input').value;
+      const hex = block.querySelector('.color-picker').value;
+      const existing = state.editColors.find(c => c.id === id) || {};
+      return {
+        id,
+        name,
+        hex,
+        images: existing.images || [],
+        inventory: existing.inventory || null,
+        price_adjustment: existing.price_adjustment || 0
+      };
+    });
+
+    const aggregatedImages = [];
+    updatedColors.forEach(c => {
+      (c.images || []).forEach(img => {
+        if (!aggregatedImages.includes(img)) aggregatedImages.push(img);
+      });
+    });
+
+    const { error } = await window.supabase.from('products').update({
+      name_ar: nameAr,
+      name_en: nameAr,
+      price: price,
+      compare_price: compare,
+      status: status,
+      badge: document.getElementById('edit_badge')?.value.trim() || '',
+      sort: parseInt(document.getElementById('edit_sort')?.value) || 0,
+      colors: updatedColors,
+      images: aggregatedImages
+    }).eq('id', editingProductId);
+
+    if (error) return showToast('Error saving edits');
+
     editingProductId = null;
-    renderManageProducts();
+    document.getElementById('editProductForm').style.display = 'none';
+    await renderManageProducts();
     showToast('تم حفظ التعديلات ✓');
   });
 
@@ -409,7 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
     toast.classList.remove('show');
     void toast.offsetWidth; // Trigger reflow to restart animation
     toast.classList.add('show');
-    
+
     setTimeout(() => {
       toast.classList.remove('show');
     }, 3000);
@@ -424,40 +415,79 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function saveCurrentProduct() {
-    const nameAr = inputs.name.value.trim();
+  async function saveCurrentProduct() {
+    const nameAr = previewInputs.name.value.trim();
     const descAr = (document.getElementById('p_description') || {}).value?.trim() || '';
-    const catSelect = document.getElementById('p_cat_ar');
+    const catSelect = previewInputs.catAr;
     const catSlug = catSelect ? catSelect.value.trim() : '';
 
-    // Map English slugs → Arabic display names
-    const CAT_AR_MAP = {
-      jackets: 'جاكيتات', shirts: 'قمصان', sweaters: 'كنزات', pants: 'بناطيل',
-      suits: 'بدلات', dresses: 'فساتين', accessories: 'إكسسوارات',
-      pajamas: 'بيجامات', underwear: 'ملابس داخلية', shoes: 'أحذية'
-    };
-    const catAr = CAT_AR_MAP[catSlug] || catSlug;
-    const catEn = catSlug; // already English slug
-
-    if (!nameAr || inputs.colors.every ? inputs.colors.every(c => c.images.length === 0) : false) {
-      // We'll validate below
+    if (!nameAr || state.colors.every(c => c.images.length === 0)) {
+      showToast('يرجى إدخال اسم المنتج وصورة واحدة على الأقل.');
+      return;
     }
 
+    showToast('⏳ جاري رفع الصور والترجمة...');
+
+    // 1. Upload images to Supabase Storage
+    const allImageUrls = [];
+    try {
+      for (const color of state.colors) {
+        for (const imgData of color.images) {
+          if (imgData.startsWith('data:image')) {
+            const blob = await fetch(imgData).then(r => r.blob());
+            const file = new File([blob], "prod.webp", { type: 'image/webp' });
+            const url = await uploadToSupabase(file, 'products');
+            allImageUrls.push(url);
+          } else {
+            allImageUrls.push(imgData);
+          }
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      return showToast('فشل في رفع الصور', 'error');
+    }
+
+    const [nameEn, descEn] = await Promise.all([
+      translateText(nameAr),
+      translateText(descAr)
+    ]);
+
+    // 3. Prepare data for Supabase
+    const colorBlocks = Array.from(document.querySelectorAll('.color-block'));
+    const updatedColors = colorBlocks.map(block => {
+      const id = block.dataset.colorId;
+      const name = block.querySelector('.color-name-input').value;
+      const hex = block.querySelector('.color-picker').value;
+      const existing = state.colors.find(c => c.id === id) || {};
+      return {
+        id,
+        name,
+        hex,
+        images: existing.images || [],
+        inventory: existing.inventory || null, // Future-proof
+        price_adjustment: existing.price_adjustment || 0 // Future-proof
+      };
+    });
+
+    // Determine the main images array: 
+    // Aggregate all specific images, but ensure the first one is from the first color
+    const aggregatedImages = [];
+    updatedColors.forEach(c => {
+      c.images.forEach(img => {
+        if (!aggregatedImages.includes(img)) aggregatedImages.push(img);
+      });
+    });
+
     const product = {
-      id: 'p' + Date.now(),
       name_ar: nameAr,
-      name: nameAr,
+      name_en: nameEn || nameAr,
       description_ar: descAr,
-      cat_ar: catAr,
-      cat: catAr || 'General',
-      name_en: nameAr,
-      description_en: descAr,
-      cat_en: catAr,
-      gender: inputs.gender.value,
-      price: inputs.price.value,
-      comparePrice: inputs.comparePrice.value,
-      badge: inputs.badge.value.trim(),
-      sort: inputs.p_sort.value || 1,
+      description_en: descEn || descAr,
+      category: catSlug,
+      gender: previewInputs.gender.value,
+      price: parseFloat(previewInputs.price.value) || 0,
+      compare_price: parseFloat(previewInputs.comparePrice.value) || 0,
       status: document.getElementById('p_status').value,
       placement: [
         'shop',
@@ -465,75 +495,28 @@ document.addEventListener('DOMContentLoaded', () => {
         ...(document.getElementById('place_editorial')?.checked ? ['homepage_editorial'] : []),
         ...(document.getElementById('place_bestseller')?.checked ? ['homepage_bestseller'] : [])
       ],
-      featured: document.getElementById('place_featured')?.checked || false,
-      sizes: Array.from(inputs.sizes).filter(s => s.checked).map(s => s.value),
-      colors: state.colors.map(c => ({
-        name: c.name,
-        hex: c.hex,
-        images: c.images
-      })),
-      timestamp: Date.now()
+      images: aggregatedImages,
+      colors: updatedColors,
+      sizes: Array.from(document.querySelectorAll('input[name="size"]:checked')).map(s => s.value),
+      badge: previewInputs.badge.value.trim(),
+      sort: parseInt(previewInputs.p_sort.value) || 0
     };
 
-    if (!product.name_ar || product.colors.every(c => c.images.length === 0)) {
-      showToast('يرجى إدخال اسم المنتج وصورة واحدة على الأقل.');
-      return;
+    const { error: dbError } = await window.supabase.from('products').insert(product);
+
+    if (dbError) {
+      console.error(dbError);
+      showToast('❌ خطأ في حفظ البيانات: ' + dbError.message);
+    } else {
+      showToast('✅ تم نشر المنتج بنجاح!');
+      setTimeout(() => window.location.reload(), 2000);
     }
-
-    // Helper: call MyMemory free API
-    async function translateText(text) {
-      if (!text || !text.trim()) return text;
-      try {
-        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=ar|en`;
-        // 5 second timeout
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
-        
-        const res = await fetch(url, { signal: controller.signal });
-        clearTimeout(timeoutId);
-        
-        const data = await res.json();
-        if (data.responseStatus === 200) {
-          return data.responseData.translatedText || text;
-        }
-      } catch(e) { 
-        console.warn("Translation failed or timed out", e);
-      }
-      return text;
-    }
-
-    showToast('جارٍ الترجمة...');
-
-    Promise.all([
-      translateText(nameAr),
-      translateText(descAr)
-    ]).then(([nameEn, descEn]) => {
-      product.name_en = nameEn || nameAr;
-      product.description_en = descEn || descAr;
-      product.cat_en = catEn;
-      product.cat = catEn; // Fix: compatibility for shop page
-      product.name = nameAr;
-      // cat property is set above
-
-      const existingProducts = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
-      existingProducts.push(product);
-      localStorage.setItem('vinato_dynamic_products', JSON.stringify(existingProducts));
-
-      showToast('تم النشر بنجاح ✓');
-    }).catch(() => {
-      // Even if translation failed, save with Arabic only
-      product.cat = catEn; // Fix: even on failure, keep the cat property
-      const existingProducts = JSON.parse(localStorage.getItem('vinato_dynamic_products') || '[]');
-      existingProducts.push(product);
-      localStorage.setItem('vinato_dynamic_products', JSON.stringify(existingProducts));
-      showToast('تم الحفظ (الترجمة غير متاحة حالياً)');
-    });
   }
 
   const placeholderBtnIds = ['saveDraftBtn', 'saveSettingsBtn'];
   placeholderBtnIds.forEach(id => {
     const btn = document.getElementById(id);
-    if(btn) {
+    if (btn) {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         showToast('Action successful');
@@ -549,31 +532,36 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Settings Management
-  const saveSettingsBtn = document.getElementById('saveSettingsBtn');
-  const sInstagramInput = document.getElementById('s_instagram');
-  const sPhoneInput = document.getElementById('s_phone');
+  async function loadSettings() {
+    const { data, error } = await window.supabase.from('store_settings').select('*').eq('id', 1).single();
+    if (error || !data) return;
+
+    if (sInstagramInput) sInstagramInput.value = data.instagram || '';
+    if (sPhoneInput) sPhoneInput.value = data.phone || '';
+    if (document.getElementById('s_whatsapp')) document.getElementById('s_whatsapp').value = data.whatsapp || '';
+  }
 
   if (saveSettingsBtn) {
-    // Populate initial values
-    if (sInstagramInput) sInstagramInput.value = state.settings.instagram;
-    if (sPhoneInput) sPhoneInput.value = state.settings.phone;
-
-    saveSettingsBtn.addEventListener('click', (e) => {
+    saveSettingsBtn.addEventListener('click', async (e) => {
       e.preventDefault();
       const newInsta = sInstagramInput.value.trim();
       const newPhone = sPhoneInput.value.trim();
+      const newWA = document.getElementById('s_whatsapp')?.value.trim() || '';
 
-      localStorage.setItem('s_instagram', newInsta);
-      localStorage.setItem('s_phone', newPhone);
-      state.settings.instagram = newInsta;
-      state.settings.phone = newPhone;
+      const { error } = await window.supabase.from('store_settings').upsert({
+        id: 1,
+        instagram: newInsta,
+        phone: newPhone,
+        whatsapp: newWA
+      });
 
-      showToast("Store settings saved!");
+      if (error) return showToast('Error saving settings');
+      showToast('تم حفظ الإعدادات بنجاح ✓');
     });
   }
 
   const productForm = document.getElementById('productForm');
-  if(productForm) {
+  if (productForm) {
     productForm.addEventListener('submit', (e) => { e.preventDefault(); });
   }
 
@@ -595,68 +583,69 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   dropZone.addEventListener('drop', (e) => handleFiles(e.dataTransfer.files));
-  fileInput.addEventListener('change', function() { handleFiles(this.files); });
+  fileInput.addEventListener('change', function () { handleFiles(this.files); });
 
-  function handleFiles(files) {
-    [...files].forEach(file => {
-      if (!file.type.startsWith('image/')) return;
-      
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const base64Url = e.target.result;
-        state.mediaLibrary.push(base64Url);
-        renderMediaGrid();
-      };
-      reader.readAsDataURL(file);
-    });
+  async function handleFiles(files) {
+    showToast('⏳ جاري رفع الملفات...');
+    const gallery = await getSiteConfig('vinato_media_gallery', []);
+
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) continue;
+      try {
+        const url = await uploadToSupabase(file, 'gallery');
+        gallery.unshift(url);
+      } catch (err) {
+        console.error(err);
+        showToast('Error uploading file');
+      }
+    }
+
+    await saveSiteConfig('vinato_media_gallery', gallery);
+    await renderMediaGrid();
+    showToast('تم الرفع بنجاح');
   }
 
-  function renderMediaGrid() {
+  async function renderMediaGrid() {
+    if (!mediaGrid) return;
+    const gallery = await getSiteConfig('vinato_media_gallery', []);
     mediaGrid.innerHTML = '';
-    state.mediaLibrary.forEach(url => {
+    gallery.forEach(url => {
       const item = document.createElement('div');
       item.className = 'media-item';
       item.innerHTML = `
-        <img src="${url}" alt="Media">
-        <div class="media-overlay"><button class="btn btn-sm btn-outline" style="background:white; border:none;" onclick="deleteMedia('${url}')">Delete</button></div>
+        <img src="${url}" style="width:100%; height:100%; object-fit:cover;">
+        <div class="media-overlay">
+          <button class="btn btn-outline" style="font-size:0.7rem; padding:4px 8px;" onclick="window.copyToClipboard('${url}')">Copy URL</button>
+          <button class="btn btn-outline" style="font-size:0.7rem; padding:4px 8px; color:#ff4d4d; border-color:#ff4d4d;" onclick="window.deleteMedia('${url}')">Delete</button>
+        </div>
       `;
+      item.onclick = (e) => {
+        if (e.target.tagName !== 'BUTTON') {
+          // Select for picker if active
+          if (imgMgrTargetKey) {
+            window.replaceImageWith(url);
+          }
+        }
+      };
       mediaGrid.appendChild(item);
     });
   }
 
-  window.deleteMedia = (url) => {
-    state.mediaLibrary = state.mediaLibrary.filter(u => u !== url);
-    // Also remove from any colors that used it
-    state.colors.forEach(c => {
-      c.images = c.images.filter(imgUrl => imgUrl !== url);
-    });
-    renderMediaGrid();
-    renderColorBlocks();
-    updateLivePreview();
-  };
-
   /* ─── Color Management ─── */
-  const colorList = document.getElementById('colorList');
-  const addColorBtn = document.getElementById('addColorBtn');
-
-  addColorBtn.addEventListener('click', () => {
-    const newId = 'c' + Date.now();
-    state.colors.push({ id: newId, name: 'New Color', hex: '#cccccc', images: [] });
-    renderColorBlocks();
-    updateLivePreview();
-  });
-
-  function renderColorBlocks() {
-    colorList.innerHTML = '';
-    state.colors.forEach((color, index) => {
+  function renderColorBlocks(containerId, colorListKey) {
+    const list = document.getElementById(containerId);
+    if (!list) return;
+    const colors = state[colorListKey];
+    list.innerHTML = '';
+    colors.forEach((color) => {
       const block = document.createElement('div');
       block.className = 'color-block';
       block.dataset.colorId = color.id;
-      
-      const imgsHtml = color.images.map(url => `
+
+      const imgsHtml = (color.images || []).map(url => `
         <div class="selected-image-thumb">
           <img src="${url}" alt="thumb">
-          <button type="button" class="remove-img" onclick="removeImageFromColor('${color.id}', '${url}')">✖</button>
+          <button type="button" class="remove-img" onclick="window.removeImageFromColor('${colorListKey}', '${color.id}', '${url}')">✖</button>
         </div>
       `).join('');
 
@@ -664,42 +653,58 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="color-header">
           <input type="text" class="form-input color-name-input" placeholder="Color Name" value="${color.name}" data-id="${color.id}">
           <input type="color" class="color-picker" value="${color.hex}" data-id="${color.id}">
-          ${state.colors.length > 1 ? `<button type="button" class="btn-icon remove-color-btn" onclick="removeColor('${color.id}')" title="Remove Color">×</button>` : ''}
+          ${colors.length > 1 ? `<button type="button" class="btn-icon remove-color-btn" onclick="window.removeColor('${colorListKey}', '${color.id}')" title="Remove Color">×</button>` : ''}
         </div>
         <div class="color-images-area">
-          <button type="button" class="btn-select-media" onclick="openMediaModal('${color.id}')">Choose from Media Library</button>
+          <button type="button" class="btn-select-media" onclick="window.openMediaModal('${colorListKey}', '${color.id}')">Choose from Media Library</button>
           <div class="selected-images-grid">${imgsHtml}</div>
         </div>
       `;
-      colorList.appendChild(block);
+      list.appendChild(block);
     });
 
     // Reattach listeners
-    document.querySelectorAll('.color-name-input').forEach(inp => {
+    list.querySelectorAll('.color-name-input').forEach(inp => {
       inp.addEventListener('input', (e) => {
-        const c = state.colors.find(c => c.id === e.target.dataset.id);
-        if(c) { c.name = e.target.value; updateLivePreview(); }
+        const c = state[colorListKey].find(c => c.id === e.target.dataset.id);
+        if (c) { c.name = e.target.value; updateLivePreview(); }
       });
     });
-    document.querySelectorAll('.color-picker').forEach(inp => {
-      inp.addEventListener('input', (e) => {
-        const c = state.colors.find(c => c.id === e.target.dataset.id);
-        if(c) { c.hex = e.target.value; updateLivePreview(); }
+    list.querySelectorAll('.color-picker').forEach(inp => {
+      inp.addEventListener('change', (e) => {
+        const c = state[colorListKey].find(c => c.id === e.target.dataset.id);
+        if (c) { c.hex = e.target.value; updateLivePreview(); }
       });
     });
   }
 
-  window.removeColor = (id) => {
-    state.colors = state.colors.filter(c => c.id !== id);
-    renderColorBlocks();
+  // Hook up Add buttons
+  document.getElementById('addColorBtn')?.addEventListener('click', () => {
+    const newId = 'c' + Date.now();
+    state.addColors.push({ id: newId, name: 'New Color', hex: '#cccccc', images: [], inventory: null, price_adjustment: 0 });
+    renderColorBlocks('colorList', 'addColors');
+    updateLivePreview();
+  });
+
+  document.getElementById('addEditColorBtn')?.addEventListener('click', () => {
+    const newId = 'c' + Date.now();
+    state.editColors.push({ id: newId, name: 'New Color', hex: '#cccccc', images: [], inventory: null, price_adjustment: 0 });
+    renderColorBlocks('editColorList', 'editColors');
+  });
+
+  window.removeColor = (colorListKey, id) => {
+    state[colorListKey] = state[colorListKey].filter(c => c.id !== id);
+    const containerId = colorListKey === 'addColors' ? 'colorList' : 'editColorList';
+    renderColorBlocks(containerId, colorListKey);
     updateLivePreview();
   };
 
-  window.removeImageFromColor = (colorId, imgUrl) => {
-    const c = state.colors.find(c => c.id === colorId);
-    if(c) {
+  window.removeImageFromColor = (colorListKey, colorId, imgUrl) => {
+    const c = state[colorListKey].find(c => c.id === colorId);
+    if (c) {
       c.images = c.images.filter(u => u !== imgUrl);
-      renderColorBlocks();
+      const containerId = colorListKey === 'addColors' ? 'colorList' : 'editColorList';
+      renderColorBlocks(containerId, colorListKey);
       updateLivePreview();
     }
   };
@@ -709,19 +714,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalMediaGrid = document.getElementById('modalMediaGrid');
   let selectedModalUrls = [];
 
-  window.openMediaModal = (colorId) => {
-    state.activeColorIdForMedia = colorId;
+  window.openMediaModal = (colorListKey, colorId) => {
+    const m = document.getElementById('mediaSelectModal');
+    if (!m) return console.error('Modal not found');
+    state.activeColorListKey = colorListKey;
+    state.activeColorId = colorId;
     selectedModalUrls = [];
-    modal.classList.remove('hidden');
+    m.classList.remove('hidden');
     renderModalGrid();
   };
 
-  document.getElementById('closeMediaModal').addEventListener('click', () => modal.classList.add('hidden'));
-  document.getElementById('cancelMediaSelect').addEventListener('click', () => modal.classList.add('hidden'));
+  document.getElementById('closeMediaModal')?.addEventListener('click', () => document.getElementById('mediaSelectModal')?.classList.add('hidden'));
+  document.getElementById('cancelMediaSelect')?.addEventListener('click', () => document.getElementById('mediaSelectModal')?.classList.add('hidden'));
 
   function renderModalGrid() {
     modalMediaGrid.innerHTML = '';
-    if(state.mediaLibrary.length === 0) {
+    if (state.mediaLibrary.length === 0) {
       modalMediaGrid.innerHTML = '<p class="help-text" style="grid-column: 1/-1;">No media uploaded yet. Go to Media Library to upload.</p>';
       return;
     }
@@ -730,7 +738,7 @@ document.addEventListener('DOMContentLoaded', () => {
       item.className = 'media-item';
       item.onclick = () => {
         item.classList.toggle('selected');
-        if(item.classList.contains('selected')) selectedModalUrls.push(url);
+        if (item.classList.contains('selected')) selectedModalUrls.push(url);
         else selectedModalUrls = selectedModalUrls.filter(u => u !== url);
       };
       item.innerHTML = `<img src="${url}" alt="Media">`;
@@ -738,34 +746,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  document.getElementById('confirmMediaSelect').addEventListener('click', () => {
+  document.getElementById('confirmMediaSelect')?.addEventListener('click', () => {
+    const m = document.getElementById('mediaSelectModal');
     // Image Manager flow
-    if (state.activeColorIdForMedia === '__imgmgr__' && imgMgrTargetKey && selectedModalUrls.length > 0) {
-      const replaced = JSON.parse(localStorage.getItem('vinato_replaced_server_files') || '{}');
-      replaced[imgMgrTargetKey] = selectedModalUrls[0];
-      localStorage.setItem('vinato_replaced_server_files', JSON.stringify(replaced));
-      modal.classList.add('hidden');
-      imgMgrTargetKey = null;
-      state.activeColorIdForMedia = null;
-      renderImageManager();
-      showToast('تم استبدال الصورة ✓');
+    if (state.activeColorIdForMedia === '__imgmgr__' && window.imgMgrTargetKey && selectedModalUrls.length > 0) {
+      window.replaceImageWith(selectedModalUrls[0]);
+      m?.classList.add('hidden');
       return;
     }
-    // Normal product color flow
-    const c = state.colors.find(c => c.id === state.activeColorIdForMedia);
-    if(c && selectedModalUrls.length > 0) {
-      selectedModalUrls.forEach(url => {
-        if(!c.images.includes(url)) c.images.push(url);
-      });
-      renderColorBlocks();
+    // Color Mapping flow
+    if (state.activeColorListKey && state.activeColorId) {
+      const list = state[state.activeColorListKey];
+      const color = list.find(c => c.id === state.activeColorId);
+      if (color) {
+        selectedModalUrls.forEach(url => {
+          if (!color.images.includes(url)) color.images.push(url);
+        });
+        const containerId = state.activeColorListKey === 'addColors' ? 'colorList' : 'editColorList';
+        renderColorBlocks(containerId, state.activeColorListKey);
+      }
+      m.classList.add('hidden');
       updateLivePreview();
     }
-    modal.classList.add('hidden');
   });
 
-  const inputs = {
+  // ─── Live Preview Logic ───
+  const previewInputs = {
     name: document.getElementById('p_name'),
-    cat: { value: '' }, // replaced by p_cat_ar
+    catAr: document.getElementById('p_cat_ar'),
     gender: document.getElementById('p_gender'),
     price: document.getElementById('p_price'),
     comparePrice: document.getElementById('p_compare_price'),
@@ -774,86 +782,129 @@ document.addEventListener('DOMContentLoaded', () => {
     sizes: document.querySelectorAll('input[name="size"]')
   };
 
-  const prev = {
+  const prevRefs = {
     name: document.getElementById('prevName'),
-    cat: document.getElementById('prevCatLabel'), // UPDATED mapping
-    gender: document.getElementById('prevGenderLabel'), // NEW
+    nameEn: document.getElementById('prevNameEn'),
+    cat: document.getElementById('prevCatLabel'),
+    gender: document.getElementById('prevGenderLabel'),
     price: document.getElementById('prevPrice'),
-    comparePrice: document.getElementById('prevComparePrice'), // NEW
-    badge: document.getElementById('prevBadge'), // NEW
+    comparePrice: document.getElementById('prevComparePrice'),
+    badge: document.getElementById('prevBadge'),
     sizes: document.getElementById('prevSizes'),
     swatches: document.getElementById('prevSwatches'),
     gallery: document.getElementById('prevGallery'),
     colorLabel: document.getElementById('prevColorLabel')
   };
 
-  // Bind basic inputs (skip 'cat' since it's now a dummy object)
-  ['name', 'gender', 'price', 'comparePrice', 'badge'].forEach(key => {
-    if (inputs[key] && inputs[key].addEventListener) {
-      inputs[key].addEventListener('input', updateLivePreview);
-    }
-  });
-  // Also bind category Arabic input
-  const catArElem = document.getElementById('p_cat_ar');
-  if (catArElem) catArElem.addEventListener('input', updateLivePreview);
-  inputs.sizes.forEach(sz => sz.addEventListener('change', updateLivePreview));
-
-  let activePreviewColorId = null;
-
   function updateLivePreview() {
-    // 1. Basic Info & Pricing
-    prev.name.textContent = inputs.name.value || 'اسم المنتج';
-    const catArVal = (document.getElementById('p_cat_ar') || {}).value || 'الفئة';
-    prev.cat.textContent = catArVal;
-    prev.gender.textContent = inputs.gender.value || 'الجنس';
-    prev.price.textContent = inputs.price.value ? `$${parseFloat(inputs.price.value).toFixed(2)}` : '$0.00';
-    
+    if (!prevRefs.name) return;
+    const nameAr = previewInputs.name.value || 'اسم المنتج';
+    prevRefs.name.textContent = nameAr;
+
+    // Auto-translation for preview (Debounced via some mechanism, or just show it)
+    clearTimeout(window.previewTranslateTimeout);
+    window.previewTranslateTimeout = setTimeout(async () => {
+      if (nameAr && nameAr !== 'اسم المنتج') {
+        const translated = await translateText(nameAr);
+        if (prevRefs.nameEn) prevRefs.nameEn.textContent = translated;
+      }
+    }, 1000);
+
+    // Get category label from select
+    let catLabel = 'الفئة';
+    if (previewInputs.catAr.selectedIndex >= 0) {
+      catLabel = previewInputs.catAr.options[previewInputs.catAr.selectedIndex].text.split(' — ')[0];
+    }
+    prevRefs.cat.textContent = catLabel.toUpperCase();
+    prevRefs.gender.textContent = previewInputs.gender.value || 'الجنس';
+
+    // Price
+    const price = parseFloat(previewInputs.price.value) || 0;
+    prevRefs.price.textContent = `$${price.toFixed(2)}`;
+
     // Compare Price
-    if (inputs.comparePrice.value && parseFloat(inputs.comparePrice.value) > 0) {
-      prev.comparePrice.style.display = 'inline';
-      prev.comparePrice.textContent = `$${parseFloat(inputs.comparePrice.value).toFixed(2)}`;
+    const compPrice = parseFloat(previewInputs.comparePrice.value) || 0;
+    if (compPrice > price) {
+      prevRefs.comparePrice.style.display = 'inline';
+      prevRefs.comparePrice.textContent = `$${compPrice.toFixed(2)}`;
     } else {
-      prev.comparePrice.style.display = 'none';
+      prevRefs.comparePrice.style.display = 'none';
     }
 
     // Badge
-    if (inputs.badge.value.trim() !== '') {
-      prev.badge.style.display = 'flex';
-      prev.badge.textContent = inputs.badge.value.trim().toUpperCase();
+    const badgeText = previewInputs.badge.value.trim();
+    if (badgeText) {
+      prevRefs.badge.style.display = 'flex';
+      prevRefs.badge.textContent = badgeText.toUpperCase();
     } else {
-      prev.badge.style.display = 'none';
+      prevRefs.badge.style.display = 'none';
     }
 
-    // 2. Sizes
-    const checkedSizes = Array.from(inputs.sizes).filter(s => s.checked).map(s => s.value);
-    prev.sizes.innerHTML = checkedSizes.length 
+    // Sizes
+    const checkedSizes = Array.from(document.querySelectorAll('input[name="size"]:checked')).map(s => s.value);
+    prevRefs.sizes.innerHTML = checkedSizes.length
       ? checkedSizes.map(s => `<div class="sp-size-box">${s}</div>`).join('')
       : '<span style="font-size:0.7rem; color:#888;">No sizes selected</span>';
 
-    // 3. Swatches
-    if(!activePreviewColorId || !state.colors.find(c => c.id === activePreviewColorId)) {
-      activePreviewColorId = state.colors[0]?.id;
+    // Swatches & Gallery
+    const colors = state.addColors;
+    if (!activePreviewColorId || !colors.find(c => c.id === activePreviewColorId)) {
+      activePreviewColorId = colors[0]?.id;
     }
 
-    prev.swatches.innerHTML = state.colors.map(c => `
+    prevRefs.swatches.innerHTML = colors.map(c => `
       <div class="sp-swatch ${c.id === activePreviewColorId ? 'active' : ''}" 
            style="background: ${c.hex};" 
            title="${c.name}"
-           onclick="changePreviewColor('${c.id}')">
+           onclick="window.changePreviewColor('${c.id}')">
       </div>
     `).join('');
 
-    // 4. Update Gallery & Label for active color
-    const activeColor = state.colors.find(c => c.id === activePreviewColorId);
-    if(activeColor) {
-      prev.colorLabel.textContent = activeColor.name || 'Unnamed';
-      if(activeColor.images.length > 0) {
-        prev.gallery.innerHTML = `<img src="${activeColor.images[0]}" alt="Preview">`;
+    const activeColor = colors.find(c => c.id === activePreviewColorId);
+    if (activeColor) {
+      prevRefs.colorLabel.textContent = activeColor.name || 'Unnamed';
+      if (activeColor.images && activeColor.images.length > 0) {
+        prevRefs.gallery.innerHTML = `<img src="${activeColor.images[0]}" alt="Preview">`;
       } else {
-        prev.gallery.innerHTML = '<div class="sp-placeholder">Add images to see preview</div>';
+        prevRefs.gallery.innerHTML = '<div class="sp-placeholder">Add images to see preview</div>';
       }
     }
   }
+
+  function updateSizeOptions() {
+    const catVal = previewInputs.catAr.value;
+    const sizesGrid = document.getElementById('sizesGrid');
+    if (!sizesGrid) return;
+
+    let sizes = ['S', 'M', 'L', 'XL', 'XXL', '3XL'];
+    if (catVal === 'shoes') {
+      sizes = ['38', '39', '40', '41', '42', '43', '44', '45'];
+    }
+
+    sizesGrid.innerHTML = sizes.map(s => `
+      <label class="checkbox-label"><input type="checkbox" name="size" value="${s}"><span class="checkmark"></span>${s}</label>
+    `).join('');
+
+    // Re-attach event listeners to new checkboxes
+    document.querySelectorAll('input[name="size"]').forEach(sz => {
+      sz.addEventListener('change', updateLivePreview);
+    });
+
+    updateLivePreview();
+  }
+
+  // Bind Listeners
+  ['name', 'catAr', 'gender', 'price', 'comparePrice', 'badge', 'p_sort'].forEach(key => {
+    previewInputs[key]?.addEventListener('input', updateLivePreview);
+  });
+
+  previewInputs.catAr?.addEventListener('change', updateSizeOptions);
+
+  document.querySelectorAll('input[name="size"]').forEach(sz => {
+    sz.addEventListener('change', updateLivePreview);
+  });
+
+  let activePreviewColorId = null;
 
   window.changePreviewColor = (colorId) => {
     activePreviewColorId = colorId;
@@ -868,11 +919,50 @@ document.addEventListener('DOMContentLoaded', () => {
     devToggles[1].addEventListener('click', () => { devToggles[1].classList.add('active'); devToggles[0].classList.remove('active'); devFrame.style.width = '375px'; devFrame.style.margin = '0 auto'; });
   }
 
-  // Init Form
-  renderColorBlocks();
-  updateLivePreview();
+  // --- Image Manager Picker Logic ---
+  window.openImgMgrPicker = (key) => {
+    imgMgrTargetKey = key;
+    switchView('media-view');
+    showToast('اختر صورة من المكتبة للاستبدال');
+  };
 
+  window.replaceImageWith = async (url) => {
+    if (!imgMgrTargetKey) return;
+    const replaced = await getSiteConfig('vinato_replaced_server_files', {});
+    replaced[imgMgrTargetKey] = url;
+    await saveSiteConfig('vinato_replaced_server_files', replaced);
 
+    imgMgrTargetKey = null;
+    switchView('image-manager-view');
+    await renderImageManager();
+    showToast('تم استبدال الصورة بنجاح ✓');
+  };
 
+  window.resetImage = async (key) => {
+    const replaced = await getSiteConfig('vinato_replaced_server_files', {});
+    delete replaced[key];
+    await saveSiteConfig('vinato_replaced_server_files', replaced);
+    await renderImageManager();
+    showToast('تمت استعادة الصورة الأصلية');
+  };
+
+  // Final Async Init
+  (async () => {
+    try {
+      // Basic UI init
+      renderColorBlocks('colorList', 'addColors');
+      updateLivePreview();
+
+      // Async Data load
+      await Promise.all([
+        loadSettings(),
+        renderManageProducts(),
+        renderImageManager(),
+        renderMediaGrid()
+      ]);
+    } catch (e) {
+      console.error("Initialization failed", e);
+    }
+  })();
 });
 
