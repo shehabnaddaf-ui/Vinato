@@ -265,7 +265,6 @@ if (typeof window.__vinatoAnimationsInit === 'undefined') {
         });
       });
     }
-  }
 
   window.switchColorGallery = (newColor, imagesData) => {
     const colorNameLabel = document.getElementById('currentColorName');
