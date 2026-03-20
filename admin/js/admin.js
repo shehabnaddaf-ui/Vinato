@@ -16,6 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const viewPanels = document.querySelectorAll('.view-panel');
   window.imgMgrTargetKey = null;
 
+  // Header Inputs (Settings)
+  const sInstagramInput = document.getElementById('s_instagram');
+  const sPhoneInput = document.getElementById('s_phone');
+  const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+
   window.switchView = (viewId) => {
     console.log('Switching view to:', viewId);
     viewPanels.forEach(panel => {
