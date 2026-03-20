@@ -145,7 +145,7 @@
       <h2 class="section-title" data-i18n="section.best_sellers">Best Sellers</h2>
     </div>
     <div class="bestsellers-grid" id="bestsellersGrid">
-      <a href="shop.html?gender=women&cat=accessories" class="bs-card reveal-up">
+      <a href="product.html?id=1" class="bs-card reveal-up">
         <div class="bs-img-wrap skeleton">
           <img src="images/optimized/best_sellers.webp" data-src="images/optimized/best_sellers.webp" alt="Minimal Leather Tote" class="lazy-image blur-load" loading="lazy">
         </div>
@@ -154,7 +154,7 @@
           <span class="bs-price">$650</span>
         </div>
       </a>
-      <a href="shop.html?gender=women&cat=sweaters" class="bs-card reveal-up delay-1">
+      <a href="product.html?id=2" class="bs-card reveal-up delay-1">
         <div class="bs-img-wrap"><img src="images/optimized/best_sellers.webp" alt="Cashmere Turtleneck" loading="lazy"/></div>
         <div class="bs-info">
           <div><h3 class="bs-name">Cashmere Turtleneck</h3><p class="bs-cat">Women / Knitwear</p></div>
@@ -435,7 +435,7 @@
           bestsellerProds.forEach(prod => {
             const mainImg = prod.colors?.[0]?.images?.[0] || '';
             const card = document.createElement('a');
-            card.href = 'shop.html';
+            card.href = 'product.html?id=' + prod.id;
             card.className = 'bs-card reveal-up';
             card.innerHTML = `
               <div class="bs-img-wrap skeleton">

@@ -5,10 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const togglePass = document.getElementById('togglePass');
     const errorMsg = document.getElementById('errorMsg');
 
-    // Default credentials
-    const DEFAULT_USER = "vinato";
-    const DEFAULT_PASS = "Vinato@321#";
-
     // Toggle password visibility
     togglePass.addEventListener('click', () => {
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -16,25 +12,29 @@ document.addEventListener('DOMContentLoaded', () => {
         togglePass.textContent = type === 'password' ? 'SHOW' : 'HIDE';
     });
 
-    // Handle Login
-    loginForm.addEventListener('submit', (e) => {
+    // Handle Login with Supabase
+    loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         const username = usernameInput.value;
         const password = passwordInput.value;
 
-        // Check local storage for custom credentials, fallback to default
-        const storedUser = localStorage.getItem('admin_user') || DEFAULT_USER;
-        const storedPass = localStorage.getItem('admin_pass') || DEFAULT_PASS;
+        if (!window.supabase) {
+            errorMsg.textContent = "Database connection error.";
+            errorMsg.style.display = 'block';
+            return;
+        }
 
-        if (username === storedUser && password === storedPass) {
-            // Create a fake session token
-            const token = btoa(username + Date.now());
-            localStorage.setItem('admin_session', token);
-            
-            // Redirect to dashboard
-            window.location.href = 'index.html';
-        } else {
+        // Map short username to email format for Supabase backwards compatibility for testing
+        const email = username.includes('@') ? username : `${username}@vinato.com`;
+
+        const { data, error } = await window.supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+        if (error) {
+            errorMsg.textContent = error.message;
             errorMsg.style.display = 'block';
             passwordInput.value = '';
             
@@ -42,6 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = document.querySelector('.login-card');
             card.style.animation = 'shake 0.5s ease-in-out';
             setTimeout(() => card.style.animation = '', 500);
+        } else {
+            // Save token to satisfy existing session checks
+            localStorage.setItem('admin_session', data.session.access_token);
+            window.location.href = 'index.html';
         }
     });
 });

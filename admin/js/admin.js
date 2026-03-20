@@ -427,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const catSelect = previewInputs.catAr;
     const catSlug = catSelect ? catSelect.value.trim() : '';
 
-    if (!nameAr || state.colors.every(c => c.images.length === 0)) {
+    if (!nameAr || state.addColors.every(c => c.images.length === 0)) {
       showToast('يرجى إدخال اسم المنتج وصورة واحدة على الأقل.');
       return;
     }
@@ -437,7 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Upload images to Supabase Storage
     const allImageUrls = [];
     try {
-      for (const color of state.colors) {
+      for (const color of state.addColors) {
         for (const imgData of color.images) {
           if (imgData.startsWith('data:image')) {
             const blob = await fetch(imgData).then(r => r.blob());
@@ -465,7 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const id = block.dataset.colorId;
       const name = block.querySelector('.color-name-input').value;
       const hex = block.querySelector('.color-picker').value;
-      const existing = state.colors.find(c => c.id === id) || {};
+      const existing = state.addColors.find(c => c.id === id) || {};
       return {
         id,
         name,
