@@ -102,7 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function getSiteImages() {
-    return await getSiteConfig('vinato_site_images_config', DEFAULT_SITE_IMAGES);
+    const config = await getSiteConfig('vinato_site_images_config', DEFAULT_SITE_IMAGES);
+    return (config && config.length > 0) ? config : DEFAULT_SITE_IMAGES;
   }
 
   async function saveSiteImages(config) {
@@ -608,6 +609,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function renderMediaGrid() {
     if (!mediaGrid) return;
     const gallery = await getSiteConfig('vinato_media_gallery', []);
+    state.mediaLibrary = gallery; // Sync state for color picker
     mediaGrid.innerHTML = '';
     gallery.forEach(url => {
       const item = document.createElement('div');
