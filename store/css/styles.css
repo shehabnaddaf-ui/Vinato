@@ -204,9 +204,9 @@ ul { list-style: none; }
 }
 
 .nav-inner {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   height: var(--nav-h);
   padding: 0 5%;
   position: relative;
@@ -218,10 +218,9 @@ ul { list-style: none; }
   font-weight: 400;
   letter-spacing: 0.3em;
   color: var(--white);
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   transition: color var(--transition-fast);
+  text-align: center;
+  grid-column: 2;
 }
 
 /* Make logo black on light pages when not scrolled */
@@ -543,7 +542,8 @@ ul { list-style: none; }
   position: relative;
   overflow: hidden;
   background-color: #f7f7f7;
-  aspect-ratio: 3/4;
+  aspect-ratio: auto;
+  min-height: 400px;
 }
 
 .product-img {
@@ -1040,12 +1040,10 @@ ul { list-style: none; }
 .instagram-grid {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: auto auto;
   gap: 8px;
   max-width: 1400px;
   margin: 0 auto;
-  height: 58vw;
-  max-height: 700px;
 }
 
 .ig-item {
@@ -1976,7 +1974,8 @@ ul { list-style: none; }
 
 .rv-card img {
   width: 100%;
-  aspect-ratio: 3/4;
+  aspect-ratio: auto;
+  min-height: 200px;
   object-fit: cover;
   background: var(--gray-lt);
 }
@@ -2353,10 +2352,9 @@ ul { list-style: none; }
   direction: rtl;
 }
 [dir="rtl"] .nav-logo {
-
-  /* Keep logo centered regardless */
-  left: 50%;
-  transform: translateX(-50%);
+  grid-column: 2;
+  left: auto;
+  transform: none;
 }
 [dir="rtl"] .nav-link::after {
   left: auto;
