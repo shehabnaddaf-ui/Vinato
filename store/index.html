@@ -443,7 +443,7 @@
         }
 
         // ── Editorial section ──
-        const editorialProd = published.find(p => (p.placement || []).includes('homepage_editorial'));
+        const editorialProd = products.find(p => (p.placement || []).includes('homepage_editorial'));
         if (editorialProd) {
           const mainImg = editorialProd.colors?.[0]?.images?.[0];
           if (mainImg) {
@@ -461,7 +461,7 @@
         }
 
         // ── Best Sellers section ──
-        const bestsellerProds = published.filter(p => (p.placement || []).includes('homepage_bestseller'));
+        const bestsellerProds = products.filter(p => (p.placement || []).includes('homepage_bestseller'));
         const bsGrid = document.getElementById('bestsellersGrid');
         if (bsGrid && bestsellerProds.length > 0) {
           bestsellerProds.forEach(prod => {

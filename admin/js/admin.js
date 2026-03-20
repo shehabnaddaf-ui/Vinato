@@ -232,6 +232,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+  window.resetImage = async (key) => {
+    if (!confirm('Revert to default image?')) return;
+    const replaced = await getSiteConfig('vinato_replaced_server_files', {});
+    delete replaced[key];
+    await saveSiteConfig('vinato_replaced_server_files', replaced);
+    await renderImageManager();
+    showToast('Image reset to default ✓');
+  };
+
   // Trigger render when nav item clicked + manage-products-view
   // Initial data load
 
