@@ -234,14 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Trigger render when nav item clicked + manage-products-view
   // Initial data load
-  (async function initAdmin() {
-    const gallery = await getSiteConfig('vinato_media_gallery', []);
-    state.mediaLibrary = gallery;
-    await loadSettings();
-    if (document.getElementById('manage-products-view').classList.contains('active')) renderManageProducts();
-    if (document.getElementById('media-view').classList.contains('active')) renderMediaGrid();
-    if (document.getElementById('server-media-view').classList.contains('active')) renderImageManager();
-  })();
+
 
   // ─── Manage Products Table ───
   let editingProductId = null;
@@ -253,7 +246,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const { data: products, error } = await window.supabase.from('products').select('*').order('created_at', { ascending: false });
     tbody.innerHTML = '';
 
-    if (error || !products || products.length === 0) {
+    if (error) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:40px; color:#ff4d4d;">
+        <strong>Error:</strong> ${error.message}<br>
+        <small>Please check if the "products" table exists in your Supabase database.</small>
+      </td></tr>`;
+      return;
+    }
+
+    if (!products || products.length === 0) {
       tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:40px; color:#888;">لا توجد منتجات منشورة بعد. اضغط "+ إضافة منتج" للبدء.</td></tr>`;
       return;
     }
@@ -970,11 +971,21 @@ document.addEventListener('DOMContentLoaded', () => {
         loadSettings(),
         renderManageProducts(),
         renderImageManager(),
-        renderMediaGrid()
+        renderMediaGrid(),
+        updateDashboardStats()
       ]);
     } catch (e) {
       console.error("Initialization failed", e);
     }
   })();
+  async function updateDashboardStats() {
+    try {
+      const { count: prodCount } = await window.supabase.from('products').select('*', { count: 'exact', head: true });
+      const stats = document.querySelectorAll('.stat-value');
+      if (stats.length >= 1 && prodCount !== null) {
+        stats[0].textContent = prodCount;
+      }
+    } catch(e) { console.warn("Stats update failed", e); }
+  }
 });
 
