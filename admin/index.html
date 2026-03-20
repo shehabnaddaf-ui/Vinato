@@ -246,26 +246,41 @@
           <div class="form-card">
             <h3>📍 مكان عرض المنتج</h3>
             <p class="help-text">اختر أين سيظهر هذا المنتج على الموقع.</p>
-            <div class="meta-options" style="flex-direction:column; gap:12px;">
-              <label class="checkbox-label">
+            <div class="meta-options" style="display:grid; grid-template-columns:1fr; gap:12px;">
+              <label class="checkbox-label" style="display:flex; align-items:center; gap:12px; border:1px solid #eaeaea; padding:12px; border-radius:8px; background:#fafafa;">
                 <input type="checkbox" id="place_shop" checked disabled>
                 <span class="checkmark"></span>
-                🛍 صفحة المتجر (دائماً)
+                <div style="flex:1;">
+                  <strong style="display:block; font-size:0.9rem;">🛍 صفحة المتجر (دائماً)</strong>
+                  <span style="font-size:0.75rem; color:#888;">يظهر المنتج في صفحة /shop.html والقوائم الرئيسية</span>
+                </div>
               </label>
-              <label class="checkbox-label">
+              <label class="checkbox-label" style="display:flex; align-items:center; gap:12px; border:1px solid #eaeaea; padding:12px; border-radius:8px;">
                 <input type="checkbox" id="place_featured">
                 <span class="checkmark"></span>
-                ⭐ الصفحة الرئيسية — قسم New Collection
+                <div style="flex:1;">
+                  <strong style="display:block; font-size:0.9rem;">⭐ الصفحة الرئيسية — New Collection</strong>
+                  <span style="font-size:0.75rem; color:#888;">يظهر في شبكة عرض التشكيلة الجديدة</span>
+                </div>
+                <img src="../store/images/optimized/new_collection.webp" style="width:60px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #eee;">
               </label>
-              <label class="checkbox-label">
+              <label class="checkbox-label" style="display:flex; align-items:center; gap:12px; border:1px solid #eaeaea; padding:12px; border-radius:8px;">
                 <input type="checkbox" id="place_editorial">
                 <span class="checkmark"></span>
-                🎨 الصفحة الرئيسية — القسم التحريري (صورة + نص)
+                <div style="flex:1;">
+                  <strong style="display:block; font-size:0.9rem;">🎨 الصفحة الرئيسية — القسم التحريري</strong>
+                  <span style="font-size:0.75rem; color:#888;">يظهر منتج واحد هنا ليعبر عن قصة المتجر بجانب نص مميز</span>
+                </div>
+                <img src="../store/images/optimized/hero_bg.webp" style="width:60px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #eee;">
               </label>
-              <label class="checkbox-label">
+              <label class="checkbox-label" style="display:flex; align-items:center; gap:12px; border:1px solid #eaeaea; padding:12px; border-radius:8px;">
                 <input type="checkbox" id="place_bestseller">
                 <span class="checkmark"></span>
-                🔥 الصفحة الرئيسية — Best Sellers
+                <div style="flex:1;">
+                  <strong style="display:block; font-size:0.9rem;">🔥 الصفحة الرئيسية — Best Sellers</strong>
+                  <span style="font-size:0.75rem; color:#888;">يضاف بجانب المنتجات الـ 4 الثابتة أو بدلاً منها (إذا كانت ديناميكية)</span>
+                </div>
+                <img src="../store/images/optimized/best_sellers.webp" style="width:60px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #eee;">
               </label>
             </div>
           </div>
