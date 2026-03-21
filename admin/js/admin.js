@@ -653,6 +653,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  window.deleteMedia = async (url) => {
+    if (!confirm('هل أنت متأكد من حذف هذه الصورة من المكتبة؟')) return;
+    
+    try {
+      showToast('⏳ جاري الحذف...');
+      const gallery = await getSiteConfig('vinato_media_gallery', []);
+      const newGallery = gallery.filter(u => u !== url);
+      await saveSiteConfig('vinato_media_gallery', newGallery);
+      
+      // Optional: Try to delete from Supabase storage if it's a supabase URL
+      if (url.includes('supabase.co/storage/v1/object/public/media/')) {
+        const path = url.split('/media/')[1];
+        if (path) {
+          await window.supabase.storage.from('media').remove([path]);
+        }
+      }
+
+      await renderMediaGrid();
+      showToast('تم الحذف بنجاح ✓');
+    } catch (err) {
+      console.error(err);
+      showToast('Error deleting media');
+    }
+  };
+
+  window.copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('Copied to clipboard! ✓');
+    }).catch(err => {
+      console.error('Failed to copy:', err);
+      showToast('Failed to copy');
+    });
+  };
+
   /* ─── Color Management ─── */
   function renderColorBlocks(containerId, colorListKey) {
     const list = document.getElementById(containerId);
@@ -989,10 +1023,19 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
   async function updateDashboardStats() {
     try {
+      // Products count
       const { count: prodCount } = await window.supabase.from('products').select('*', { count: 'exact', head: true });
+      
+      // Media count
+      const gallery = await getSiteConfig('vinato_media_gallery', []);
+      const mediaCount = gallery.length;
+
       const stats = document.querySelectorAll('.stat-value');
       if (stats.length >= 1 && prodCount !== null) {
         stats[0].textContent = prodCount;
+      }
+      if (stats.length >= 3) {
+        stats[2].textContent = mediaCount;
       }
     } catch(e) { console.warn("Stats update failed", e); }
   }
