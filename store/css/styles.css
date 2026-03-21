@@ -215,6 +215,45 @@ ul { list-style: none; }
   position: relative;
 }
 
+.nav-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+}
+
+.lang-toggle {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: var(--white);
+  padding: 6px 14px;
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-transform: uppercase;
+}
+
+.lang-toggle:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: var(--white);
+}
+
+/* Light page overrides */
+.shop-page .navbar:not(.scrolled) .lang-toggle,
+.product-page .navbar:not(.scrolled) .lang-toggle {
+  color: var(--black);
+  border-color: rgba(0,0,0,0.2);
+}
+
+.shop-page .navbar:not(.scrolled) .lang-toggle:hover,
+.product-page .navbar:not(.scrolled) .lang-toggle:hover {
+  background: rgba(0,0,0,0.05);
+  border-color: var(--black);
+}
+
 .nav-logo {
   font-family: var(--font-serif);
   font-size: 1.5rem;
@@ -1331,6 +1370,7 @@ ul { list-style: none; }
   :root { --nav-h: 60px; }
 
   .nav-links { display: none; }
+  .nav-actions { display: contents; } /* Let absolute children position themselves relative to .nav-inner */
 
   /* Keep lang toggle always visible — absolute position on mobile */
   .lang-toggle {
