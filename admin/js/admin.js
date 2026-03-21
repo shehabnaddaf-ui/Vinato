@@ -112,8 +112,28 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function getSiteImages() {
-    const config = await getSiteConfig('vinato_site_images_config', DEFAULT_SITE_IMAGES);
-    return (config && config.length > 0) ? config : DEFAULT_SITE_IMAGES;
+    let config = await getSiteConfig('vinato_site_images_config', DEFAULT_SITE_IMAGES);
+    if (!config || config.length === 0) return DEFAULT_SITE_IMAGES;
+
+    const configKeys = config.map(c => c.key);
+    let dirty = false;
+    DEFAULT_SITE_IMAGES.forEach(defImg => {
+      if (!configKeys.includes(defImg.key)) {
+        // Insert after similar items or at end to maintain some order, or just push
+        config.push(defImg);
+        dirty = true;
+      }
+    });
+
+    const obsoleteKeys = ['best_sellers', 'instagram_grid'];
+    const initialLen = config.length;
+    config = config.filter(c => !obsoleteKeys.includes(c.key));
+    if (config.length !== initialLen) dirty = true;
+
+    if (dirty) {
+      await saveSiteImages(config);
+    }
+    return config;
   }
 
   async function saveSiteImages(config) {

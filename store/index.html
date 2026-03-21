@@ -327,8 +327,26 @@
           siteConfig.forEach(img => {
             const url = replacedImages[img.key] || img.path;
             
-            // If it's a standard key, apply to CSS selectors and labels
-            if (sectionImgMap[img.key]) {
+            const specificEls = document.querySelectorAll(`[data-site-img="${img.key}"]`);
+            
+            if (specificEls.length > 0) {
+              specificEls.forEach(el => {
+                if (el.tagName === 'IMG') {
+                  el.src = url;
+                  if (el.dataset.src) el.dataset.src = url;
+                } else {
+                  el.style.backgroundImage = `url('${url}')`;
+                }
+
+                const container = el.closest('.bs-card');
+                if (container) {
+                  const nameEl = container.querySelector('.bs-name');
+                  if (nameEl && img.name) nameEl.textContent = img.name;
+                  const priceEl = container.querySelector('.bs-price');
+                  if (priceEl && img.price) priceEl.textContent = img.price;
+                }
+              });
+            } else if (sectionImgMap[img.key]) {
               const selector = sectionImgMap[img.key];
               if (img.key === 'hero_bg') {
                 const heroBg = document.querySelector(selector);
@@ -342,7 +360,6 @@
 
               // --- Dynamic Labels for Standard Sections ---
               if (img.key === 'prod_coat_men') {
-                 // Example: find elements that originally said "Structured Overcoat"
                  document.querySelectorAll('.product-name, .bs-name').forEach(nameEl => {
                     if (nameEl.textContent.includes('Overcoat')) nameEl.textContent = img.name;
                  });
@@ -352,8 +369,6 @@
                     }
                  });
               }
-              // For simplicity and to match the user's "edit everything" request:
-              // We'll target specific IDs or classes if they exist for these sections
               if (img.key === 'hero_bg_editorial') {
                 const edName = document.getElementById('editorialProductName');
                 const edPrice = document.getElementById('editorialProductPrice');
