@@ -13,11 +13,16 @@
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&family=Cairo:wght@400;500;600;700&display=swap"
       rel="stylesheet" />
     <link rel="stylesheet" href="css/styles.css" />
+    <script src="/env.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-      const SUPABASE_URL = 'https://rjjwznbpdjjhsckzazid.supabase.co';
-      const SUPABASE_KEY = 'sb_publishable_-9AD0IOVFUNKz4IRm_g-MQ_2qLZ8kiS';
-      window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      // Set SUPABASE_URL and SUPABASE_ANON_KEY from your Supabase project settings.
+      // See .env.example for the required variables.
+      const SUPABASE_URL = window.__SUPABASE_URL__ || '';
+      const SUPABASE_KEY = window.__SUPABASE_ANON_KEY__ || '';
+      if (SUPABASE_URL && SUPABASE_KEY) {
+        window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      }
     </script>
     <!-- Lenis CSS -->
     <style>
@@ -268,8 +273,6 @@
         <div class="footer-bottom">
           <div class="footer-copy-wrap">
             <p class="footer-copy" data-i18n="footer.rights">© 2026 Vinato. All rights reserved.</p>
-            <p class="footer-credit" style="color:#c6a87c; font-size:0.8rem; margin-top:8px;">Designed & Developed by
-              Eng. Shehab AL-Naddaf</p>
           </div>
           <div class="footer-legal">
             <a href="privacy-policy.html" class="footer-legal-link"
@@ -330,7 +333,7 @@
             </table>
           </div>
           <p class="size-note">* Measurements are approximate. This item has an oversized fit. Please contact <a
-              href="mailto:support@vinato.com" style="color:var(--gold);">support</a> for personal styling.</p>
+              href="mailto:hello@yourdomain.com" style="color:var(--gold);">support</a> for personal styling.</p>
         </div>
       </div>
     </div>

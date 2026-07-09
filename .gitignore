@@ -1,0 +1,37 @@
+# Environment variables — NEVER commit these
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Local runtime config (populated manually for dev — keep out of git)
+# env.js is safe to commit only while empty (as shipped). If you fill in real
+# credentials locally, add it here:
+# env.js
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor directories
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+npm-debug.log*
+
+# Node (if added later)
+node_modules/
+
+# Build output (if added later)
+dist/
+build/
+
+# Temporary files
+*.tmp
+*.swp
+*~
